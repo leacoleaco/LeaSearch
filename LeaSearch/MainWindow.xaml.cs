@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LeaSearch.Infrastructure.Helper;
+using System;
 using System.Windows;
 
 namespace LeaSearch
@@ -17,6 +18,17 @@ namespace LeaSearch
         {
             base.OnInitialized(e);
         }
+        
 
+        private void InitializeWindowPosition()
+        {
+            Top = this.GetCenterScreenTop(QueryTextBox.ActualHeight);
+            Left = this.GetCenterScreenLeft(this.ActualWidth);
+        }
+
+        private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            InitializeWindowPosition();
+        }
     }
 }

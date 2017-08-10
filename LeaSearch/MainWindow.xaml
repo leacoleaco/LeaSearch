@@ -16,6 +16,7 @@
         Style="{DynamicResource WindowStyle}"
         Icon="Images\app.png"
         AllowsTransparency="True"
+        Loaded="MainWindow_OnLoaded"
         d:DataContext="{d:DesignInstance viewModel:MainViewModel}">
     <Window.InputBindings>
         <KeyBinding Key="Escape" Command="{Binding EscCommand}"></KeyBinding>
