@@ -7,6 +7,7 @@ using System.Windows;
 using LeaSearch.Helper;
 using Wox.Infrastructure.Logger;
 using System.IO;
+using LeaSearch.Infrastructure.ErrorReport;
 
 namespace LeaSearch
 {
@@ -18,7 +19,7 @@ namespace LeaSearch
         private const string Unique = "LeaSearch_Unique_Application_String";
 
         /// <summary>
-        /// globall notifyIcon
+        /// global notifyIcon
         /// </summary>
         private readonly System.Windows.Forms.NotifyIcon _notifyIcon = new System.Windows.Forms.NotifyIcon();
 
@@ -36,6 +37,14 @@ namespace LeaSearch
             }
         }
 
+        public App()
+        {
+            //regist exception handler when start program
+            //Logger.Info($"|App.OnStartup|Runtime info:{ErrorReporting.RuntimeInfo()}");
+            // regist excetion handler
+            RegisterAppDomainExceptions();
+        }
+
         #region ISingleInstanceApp Members
         public bool SignalExternalCommandLineArgs(IList<string> args)
         {
@@ -51,12 +60,13 @@ namespace LeaSearch
         /// <param name="e"></param>
         protected override void OnStartup(StartupEventArgs e)
         {
-            Logger.Info("|App.OnStartup|Begin Wox startup ----------------------------------------------------");
+            Logger.Info("App.OnStartup-----------------------------");
 
 
-            //Logger.Info($"|App.OnStartup|Runtime info:{ErrorReporting.RuntimeInfo()}");
-            //RegisterAppDomainExceptions();
-            //RegisterDispatcherUnhandledException();
+            // regist unhandled exception that is UI Thread cause 
+            RegisterDispatcherUnhandledException();
+
+            //init notify bar icon
             InitializeNotifyIcon();
 
             //_settingsVM = new SettingWindowViewModel();
@@ -82,10 +92,11 @@ namespace LeaSearch
 
             //Http.Proxy = _settings.Proxy;
 
+            //doing things when exit
             RegisterExitEvents();
 
             //_mainVM.MainWindowVisibility = _settings.HideOnStartup ? Visibility.Hidden : Visibility.Visible;
-            Logger.Info("|App.OnStartup|End Wox startup ----------------------------------------------------  ");
+            Logger.Info("|App.OnStartup-------------------------------  ");
 
             base.OnStartup(e);
         }
@@ -125,6 +136,7 @@ namespace LeaSearch
         }
 
 
+        #region NotifyIcon 任务栏图标
 
         /// <summary>
         /// initialize notifyIcon
@@ -152,6 +164,40 @@ namespace LeaSearch
             _notifyIcon.Visible = true;
 
         }
+
+        #endregion
+
+
+        #region ErrorHandler
+
+        /// <summary>
+        /// register unhandled exception that is UI Thread cause
+        /// </summary>
+        //[Conditional("RELEASE")]
+        private void RegisterDispatcherUnhandledException()
+        {
+            this.DispatcherUnhandledException += ErrorReporting.DispatcherUnhandledException;
+        }
+
+
+        /// <summary>
+        /// register unhandled exception that is not UI thread cause
+        /// </summary>
+        //[Conditional("RELEASE")]
+        private static void RegisterAppDomainExceptions()
+        {
+            AppDomain.CurrentDomain.UnhandledException += ErrorReporting.UnhandledExceptionHandle;
+
+
+            //Occurs when an exception is thrown in managed code, before the runtime searches the call stack for an exception handler in the application domain.
+            //https://msdn.microsoft.com/en-us/library/system.appdomain.firstchanceexception.aspx
+            //AppDomain.CurrentDomain.FirstChanceException += (_, e) =>
+            //{
+            //    Logger.Error("|App.RegisterAppDomainExceptions|First Chance Exception:\r\n" + e.Exception.StackTrace.ToString());
+            //};
+        }
+
+        #endregion
 
     }
 }

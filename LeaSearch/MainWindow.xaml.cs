@@ -1,5 +1,6 @@
 ﻿using LeaSearch.Infrastructure.Helper;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 
 namespace LeaSearch
@@ -14,12 +15,18 @@ namespace LeaSearch
             InitializeComponent();
         }
 
+
         protected override void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);
+
+            //we need to focus textbox when start
+            QueryTextBox.Focus();
         }
         
-
+        /// <summary>
+        /// make windows just in perfect position
+        /// </summary>
         private void InitializeWindowPosition()
         {
             Top = this.GetCenterScreenTop(QueryTextBox.ActualHeight);

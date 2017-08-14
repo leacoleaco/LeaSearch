@@ -9,6 +9,9 @@ namespace Wox.Infrastructure.Logger
 {
     public static class Logger
     {
+        /// <summary>
+        /// 存放日志的文件夹
+        /// </summary>
         public const string DirectoryName = "Logs";
 
         static Logger()
@@ -30,137 +33,64 @@ namespace Wox.Infrastructure.Logger
             var rule = new LoggingRule("*", LogLevel.Info, target);
 #endif
             configuration.LoggingRules.Add(rule);
+
             LogManager.Configuration = configuration;
         }
 
-        private static void LogFaultyFormat(string message)
-        {
-            var logger = LogManager.GetLogger("FaultyLogger");
-            message = $"Wrong logger message format <{message}>";
-            System.Diagnostics.Debug.WriteLine($"FATAL|{message}");
-            logger.Fatal(message);
-        }
 
-        private static bool FormatValid(string message)
-        {
-            var parts = message.Split('|');
-            var valid = parts.Length == 3 && !string.IsNullOrWhiteSpace(parts[1]) && !string.IsNullOrWhiteSpace(parts[2]);
-            return valid;
-        }
-
-        /// <param name="message">example: "|prefix|unprefixed" </param>
         public static void Error(string message)
         {
-            if (FormatValid(message))
-            {
-                var parts = message.Split('|');
-                var prefix = parts[1];
-                var unprefixed = parts[2];
-                var logger = LogManager.GetLogger(prefix);
+            var logger = LogManager.GetCurrentClassLogger();
 
-                System.Diagnostics.Debug.WriteLine($"ERROR|{message}");
-                logger.Error(unprefixed);
-            }
-            else
-            {
-                LogFaultyFormat(message);
-            }
+            System.Diagnostics.Debug.WriteLine($"ERROR|{message}");
+            logger.Error(message);
         }
 
-        /// <param name="message">example: "|prefix|unprefixed" </param>
         [MethodImpl(MethodImplOptions.Synchronized)]
         public static void Exception(string message, System.Exception e)
         {
-#if DEBUG
-            throw e;
-#else
-            if (FormatValid(message))
+            var logger = LogManager.GetCurrentClassLogger();
+
+            System.Diagnostics.Debug.WriteLine($"ERROR|{message}");
+
+            logger.Error("-------------------------- Begin exception --------------------------");
+
+            do
             {
-                var parts = message.Split('|');
-                var prefix = parts[1];
-                var unprefixed = parts[2];
-                var logger = LogManager.GetLogger(prefix);
+                logger.Error($"Exception fulle name:\n <{e.GetType().FullName}>");
+                logger.Error($"Exception message:\n <{e.Message}>");
+                logger.Error($"Exception stack trace:\n <{e.StackTrace}>");
+                logger.Error($"Exception source:\n <{e.Source}>");
+                logger.Error($"Exception target site:\n <{e.TargetSite}>");
+                logger.Error($"Exception HResult:\n <{e.HResult}>");
+                e = e.InnerException;
+            } while (e != null);
 
-                System.Diagnostics.Debug.WriteLine($"ERROR|{message}");
-
-                logger.Error("-------------------------- Begin exception --------------------------");
-                logger.Error(unprefixed);
-
-                do
-                {
-                    logger.Error($"Exception fulle name:\n <{e.GetType().FullName}>");
-                    logger.Error($"Exception message:\n <{e.Message}>");
-                    logger.Error($"Exception stack trace:\n <{e.StackTrace}>");
-                    logger.Error($"Exception source:\n <{e.Source}>");
-                    logger.Error($"Exception target site:\n <{e.TargetSite}>");
-                    logger.Error($"Exception HResult:\n <{e.HResult}>");
-                    e = e.InnerException;
-                } while (e != null);
-
-                logger.Error("-------------------------- End exception --------------------------");
-            }
-            else
-            {
-                LogFaultyFormat(message);
-            }
-#endif
+            logger.Error("-------------------------- End exception --------------------------");
         }
 
-        /// <param name="message">example: "|prefix|unprefixed" </param>
         public static void Debug(string message)
         {
-            if (FormatValid(message))
-            {
-                var parts = message.Split('|');
-                var prefix = parts[1];
-                var unprefixed = parts[2];
-                var logger = LogManager.GetLogger(prefix);
+            var logger = LogManager.GetCurrentClassLogger();
 
-                System.Diagnostics.Debug.WriteLine($"DEBUG|{message}");
-                logger.Debug(unprefixed);
-            }
-            else
-            {
-                LogFaultyFormat(message);
-            }
+            System.Diagnostics.Debug.WriteLine($"DEBUG|{message}");
+            logger.Debug(message);
         }
 
-        /// <param name="message">example: "|prefix|unprefixed" </param>
         public static void Info(string message)
         {
-            if (FormatValid(message))
-            {
-                var parts = message.Split('|');
-                var prefix = parts[1];
-                var unprefixed = parts[2];
-                var logger = LogManager.GetLogger(prefix);
+            var logger = LogManager.GetCurrentClassLogger();
 
-                System.Diagnostics.Debug.WriteLine($"INFO|{message}");
-                logger.Info(unprefixed);
-            }
-            else
-            {
-                LogFaultyFormat(message);
-            }
+            System.Diagnostics.Debug.WriteLine($"INFO|{message}");
+            logger.Info(message);
         }
 
-        /// <param name="message">example: "|prefix|unprefixed" </param>
         public static void Warn(string message)
         {
-            if (FormatValid(message))
-            {
-                var parts = message.Split('|');
-                var prefix = parts[1];
-                var unprefixed = parts[2];
-                var logger = LogManager.GetLogger(prefix);
+            var logger = LogManager.GetCurrentClassLogger();
 
-                System.Diagnostics.Debug.WriteLine($"WARN|{message}");
-                logger.Warn(unprefixed);
-            }
-            else
-            {
-                LogFaultyFormat(message);
-            }
+            System.Diagnostics.Debug.WriteLine($"WARN|{message}");
+            logger.Warn(message);
         }
     }
 }
