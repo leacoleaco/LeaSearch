@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Windows;
+using LeaSearch.ViewModel;
+using LeaSearch.Common.Env;
 
 namespace LeaSearch
 {
@@ -10,20 +12,25 @@ namespace LeaSearch
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        private MainViewModel _mainViewModel;
+        private Settings _settings;
+
+
+        public MainWindow(Settings settings, MainViewModel mainViewModel)
         {
+            _settings = settings;
+            _mainViewModel = mainViewModel;
             InitializeComponent();
         }
-
 
         protected override void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);
 
-            //we need to focus textbox when start
+            //we need to focus textbox when started
             QueryTextBox.Focus();
         }
-        
+
         /// <summary>
         /// make windows just in perfect position
         /// </summary>

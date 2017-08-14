@@ -11,11 +11,26 @@ namespace LeaSearch.Common.Env
         public const string Plugins = "Plugins";
 
         private static readonly Assembly Assembly = Assembly.GetExecutingAssembly();
+
+        /// <summary>
+        /// get the program directory
+        /// </summary>
         public static readonly string ProgramDirectory = Directory.GetParent(Assembly.Location).ToString();
         public static readonly string ExecutablePath = Path.Combine(ProgramDirectory, LeaSearch + ".exe");
-        public static readonly string DataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), LeaSearch);
+
+        /// <summary>
+        /// the directory that load data
+        /// </summary>
+        //public static readonly string DataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), LeaSearch);
+        public static readonly string DataDirectory = "Data";
+
+        /// <summary>
+        /// the plugin's dir
+        /// </summary>
         public static readonly string PluginsDirectory = Path.Combine(DataDirectory, Plugins);
         public static readonly string PreinstalledDirectory = Path.Combine(ProgramDirectory, Plugins);
+
+
         public const string Repository = "https://github.com/Wox-launcher/Wox";
         public const string Issue = "https://github.com/Wox-launcher/Wox/issues/new";
         public static readonly string Version = FileVersionInfo.GetVersionInfo(Assembly.Location).ProductVersion;

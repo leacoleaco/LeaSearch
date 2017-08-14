@@ -1,9 +1,17 @@
 ﻿using System.Windows.Input;
+using LeaSearch.Common.Env;
 
 namespace LeaSearch.ViewModel
 {
     public class MainViewModel
     {
+        private Settings _settings;
+
+        public MainViewModel(Settings settings)
+        {
+            _settings = settings;
+        }
+        
         #region Private Fields
 
         #endregion

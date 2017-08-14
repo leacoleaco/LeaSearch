@@ -5,9 +5,11 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 using LeaSearch.Helper;
-using Wox.Infrastructure.Logger;
 using System.IO;
+using LeaSearch.Common.Env;
 using LeaSearch.Infrastructure.ErrorReport;
+using LeaSearch.Infrastructure.Logger;
+using LeaSearch.ViewModel;
 
 namespace LeaSearch
 {
@@ -19,9 +21,20 @@ namespace LeaSearch
         private const string Unique = "LeaSearch_Unique_Application_String";
 
         /// <summary>
+        /// to judge is disposed call twice
+        /// </summary>
+        private bool _isDisposed;
+
+        /// <summary>
         /// global notifyIcon
         /// </summary>
         private readonly System.Windows.Forms.NotifyIcon _notifyIcon = new System.Windows.Forms.NotifyIcon();
+
+        private MainViewModel _mainViewModel;
+        private SettingsViewModel _settingsViewModel;
+        private Settings _settings;
+
+
 
         [STAThread]
         public static void Main()
@@ -69,13 +82,15 @@ namespace LeaSearch
             //init notify bar icon
             InitializeNotifyIcon();
 
-            //_settingsVM = new SettingWindowViewModel();
-            //_settings = _settingsVM.Settings;
+            _settingsViewModel = new SettingsViewModel();
+            _settings = _settingsViewModel.Settings;
 
             //PluginManager.LoadPlugins(_settings.PluginSettings);
-            //_mainVM = new MainViewModel(_settings);
-            //var window = new MainWindow(_settings, _mainVM);
-            //API = new PublicAPIInstance(_settingsVM, _mainVM);
+            _mainViewModel = new MainViewModel(_settings);
+            var window = new MainWindow(_settings, _mainViewModel);
+            window.Show();
+            window.Hide();
+            //API = new PublicAPIInstance(_settingsVM, _mainViewModel);
             //PluginManager.InitializePlugins(API);
             //Log.Info($"|App.OnStartup|Dependencies Info:{ErrorReporting.DependenciesInfo()}");
 
@@ -95,10 +110,21 @@ namespace LeaSearch
             //doing things when exit
             RegisterExitEvents();
 
-            //_mainVM.MainWindowVisibility = _settings.HideOnStartup ? Visibility.Hidden : Visibility.Visible;
+            //_mainViewModel.MainWindowVisibility = _settings.HideOnStartup ? Visibility.Hidden : Visibility.Visible;
             Logger.Info("|App.OnStartup-------------------------------  ");
 
             base.OnStartup(e);
+
+
+            //if set to hide on startup,then hide
+            if (_settings.HideOnStartup)
+            {
+                window.Hide();
+            }
+            else
+            {
+                window.Show();
+            }
         }
 
 
@@ -106,17 +132,18 @@ namespace LeaSearch
         {
             // if sessionending is called, exit proverbially be called when log off / shutdown
             // but if sessionending is not called, exit won't be called when log off / shutdown
-            //if (!_disposed)
-            //{
-            //    _mainVM.Save();
-            //    _settingsVM.Save();
+            if (!_isDisposed)
+            {
+                //    _mainViewModel.Save();
+                _settingsViewModel.Save();
 
-            //    PluginManager.Save();
-            //    ImageLoader.Save();
-            //    Alphabet.Save();
+                //    PluginManager.Save();
+                //    ImageLoader.Save();
+                //    Alphabet.Save();
 
-            //    _disposed = true;
-            //}
+                _isDisposed = true;
+
+            }
 
             // dispose the notifyicon 
             if (_notifyIcon != null)
@@ -124,7 +151,6 @@ namespace LeaSearch
                 _notifyIcon.Visible = false;
                 _notifyIcon.Dispose();
             }
-
         }
 
 

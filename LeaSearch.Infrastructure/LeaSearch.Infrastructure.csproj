@@ -61,6 +61,11 @@
     <Compile Include="Helper\WindowsPositionHelper.cs" />
     <Compile Include="Logger\Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Storage\BinaryStorage.cs" />
+    <Compile Include="Storage\ISavable.cs" />
+    <Compile Include="Storage\JsonStorage.cs" />
+    <Compile Include="Storage\LeaSearchJsonStorage.cs" />
+    <Compile Include="Storage\PluginJsonStorage.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LeaSearch.Common\LeaSearch.Common.csproj">

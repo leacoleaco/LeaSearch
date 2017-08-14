@@ -1,11 +1,11 @@
 ﻿using System.IO;
 using System.Runtime.CompilerServices;
+using LeaSearch.Common.Env;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
-using LeaSearch.Common.Env;
 
-namespace Wox.Infrastructure.Logger
+namespace LeaSearch.Infrastructure.Logger
 {
     public static class Logger
     {
