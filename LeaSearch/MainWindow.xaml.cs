@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Windows;
 using LeaSearch.ViewModel;
 using LeaSearch.Common.Env;
+using LeaSearch.Core.I18N;
+using LeaSearch.Core.Notice;
 
 namespace LeaSearch
 {

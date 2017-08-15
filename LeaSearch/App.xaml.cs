@@ -7,6 +7,7 @@ using System.Windows;
 using LeaSearch.Helper;
 using System.IO;
 using LeaSearch.Common.Env;
+using LeaSearch.Core.I18N;
 using LeaSearch.Infrastructure.ErrorReport;
 using LeaSearch.Infrastructure.Logger;
 using LeaSearch.ViewModel;
@@ -75,6 +76,7 @@ namespace LeaSearch
         {
             Logger.Info("App.OnStartup-----------------------------");
 
+            //=====================================   Doing prepare things   =========================================================
 
             // regist unhandled exception that is UI Thread cause 
             RegisterDispatcherUnhandledException();
@@ -86,10 +88,7 @@ namespace LeaSearch
             _settings = _settingsViewModel.Settings;
 
             //PluginManager.LoadPlugins(_settings.PluginSettings);
-            _mainViewModel = new MainViewModel(_settings);
-            var window = new MainWindow(_settings, _mainViewModel);
-            window.Show();
-            window.Hide();
+           
             //API = new PublicAPIInstance(_settingsVM, _mainViewModel);
             //PluginManager.InitializePlugins(API);
             //Log.Info($"|App.OnStartup|Dependencies Info:{ErrorReporting.DependenciesInfo()}");
@@ -97,15 +96,26 @@ namespace LeaSearch
             //Current.MainWindow = window;
             //Current.MainWindow.Title = Constant.Wox;
 
-            //// happlebao todo temp fix for instance code logic
+
             //// load plugin before change language, because plugin language also needs be changed
-            //InternationalizationManager.Instance.Settings = _settings;
-            //InternationalizationManager.Instance.ChangeLanguage(_settings.Language);
+            InternationalizationManager.Instance.Settings = _settings;
+            InternationalizationManager.Instance.ChangeLanguage(_settings.Language);
+
+
+
             //// main windows needs initialized before theme change because of blur settigns
             //ThemeManager.Instance.Settings = _settings;
             //ThemeManager.Instance.ChangeTheme(_settings.Theme);
 
             //Http.Proxy = _settings.Proxy;
+
+            //============================================   Prepare things done   ==========================================================
+
+            // when all things done, then we could init app windows and models
+            _mainViewModel = new MainViewModel(_settings);
+            var window = new MainWindow(_settings, _mainViewModel);
+            window.Show();
+            window.Hide();
 
             //doing things when exit
             RegisterExitEvents();

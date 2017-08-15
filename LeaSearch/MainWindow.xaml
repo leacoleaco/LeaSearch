@@ -47,6 +47,7 @@
         <StackPanel Orientation="Vertical">
             <TextBox Style="{DynamicResource QueryBoxStyle}"
                      Text="{Binding QueryText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     ToolTip="{DynamicResource wox_settings}"
                      AllowDrop="True"
                      Visibility="Visible"
                      x:Name="QueryTextBox">
