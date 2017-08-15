@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Windows;
 using LeaSearch.ViewModel;
 using LeaSearch.Common.Env;
+using LeaSearch.Core.HotKey;
 using LeaSearch.Core.I18N;
 using LeaSearch.Core.Notice;
 
@@ -29,9 +30,27 @@ namespace LeaSearch
         {
             base.OnInitialized(e);
 
-            //we need to focus textbox when started
+            HotKeyManager.Instance.OnHotKeyWakeUp += Instance_OnHotKeyWakeUp;
+
+            //we need to focus textbox when startup
             QueryTextBox.Focus();
         }
+
+        private void Instance_OnHotKeyWakeUp()
+        {
+            if (this.IsVisible)
+            {
+                this.Hide();
+            }
+            else
+            {
+                this.Show();
+                //we need to focus textbox when wake up
+                QueryTextBox.Focus();
+            }
+        }
+
+
 
         /// <summary>
         /// make windows just in perfect position
@@ -46,5 +65,8 @@ namespace LeaSearch
         {
             InitializeWindowPosition();
         }
+
+
+
     }
 }

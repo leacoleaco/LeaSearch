@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Input;
 using LeaSearch.Core.I18N;
 using LeaSearch.Core.Notice;
 using NHotkey;
@@ -13,8 +14,12 @@ namespace LeaSearch.Core.HotKey
     public class HotKeyManager
     {
 
+        private static void AddOrReplaceHotKey(string hotkeyStr, EventHandler<HotkeyEventArgs> action)
+        {
+            AddOrReplaceHotKey(new Hotkey(hotkeyStr), action);
+        }
 
-        public void SetHotkey(Hotkey hotkey, EventHandler<HotkeyEventArgs> action)
+        private static void AddOrReplaceHotKey(Hotkey hotkey, EventHandler<HotkeyEventArgs> action)
         {
             string hotkeyStr = hotkey.ToString();
             try
@@ -26,5 +31,41 @@ namespace LeaSearch.Core.HotKey
                 MessageUiHelper.ShowMessage("registerHotkeyFailed", hotkeyStr);
             }
         }
+
+        /// <summary>
+        /// get the Hotkey Instance
+        /// </summary>
+        public static HotKeyManager Instance { get; } = new HotKeyManager();
+
+        #region setup action
+
+        /// <summary>
+        /// set wake up key
+        /// </summary>
+        /// <param name="hotkeyStr"></param>
+        public void SetupWakeUpKey(string hotkeyStr)
+        {
+            AddOrReplaceHotKey(hotkeyStr, (o, e) =>
+            {
+                OnHotKeyWakeUpHandler();
+            });
+        }
+
+        #endregion
+
+        //use action is just to convenient and decoupe 
+        #region Hotkey Action Event
+
+        public event Action OnHotKeyWakeUp;
+
+        protected virtual void OnHotKeyWakeUpHandler()
+        {
+            OnHotKeyWakeUp?.Invoke();
+        }
+
+        #endregion
+
     }
+
+
 }

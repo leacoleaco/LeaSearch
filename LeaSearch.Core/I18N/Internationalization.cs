@@ -11,7 +11,7 @@ namespace LeaSearch.Core.I18N
 {
     public class Internationalization
     {
-        public Settings Settings { get; set; }
+        //public Settings Settings { get; set; }
         private const string Folder = "Languages";
         private const string DefaultFile = "en.xaml";
         private const string Extension = ".xaml";
@@ -81,8 +81,6 @@ namespace LeaSearch.Core.I18N
 
         public void ChangeLanguage(Language language)
         {
-
-            Settings.Language = language.LanguageCode;
 
             RemoveOldLanguageFiles();
             if (language != AvailableLanguages.English)

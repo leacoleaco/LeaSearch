@@ -88,35 +88,15 @@ namespace LeaSearch
             _settingsViewModel = new SettingsViewModel();
             _settings = _settingsViewModel.Settings;
 
-            //PluginManager.LoadPlugins(_settings.PluginSettings);
+            //take all settings effect 
+            _settingsViewModel.TakeEffectAllSettings();
 
-            //API = new PublicAPIInstance(_settingsVM, _mainViewModel);
-            //PluginManager.InitializePlugins(API);
-            //Log.Info($"|App.OnStartup|Dependencies Info:{ErrorReporting.DependenciesInfo()}");
-
-            //Current.MainWindow = window;
-            //Current.MainWindow.Title = Constant.Wox;
-
-
-            //// load plugin before change language, because plugin language also needs be changed
-            InternationalizationManager.Instance.Settings = _settings;
-            InternationalizationManager.Instance.ChangeLanguage(_settings.Language);
-
-
-
-            //// main windows needs initialized before theme change because of blur settigns
-            ThemeManager.Instance.Settings = _settings;
-            ThemeManager.Instance.ChangeTheme(_settings.Theme);
-
-            //Http.Proxy = _settings.Proxy;
 
             //============================================   Prepare things done   ==========================================================
 
             // when all things done, then we could init app windows and models
             _mainViewModel = new MainViewModel(_settings);
             var window = new MainWindow(_settings, _mainViewModel);
-            window.Show();
-            window.Hide();
 
             //doing things when exit
             RegisterExitEvents();
