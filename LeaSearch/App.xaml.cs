@@ -8,6 +8,7 @@ using LeaSearch.Helper;
 using System.IO;
 using LeaSearch.Common.Env;
 using LeaSearch.Core.I18N;
+using LeaSearch.Core.Theme;
 using LeaSearch.Infrastructure.ErrorReport;
 using LeaSearch.Infrastructure.Logger;
 using LeaSearch.ViewModel;
@@ -88,7 +89,7 @@ namespace LeaSearch
             _settings = _settingsViewModel.Settings;
 
             //PluginManager.LoadPlugins(_settings.PluginSettings);
-           
+
             //API = new PublicAPIInstance(_settingsVM, _mainViewModel);
             //PluginManager.InitializePlugins(API);
             //Log.Info($"|App.OnStartup|Dependencies Info:{ErrorReporting.DependenciesInfo()}");
@@ -104,8 +105,8 @@ namespace LeaSearch
 
 
             //// main windows needs initialized before theme change because of blur settigns
-            //ThemeManager.Instance.Settings = _settings;
-            //ThemeManager.Instance.ChangeTheme(_settings.Theme);
+            ThemeManager.Instance.Settings = _settings;
+            ThemeManager.Instance.ChangeTheme(_settings.Theme);
 
             //Http.Proxy = _settings.Proxy;
 
