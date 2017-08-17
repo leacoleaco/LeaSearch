@@ -164,11 +164,11 @@
       <DependentUpon>ShellView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Content Include="Themes\Base.xaml">
+    <Page Include="Themes\Base.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </Page>
     <Content Include="Themes\BlurBlack.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -279,6 +279,10 @@
     <ProjectReference Include="..\LeaSearch.Infrastructure\LeaSearch.Infrastructure.csproj">
       <Project>{f0fbae7b-54af-40d7-81cb-6c382a0b0060}</Project>
       <Name>LeaSearch.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LeaSearch.UI\LeaSearch.UI.csproj">
+      <Project>{A00F9841-953F-4454-810C-6184E654EC2C}</Project>
+      <Name>LeaSearch.UI</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

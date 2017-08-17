@@ -10,27 +10,14 @@ using LeaSearch.Core.HotKey;
 
 namespace LeaSearch.ViewModels
 {
-    [Export(typeof(IShell))]
-    public class ShellViewModel : BaseViewModel, IShell
+    public class ShellViewModel : BaseViewModel
     {
         public ShellViewModel(Settings settings) : base(settings)
         {
-            OpenResultCommand = new ParameterCommand(_ =>
+
+            EscCommand = new ParameterCommand(_ =>
             {
-                MessageBox.Show("normal!");
-
-            });
-
-
-            OpenResultCommand1 = new ParameterCommand(_ =>
-            {
-                MessageBox.Show("focus click!");
-            });
-
-
-            StartHelpCommand = new ParameterCommand(_ =>
-            {
-                Process.Start("http://doc.getwox.com");
+                Process.Start("http://www.baidu.com");
             });
         }
 
@@ -50,23 +37,24 @@ namespace LeaSearch.ViewModels
 
         public ICommand OpenResultCommand1 { get; set; }
 
+
+
         #endregion
 
         #region Private Fields
 
         #endregion
 
+        #region Property
 
-
-        #region Command
-
-
-
+        /// <summary>
+        /// text to search 
+        /// </summary>
+        public string QueryText { get; set; }
 
         #endregion
+
     }
 
-    public interface IShell
-    {
-    }
+
 }
