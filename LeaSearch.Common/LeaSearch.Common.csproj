@@ -50,7 +50,10 @@
     <Compile Include="Env\Constant.cs" />
     <Compile Include="Env\Settings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewModel\BaseModel.cs" />
+    <Compile Include="ViewModel\BaseViewModel.cs" />
+    <Compile Include="ViewModel\IViewModel.cs" />
+    <Compile Include="View\IView.cs" />
+    <Compile Include="Windows\Input\ParameterCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Helper\" />

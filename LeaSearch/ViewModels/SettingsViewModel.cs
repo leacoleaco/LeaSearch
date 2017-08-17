@@ -1,31 +1,30 @@
 ﻿using LeaSearch.Common.Env;
 using LeaSearch.Core.HotKey;
 using LeaSearch.Core.I18N;
+using LeaSearch.Core.Ioc;
 using LeaSearch.Core.Theme;
 using LeaSearch.Infrastructure.Storage;
 
-namespace LeaSearch.ViewModel
+namespace LeaSearch.ViewModels
 {
     public class SettingsViewModel
     {
         /// <summary>
         /// Global settings
         /// </summary>
-        public Settings Settings { get; set; } = new Settings();
+        private Settings _settings;
 
 
-        private readonly LeaSearchJsonStorage<Settings> _storage;
+      
 
         public SettingsViewModel()
         {
-            _storage = new LeaSearchJsonStorage<Settings>();
-            Settings = _storage.Load();
+           
         }
 
 
         public void Save()
         {
-            _storage.Save();
         }
 
         /// <summary>
@@ -43,21 +42,10 @@ namespace LeaSearch.ViewModel
             //Current.MainWindow.Title = Constant.Wox;
 
 
-            //// load plugin before change language, because plugin language also needs be changed
-            InternationalizationManager.Instance.ChangeLanguage(Settings.Language);
-
-
-
-            //// main windows needs initialized before theme change because of blur settigns
-            ThemeManager.Instance.Settings = Settings;
-            ThemeManager.Instance.ChangeTheme(Settings.Theme);
-
-
-            //// setup the wakeup hotkey
-            HotKeyManager.Instance.SetupWakeUpKey(Settings.ActiveHotkey);
+           
 
             //Http.Proxy = _settings.Proxy;
-            
+
         }
     }
 }

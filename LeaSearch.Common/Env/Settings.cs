@@ -1,8 +1,8 @@
-﻿using LeaSearch.ViewModel;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.Drawing;
+using LeaSearch.Common.ViewModel;
 
 namespace LeaSearch.Common.Env
 {
@@ -10,8 +10,15 @@ namespace LeaSearch.Common.Env
     /// global settings
     /// 程序的设置
     /// </summary>
-    public class Settings : BaseModel
+    public class Settings 
     {
+
+
+        public Settings()
+        {
+            
+        }
+
         public string ActiveHotkey { get; set; } = "Ctrl + Space";
         public string Language { get; set; } = "en";
         public string Theme { get; set; } = "Dark";

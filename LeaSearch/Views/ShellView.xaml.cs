@@ -1,28 +1,26 @@
-﻿using LeaSearch.Infrastructure.Helper;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.Diagnostics;
 using System.Windows;
-using LeaSearch.ViewModel;
+using System.Windows.Input;
 using LeaSearch.Common.Env;
+using LeaSearch.Common.View;
 using LeaSearch.Core.HotKey;
-using LeaSearch.Core.I18N;
-using LeaSearch.Core.Notice;
+using LeaSearch.Core.Ioc;
+using LeaSearch.Infrastructure.Helper;
 
-namespace LeaSearch
+namespace LeaSearch.Views
 {
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class ShellView : Window, IView
     {
-        private MainViewModel _mainViewModel;
         private Settings _settings;
 
 
-        public MainWindow(Settings settings, MainViewModel mainViewModel)
+        public ShellView(Settings settings)
         {
             _settings = settings;
-            _mainViewModel = mainViewModel;
             InitializeComponent();
         }
 
@@ -30,13 +28,22 @@ namespace LeaSearch
         {
             base.OnInitialized(e);
 
-            HotKeyManager.Instance.OnHotKeyWakeUp += Instance_OnHotKeyWakeUp;
+            Ioc.Reslove<HotKeyManager>().WakeUpCommand += Instance_WakeUpCommand;
 
-            //we need to focus textbox when startup
-            QueryTextBox.Focus();
+            if (_settings.HideOnStartup)
+            {
+                this.Hide();
+            }
+            else
+            {
+                this.Show();
+                //we need to focus textbox when startup
+                QueryTextBox.Focus();
+            }
+
         }
 
-        private void Instance_OnHotKeyWakeUp()
+        private void Instance_WakeUpCommand()
         {
             if (this.IsVisible)
             {
@@ -67,6 +74,15 @@ namespace LeaSearch
         }
 
 
-
+        private void StartHelpCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Process.Start("http://doc.getwox.com");
+        }
+        private void StartHelpCommand1_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Process.Start("http://www.baidu.com");
+        }
     }
+
+
 }

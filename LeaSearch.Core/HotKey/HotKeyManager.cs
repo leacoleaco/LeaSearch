@@ -1,71 +1,53 @@
 ﻿using System;
-using System.Windows.Input;
-using LeaSearch.Core.I18N;
+using LeaSearch.Common.Env;
 using LeaSearch.Core.Notice;
+using LeaSearch.Infrastructure.Logger;
 using NHotkey;
 using NHotkey.Wpf;
 
 namespace LeaSearch.Core.HotKey
 {
-
     /// <summary>
     /// manage all things with hotkey
     /// </summary>
     public class HotKeyManager
     {
+        private Settings _settings;
 
-        private static void AddOrReplaceHotKey(string hotkeyStr, EventHandler<HotkeyEventArgs> action)
+        public HotKeyManager(Settings settings)
         {
-            AddOrReplaceHotKey(new Hotkey(hotkeyStr), action);
+            _settings = settings;
+            RefreshGlobalHotkeyAction();
         }
 
-        private static void AddOrReplaceHotKey(Hotkey hotkey, EventHandler<HotkeyEventArgs> action)
+        public void RefreshGlobalHotkeyAction()
+        {
+            AddOrReplaceHotKey(new Hotkey(_settings.ActiveHotkey), (o, e) =>
+            {
+                OnWakeUpCommand();
+            });
+        }
+
+        internal void AddOrReplaceHotKey(Hotkey hotkey, EventHandler<HotkeyEventArgs> action)
         {
             string hotkeyStr = hotkey.ToString();
             try
             {
                 HotkeyManager.Current.AddOrReplace(hotkeyStr, hotkey.CharKey, hotkey.ModifierKeys, action);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Logger.Exception(e.Message, e);
                 MessageUiHelper.ShowMessage("registerHotkeyFailed", hotkeyStr);
             }
         }
 
-        /// <summary>
-        /// get the Hotkey Instance
-        /// </summary>
-        public static HotKeyManager Instance { get; } = new HotKeyManager();
 
-        #region setup action
+        public event Action WakeUpCommand;
 
-        /// <summary>
-        /// set wake up key
-        /// </summary>
-        /// <param name="hotkeyStr"></param>
-        public void SetupWakeUpKey(string hotkeyStr)
+        protected virtual void OnWakeUpCommand()
         {
-            AddOrReplaceHotKey(hotkeyStr, (o, e) =>
-            {
-                OnHotKeyWakeUpHandler();
-            });
+            WakeUpCommand?.Invoke();
         }
-
-        #endregion
-
-        //use action is just to convenient and decoupe 
-        #region Hotkey Action Event
-
-        public event Action OnHotKeyWakeUp;
-
-        protected virtual void OnHotKeyWakeUpHandler()
-        {
-            OnHotKeyWakeUp?.Invoke();
-        }
-
-        #endregion
-
     }
-
-
 }

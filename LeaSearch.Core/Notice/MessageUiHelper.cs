@@ -14,7 +14,8 @@ namespace LeaSearch.Core.Notice
         /// <param name="paramObjects"></param>
         public static void ShowMessage(string i18NKey, params object[] paramObjects)
         {
-            var translation = InternationalizationManager.Instance.GetTranslation(i18NKey);
+            
+            var translation = Ioc.Ioc.Reslove<InternationalizationManager>().GetTranslation(i18NKey);
             var s = string.Format(translation, paramObjects);
             MessageBox.Show(s);
         }

@@ -4,10 +4,13 @@
              xmlns:local="clr-namespace:LeaSearch"
              >
     <Application.Resources>
-        <ResourceDictionary>
+        <ResourceDictionary >
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Themes/Dark.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Languages/en.xaml" />
+                <!--<ResourceDictionary>
+                    <local:AppBootstrapper x:Key="AppBootstrappr" />
+                </ResourceDictionary>-->
+                <ResourceDictionary x:Name="DefalutTheme" Source="pack://application:,,,/Themes/Dark.xaml" />
+                <ResourceDictionary x:Name="DefaultLanguage" Source="pack://application:,,,/Languages/en.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

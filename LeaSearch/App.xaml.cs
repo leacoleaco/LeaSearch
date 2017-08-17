@@ -6,12 +6,17 @@ using System.Threading;
 using System.Windows;
 using LeaSearch.Helper;
 using System.IO;
+using Autofac;
 using LeaSearch.Common.Env;
+using LeaSearch.Core.HotKey;
 using LeaSearch.Core.I18N;
+using LeaSearch.Core.Ioc;
 using LeaSearch.Core.Theme;
 using LeaSearch.Infrastructure.ErrorReport;
 using LeaSearch.Infrastructure.Logger;
-using LeaSearch.ViewModel;
+using LeaSearch.Infrastructure.Storage;
+using LeaSearch.ViewModels;
+using LeaSearch.Views;
 
 namespace LeaSearch
 {
@@ -22,19 +27,15 @@ namespace LeaSearch
     {
         private const string Unique = "LeaSearch_Unique_Application_String";
 
-        /// <summary>
-        /// to judge is disposed call twice
-        /// </summary>
-        private bool _isDisposed;
 
         /// <summary>
         /// global notifyIcon
         /// </summary>
         private readonly System.Windows.Forms.NotifyIcon _notifyIcon = new System.Windows.Forms.NotifyIcon();
 
-        private MainViewModel _mainViewModel;
-        private SettingsViewModel _settingsViewModel;
-        private Settings _settings;
+
+        private ContainerBuilder _builder;
+        private IContainer _container;
 
 
 
@@ -58,6 +59,12 @@ namespace LeaSearch
             //Logger.Info($"|App.OnStartup|Runtime info:{ErrorReporting.RuntimeInfo()}");
             // regist excetion handler
             RegisterAppDomainExceptions();
+
+
+
+
+
+
         }
 
         #region ISingleInstanceApp Members
@@ -78,64 +85,54 @@ namespace LeaSearch
             Logger.Info("App.OnStartup-----------------------------");
 
             //=====================================   Doing prepare things   =========================================================
-
             // regist unhandled exception that is UI Thread cause 
             RegisterDispatcherUnhandledException();
+
+            //read settings form file
+            LeaSearchJsonStorage<Settings> _storage = new LeaSearchJsonStorage<Settings>();
+            var settings = _storage.Load();
 
             //init notify bar icon
             InitializeNotifyIcon();
 
-            _settingsViewModel = new SettingsViewModel();
-            _settings = _settingsViewModel.Settings;
+            //// IOC regist
+            _builder = new ContainerBuilder();
+            _builder.Register(c => settings).As<Settings>().SingleInstance();
+            _builder.RegisterType<ThemeManager>();
+            _builder.RegisterType<InternationalizationManager>().SingleInstance();
+            _builder.RegisterType<HotKeyManager>().SingleInstance();
 
-            //take all settings effect 
-            _settingsViewModel.TakeEffectAllSettings();
+            _builder.RegisterType<ShellViewModel>().SingleInstance();
+            _builder.RegisterType<ShellView>().SingleInstance();
 
+            _container = _builder.Build();
+            Ioc.SetContainer(_container);
+            //// IOC regist end
 
-            //============================================   Prepare things done   ==========================================================
-
-            // when all things done, then we could init app windows and models
-            _mainViewModel = new MainViewModel(_settings);
-            var window = new MainWindow(_settings, _mainViewModel);
+            base.OnStartup(e);
 
             //doing things when exit
             RegisterExitEvents();
 
-            //_mainViewModel.MainWindowVisibility = _settings.HideOnStartup ? Visibility.Hidden : Visibility.Visible;
-            Logger.Info("|App.OnStartup-------------------------------  ");
+            //// load plugin before change language, because plugin language also needs be changed
+            Ioc.Reslove<InternationalizationManager>().ChangeLanguage(settings.Language);
 
-            base.OnStartup(e);
+            //// main windows needs initialized before theme change because of blur settigns
+            Ioc.ResloveUsingLifetime<ThemeManager>().ChangeTheme(settings.Theme);
+
+            //// re-setup the global hotkey
+            Ioc.Reslove<HotKeyManager>().RefreshGlobalHotkeyAction();
 
 
-            //if set to hide on startup,then hide
-            if (_settings.HideOnStartup)
-            {
-                window.Hide();
-            }
-            else
-            {
-                window.Show();
-            }
+            //get the windows to init a shellview and show windows
+            var shellview = Ioc.Reslove<ShellView>();
+            shellview.DataContext = Ioc.Reslove<ShellViewModel>();
         }
+
 
 
         public void Dispose()
         {
-            // if sessionending is called, exit proverbially be called when log off / shutdown
-            // but if sessionending is not called, exit won't be called when log off / shutdown
-            if (!_isDisposed)
-            {
-                //    _mainViewModel.Save();
-                _settingsViewModel.Save();
-
-                //    PluginManager.Save();
-                //    ImageLoader.Save();
-                //    Alphabet.Save();
-
-                _isDisposed = true;
-
-            }
-
             // dispose the notifyicon 
             if (_notifyIcon != null)
             {
