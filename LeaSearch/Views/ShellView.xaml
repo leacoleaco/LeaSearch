@@ -4,6 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:LeaSearch.UI.Controls;assembly=LeaSearch.UI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:LeaSearch.ViewModels"
     xmlns:views="clr-namespace:LeaSearch.Views"
@@ -61,7 +63,6 @@
                 AllowDrop="True"
                 Style="{DynamicResource QueryBoxStyle}"
                 Text="{Binding QueryText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                ToolTip="{DynamicResource wox_settings}"
                 Visibility="Visible"
                 Watermark="LeaSearch:Please input some words to start">
                 <TextBox.ContextMenu>
@@ -88,23 +89,67 @@
                     Y1="0"
                     Y2="0" />
             </Border>
-            <Grid Visibility="{Binding ResultVisibility, Mode=OneWay}">
+            <Grid MaxHeight="600" Visibility="{Binding ResultVisibility, Mode=OneWay}">
+                <i:Interaction.Triggers>
+                    <ei:DataTrigger Binding="{Binding ResultMode}" Value="ListOnly">
+                        <ei:ChangePropertyAction
+                            PropertyName="Width"
+                            TargetName="PluginCol"
+                            Value="Auto" />
+                        <ei:ChangePropertyAction
+                            PropertyName="Width"
+                            TargetName="ResultCol"
+                            Value="*" />
+                        <ei:ChangePropertyAction
+                            PropertyName="Width"
+                            TargetName="DetailCol"
+                            Value="0" />
+                    </ei:DataTrigger>
+                    <ei:DataTrigger Binding="{Binding ResultMode}" Value="ListDetail">
+                        <ei:ChangePropertyAction
+                            PropertyName="Width"
+                            TargetName="PluginCol"
+                            Value="0" />
+                        <ei:ChangePropertyAction
+                            PropertyName="Width"
+                            TargetName="ResultCol"
+                            Value="4*" />
+                        <ei:ChangePropertyAction
+                            PropertyName="Width"
+                            TargetName="DetailCol"
+                            Value="6*" />
+                    </ei:DataTrigger>
+                    <ei:DataTrigger Binding="{Binding ResultMode}" Value="DetailOnly">
+                        <ei:ChangePropertyAction
+                            PropertyName="Width"
+                            TargetName="PluginCol"
+                            Value="0" />
+                        <ei:ChangePropertyAction
+                            PropertyName="Width"
+                            TargetName="ResultCol"
+                            Value="0" />
+                        <ei:ChangePropertyAction
+                            PropertyName="Width"
+                            TargetName="DetailCol"
+                            Value="*" />
+                    </ei:DataTrigger>
+                </i:Interaction.Triggers>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition x:Name="PluginCol" Width="Auto" />
+                    <ColumnDefinition x:Name="ResultCol" Width="Auto" />
+                    <ColumnDefinition x:Name="DetailCol" Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <views:SuggestionResultsListView
+                <views:SuggestionResultView
                     x:Name="SuggestionResultsListView"
-                    Height="10"
-                    DataContext="{Binding SuggestionResults}" />
-                <views:SearchResultListView
+                    Grid.Column="0"
+                    DataContext="{Binding SuggestionResultViewModel}" />
+                <views:SearchResultView
                     x:Name="SearchResultListView"
-                    Height="20"
-                    DataContext="{Binding SearchResults}" />
+                    Grid.Column="1"
+                    DataContext="{Binding SearchResultViewModel}" />
                 <ContentControl
                     x:Name="MoreInfoContent"
-                    Height="100"
+                    Grid.Column="2"
                     Content="{Binding MoreInfoContent}" />
             </Grid>
         </StackPanel>

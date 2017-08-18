@@ -22,7 +22,7 @@ namespace LeaSearch.Common.Env
         /// the directory that load data
         /// </summary>
         //public static readonly string DataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), LeaSearch);
-        public static readonly string DataDirectory = "Data";
+        //public static readonly string DataDirectory = "Data";
 
         /// <summary>
         /// the plugin's dir
@@ -32,12 +32,12 @@ namespace LeaSearch.Common.Env
         public static readonly string PreinstalledDirectory = Path.Combine(ProgramDirectory, Plugins);
 
 
-        public const string Repository = "https://github.com/Wox-launcher/Wox";
-        public const string Issue = "https://github.com/Wox-launcher/Wox/issues/new";
         public static readonly string Version = FileVersionInfo.GetVersionInfo(Assembly.Location).ProductVersion;
 
-        public static readonly string DefaultIcon = Path.Combine(ProgramDirectory, "Images", "app.png");
-        public static readonly string ErrorIcon = Path.Combine(ProgramDirectory, "Images", "app_error.png");
+        public static readonly string DefaultIcon = @"pack://application:,,,/Images/app.png";
+        //public static readonly string DefaultIcon = Path.Combine(ProgramDirectory, "Images", "app.png");
+        public static readonly string ErrorIcon = @"pack://application:,,,/Images/app_error.png";
+        //public static readonly string ErrorIcon = Path.Combine(ProgramDirectory, "Images", "app_error.png");
 
         public static string PythonPath;
         public static string EverythingSDKPath;

@@ -3,6 +3,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using LeaSearch.Common.Env;
+using LeaSearch.Core.Image;
 using LeaSearch.Plugin;
 
 namespace LeaSearch.Core.Plugin
@@ -28,7 +32,7 @@ namespace LeaSearch.Core.Plugin
         /// </summary>
         public bool IsDisabled => PluginMetadata == null || PluginSettings == null || PluginInstance == null || PluginSettings.Disabled;
 
-       
+
     }
 
     public class PluginBase
@@ -87,6 +91,9 @@ namespace LeaSearch.Core.Plugin
         /// </summary>
         public string PluginEntryPath => Path.Combine(PluginRootPath, PluginMetadata.EntryFileName);
 
-
+        /// <summary>
+        /// Icon Img
+        /// </summary>
+        public ImageSource PluginIconImage => Ioc.Ioc.Reslove<ImageManager>().GetImageSource(PluginIconPath);
     }
 }

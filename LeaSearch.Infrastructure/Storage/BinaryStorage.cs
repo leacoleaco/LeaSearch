@@ -5,7 +5,6 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Binary;
 using LeaSearch.Common.Env;
-using NLog.Fluent;
 
 namespace LeaSearch.Infrastructure.Storage
 {
@@ -18,7 +17,7 @@ namespace LeaSearch.Infrastructure.Storage
         public BinaryStorage(string filename)
         {
             const string directoryName = "Cache";
-            var directoryPath = Path.Combine(Constant.DataDirectory, directoryName);
+            var directoryPath = Path.Combine(Constant.ProgramDirectory, directoryName);
             if (!Directory.Exists(directoryPath))
             {
                 Directory.CreateDirectory(directoryPath);
@@ -43,7 +42,7 @@ namespace LeaSearch.Infrastructure.Storage
                     }
                     else
                     {
-                        Log.Error($"|BinaryStorage.TryLoad|Zero length cache file <{FilePath}>");
+                        Logger.Logger.Error($"|BinaryStorage.TryLoad|Zero length cache file <{FilePath}>");
                         Save(defaultData);
                         return defaultData;
                     }
@@ -51,7 +50,7 @@ namespace LeaSearch.Infrastructure.Storage
             }
             else
             {
-                Log.Info("|BinaryStorage.TryLoad|Cache file not exist, load default data");
+                Logger.Logger.Info("|BinaryStorage.TryLoad|Cache file not exist, load default data");
                 Save(defaultData);
                 return defaultData;
             }

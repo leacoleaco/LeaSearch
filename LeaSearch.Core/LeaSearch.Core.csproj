@@ -61,6 +61,8 @@
     <Compile Include="HotKey\HotKeyManager.cs" />
     <Compile Include="I18N\InternationalizationManager.cs" />
     <Compile Include="I18N\Language.cs" />
+    <Compile Include="Image\ImageCache.cs" />
+    <Compile Include="Image\ImageManager.cs" />
     <Compile Include="Ioc\Ioc.cs" />
     <Compile Include="Notice\MessageUiHelper.cs" />
     <Compile Include="Plugin\Plugin.cs" />

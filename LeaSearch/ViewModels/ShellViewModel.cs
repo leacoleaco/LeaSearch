@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using LeaSearch.Common.Env;
@@ -10,14 +9,20 @@ using LeaSearch.Common.ViewModel;
 using LeaSearch.Common.Windows.Input;
 using LeaSearch.Core.Ioc;
 using LeaSearch.Core.QueryEngine;
+using LeaSearch.Infrastructure.Dispatcher;
 using LeaSearch.Plugin;
 
 namespace LeaSearch.ViewModels
 {
     public class ShellViewModel : BaseViewModel
     {
+        #region Private Fields
+
         private string _queryText;
         private Visibility _resultVisibility = Visibility.Collapsed;
+        private  ResultMode _resultMode = ResultMode.ListOnly;
+
+        #endregion
 
         public ShellViewModel(Settings settings) : base(settings)
         {
@@ -27,12 +32,10 @@ namespace LeaSearch.ViewModels
         //use action is just to convenient and decoupe 
         #region Hotkey Action Event
 
-
         public ICommand EscCommand { get; set; } = new ParameterCommand(_ =>
         {
             // Process.Start("http://www.baidu.com");
         });
-
         public ICommand SelectNextItemCommand { get; set; }
         public ICommand SelectPrevItemCommand { get; set; }
         public ICommand SelectNextPageCommand { get; set; }
@@ -42,15 +45,9 @@ namespace LeaSearch.ViewModels
         public ICommand LoadHistoryCommand { get; set; }
         public ICommand OpenResultCommand { get; set; }
 
-        public ICommand OpenResultCommand1 { get; set; }
-
-
-
         #endregion
 
-        #region Private Fields
 
-        #endregion
 
         #region Property
 
@@ -70,12 +67,12 @@ namespace LeaSearch.ViewModels
         /// <summary>
         /// search result's suggestion such as :history、bookmark、plugin etc..
         /// </summary>
-        public SuggestionResults SuggestionResults { get; private set; } = new SuggestionResults();
+        public SuggestionResultViewModel SuggestionResultViewModel { get; private set; } = new SuggestionResultViewModel();
 
         /// <summary>
         /// search result
         /// </summary>
-        public SearchResults SearchResults { get; private set; } = new SearchResults();
+        public SearchResultViewModel SearchResultViewModel { get; private set; } = new SearchResultViewModel();
 
         /// <summary>
         /// should the result show
@@ -90,12 +87,23 @@ namespace LeaSearch.ViewModels
             }
         }
 
+        /// <summary>
+        /// which way result shows
+        /// </summary>
+        public ResultMode ResultMode
+        {
+            get { return _resultMode; }
+            set
+            {
+                _resultMode = value;
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
 
 
         #region QueryMethod
-
-
 
 
         /// <summary>
@@ -107,10 +115,18 @@ namespace LeaSearch.ViewModels
             {
                 Ioc.Reslove<QueryEngine>().Query(QueryText, result =>
                 {
+
                     if (result.Any())
                     {
-                        SuggestionResults.SetPlugins(result.Keys.ToList());
+
                         ResultVisibility = Visibility.Visible;
+
+                        var plugins = result.Keys.ToList();
+                        DispatcherHelper.BeginInvoke(new Action(() =>
+                        {
+                            SuggestionResultViewModel.SetPlugins(plugins);
+                            SearchResultViewModel.SetResults(result[plugins[0]].Results);
+                        }));
                     }
                     else
                     {
@@ -123,8 +139,8 @@ namespace LeaSearch.ViewModels
             {
                 //if no result ,then close search
                 ResultVisibility = Visibility.Collapsed;
-                SuggestionResults.Clear();
-                SearchResults.Clear();
+                SuggestionResultViewModel.Clear();
+                SearchResultViewModel.Clear();
             }
         }
 
@@ -132,35 +148,8 @@ namespace LeaSearch.ViewModels
 
     }
 
-    public class SearchResults
+    public enum ResultMode
     {
-        public void Clear()
-        {
-
-        }
-    }
-
-    public class SuggestionResults
-    {
-        public ObservableCollection<Core.Plugin.Plugin> Plugins { get; set; } = new ObservableCollection<Core.Plugin.Plugin>();
-
-
-        public void SetPlugins(List<Core.Plugin.Plugin> plugins)
-        {
-            Plugins.Clear();
-            if (plugins.Any())
-            {
-                plugins.ForEach(p =>
-                {
-                    Plugins.Add(p);
-                });
-            }
-
-        }
-
-        public void Clear()
-        {
-
-        }
+        ListOnly, ListDetail, DetailOnly
     }
 }

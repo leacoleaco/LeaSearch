@@ -16,7 +16,7 @@ namespace LeaSearch.Infrastructure.Logger
 
         static Logger()
         {
-            var path = Path.Combine(Constant.DataDirectory, DirectoryName, Constant.Version);
+            var path = Path.Combine(Constant.ProgramDirectory, DirectoryName, Constant.Version);
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);

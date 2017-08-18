@@ -10,6 +10,7 @@ using Autofac;
 using LeaSearch.Common.Env;
 using LeaSearch.Core.HotKey;
 using LeaSearch.Core.I18N;
+using LeaSearch.Core.Image;
 using LeaSearch.Core.Ioc;
 using LeaSearch.Core.Plugin;
 using LeaSearch.Core.QueryEngine;
@@ -100,6 +101,9 @@ namespace LeaSearch
             //// IOC regist
             _builder = new ContainerBuilder();
             _builder.Register(c => settings).As<Settings>().SingleInstance();
+
+            _builder.RegisterType<ImageManager>().SingleInstance();
+
             _builder.RegisterType<ThemeManager>();
             _builder.RegisterType<InternationalizationManager>().SingleInstance();
             _builder.RegisterType<HotKeyManager>().SingleInstance();
@@ -118,6 +122,9 @@ namespace LeaSearch
             //doing things when exit
             RegisterExitEvents();
 
+            //// initalize image manager to start better manage img or cache img
+            Ioc.Reslove<ImageManager>().Initialize();
+            
             //// load plugin before change language, because plugin language also needs be changed
             Ioc.Reslove<InternationalizationManager>().ChangeLanguage(settings.Language);
 

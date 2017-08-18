@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace LeaSearch.Views
 {
     /// <summary>
-    /// SearchResultListView.xaml 的交互逻辑
+    /// SearchPluginListView.xaml 的交互逻辑
     /// </summary>
-    public partial class SearchResultListView : UserControl
+    public partial class SuggestionResultView : UserControl
     {
-        public SearchResultListView()
+        public SuggestionResultView()
         {
             InitializeComponent();
         }
