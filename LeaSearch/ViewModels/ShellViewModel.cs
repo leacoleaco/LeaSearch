@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using LeaSearch.Common.Env;
 using LeaSearch.Common.ViewModel;
@@ -16,21 +17,22 @@ namespace LeaSearch.ViewModels
     public class ShellViewModel : BaseViewModel
     {
         private string _queryText;
+        private Visibility _resultVisibility = Visibility.Collapsed;
 
         public ShellViewModel(Settings settings) : base(settings)
         {
 
-            EscCommand = new ParameterCommand(_ =>
-            {
-                Process.Start("http://www.baidu.com");
-            });
         }
 
         //use action is just to convenient and decoupe 
         #region Hotkey Action Event
 
 
-        public ICommand EscCommand { get; set; }
+        public ICommand EscCommand { get; set; } = new ParameterCommand(_ =>
+        {
+            // Process.Start("http://www.baidu.com");
+        });
+
         public ICommand SelectNextItemCommand { get; set; }
         public ICommand SelectPrevItemCommand { get; set; }
         public ICommand SelectNextPageCommand { get; set; }
@@ -75,6 +77,19 @@ namespace LeaSearch.ViewModels
         /// </summary>
         public SearchResults SearchResults { get; private set; } = new SearchResults();
 
+        /// <summary>
+        /// should the result show
+        /// </summary>
+        public Visibility ResultVisibility
+        {
+            get { return _resultVisibility; }
+            set
+            {
+                _resultVisibility = value;
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
 
 
@@ -90,14 +105,25 @@ namespace LeaSearch.ViewModels
         {
             if (!string.IsNullOrEmpty(QueryText))
             {
-                Ioc.Reslove<QueryEngine>().Query(QueryText, new Action<Dictionary<Core.Plugin.Plugin, QueryListResult>>(
-                    result =>
+                Ioc.Reslove<QueryEngine>().Query(QueryText, result =>
+                {
+                    if (result.Any())
                     {
                         SuggestionResults.SetPlugins(result.Keys.ToList());
-                    }));
+                        ResultVisibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        ResultVisibility = Visibility.Collapsed;
+                    }
+
+                });
             }
             else
             {
+                //if no result ,then close search
+                ResultVisibility = Visibility.Collapsed;
+                SuggestionResults.Clear();
                 SearchResults.Clear();
             }
         }
@@ -129,6 +155,11 @@ namespace LeaSearch.ViewModels
                     Plugins.Add(p);
                 });
             }
+
+        }
+
+        public void Clear()
+        {
 
         }
     }

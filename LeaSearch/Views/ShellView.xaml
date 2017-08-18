@@ -54,11 +54,7 @@
              <KeyBinding Key="D8" Modifiers="Alt" Command="{Binding OpenResultCommand}" CommandParameter="7"></KeyBinding>
              <KeyBinding Key="D9" Modifiers="Alt" Command="{Binding OpenResultCommand}" CommandParameter="8"></KeyBinding>-->
     </Window.InputBindings>
-    <Border
-        Padding="8,2"
-        BorderBrush="#3B3B3B"
-        BorderThickness="1"
-        Style="{DynamicResource WindowBorderStyle}">
+    <Border Style="{DynamicResource WindowBorderStyle}">
         <StackPanel Orientation="Vertical">
             <controls:TextBoxEx
                 x:Name="QueryTextBox"
@@ -92,15 +88,24 @@
                     Y1="0"
                     Y2="0" />
             </Border>
-            <Grid>
+            <Grid Visibility="{Binding ResultVisibility, Mode=OneWay}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <views:SuggestionResultsListView x:Name="SuggestionResultsListView" DataContext="{Binding SuggestionResults}" />
-                <views:SearchResultListView x:Name="SearchResultListView" DataContext="{Binding SearchResults}" />
-                <ContentControl x:Name="MoreInfoContent" Content="{Binding MoreInfoContent}" />
+                <views:SuggestionResultsListView
+                    x:Name="SuggestionResultsListView"
+                    Height="10"
+                    DataContext="{Binding SuggestionResults}" />
+                <views:SearchResultListView
+                    x:Name="SearchResultListView"
+                    Height="20"
+                    DataContext="{Binding SearchResults}" />
+                <ContentControl
+                    x:Name="MoreInfoContent"
+                    Height="100"
+                    Content="{Binding MoreInfoContent}" />
             </Grid>
         </StackPanel>
     </Border>
