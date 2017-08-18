@@ -4,8 +4,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:LeaSearch.UI.Controls;assembly=LeaSearch.UI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
-    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:LeaSearch.ViewModels"
     xmlns:views="clr-namespace:LeaSearch.Views"
@@ -23,38 +21,69 @@
     WindowStartupLocation="Manual"
     WindowStyle="None"
     mc:Ignorable="d">
-    <Window.Resources>
-        <RoutedUICommand x:Key="StartHelpCommand" />
-    </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="{StaticResource StartHelpCommand}" Executed="StartHelpCommand_Executed" />
+        <CommandBinding Command="{StaticResource EscCommand}" Executed="EscCommand_Executed" />
+        <CommandBinding Command="{StaticResource SelectNextItemCommand}" Executed="SelectNextItemCommand_Executed" />
+        <CommandBinding Command="{StaticResource SelectPrevItemCommand}" Executed="SelectPrevItemCommand_Executed" />
+        <CommandBinding Command="{StaticResource SelectNextPageCommand}" Executed="SelectNextPageCommand_Executed" />
+        <CommandBinding Command="{StaticResource SelectPrevPageCommand}" Executed="SelectPrevPageCommand_Executed" />
+        <CommandBinding Command="{StaticResource LoadContextMenuCommand}" Executed="LoadContextMenuCommand_Executed" />
+        <CommandBinding Command="{StaticResource LoadHistoryCommand}" Executed="LoadHistoryCommand_Executed" />
+        <CommandBinding Command="{StaticResource OpenResultCommand}" Executed="OpenResultCommand_Executed" />
     </Window.CommandBindings>
     <Window.InputBindings>
-        <KeyBinding Key="Escape" Command="{Binding EscCommand}" />
-        <!--<KeyBinding Key="F1" Command="{StaticResource StartHelpCommand}"></KeyBinding>
-             <KeyBinding Key="F2" Command="{StaticResource StartHelpCommand1}"></KeyBinding>-->
-        <!--<KeyBinding Key="Tab" Command="{Binding SelectNextItemCommand}"></KeyBinding>
-             <KeyBinding Key="Tab" Modifiers="Shift" Command="{Binding SelectPrevItemCommand}"></KeyBinding>
-             <KeyBinding Key="N" Modifiers="Ctrl" Command="{Binding SelectNextItemCommand}"></KeyBinding>
-             <KeyBinding Key="J" Modifiers="Ctrl" Command="{Binding SelectNextItemCommand}"></KeyBinding>
-             <KeyBinding Key="D" Modifiers="Ctrl" Command="{Binding SelectNextPageCommand}"></KeyBinding>
-             <KeyBinding Key="P" Modifiers="Ctrl" Command="{Binding SelectPrevItemCommand}"></KeyBinding>
-             <KeyBinding Key="K" Modifiers="Ctrl" Command="{Binding SelectPrevItemCommand}"></KeyBinding>
-             <KeyBinding Key="U" Modifiers="Ctrl" Command="{Binding SelectPrevPageCommand}"></KeyBinding>
-             <KeyBinding Key="O" Modifiers="Ctrl" Command="{Binding LoadContextMenuCommand}"></KeyBinding>
-             <KeyBinding Key="H" Modifiers="Ctrl" Command="{Binding LoadHistoryCommand}"></KeyBinding>
-             <KeyBinding Key="Enter" Modifiers="Shift" Command="{Binding LoadContextMenuCommand}"></KeyBinding>
-             <KeyBinding Key="Enter" Command="{Binding OpenResultCommand}"></KeyBinding>
-             <KeyBinding Gesture="Ctrl+G" Command="{Binding OpenResultCommand}"></KeyBinding>
-             <KeyBinding Key="D1" Modifiers="Alt" Command="{Binding OpenResultCommand}" CommandParameter="0"></KeyBinding>
-             <KeyBinding Key="D2" Modifiers="Alt" Command="{Binding OpenResultCommand}" CommandParameter="1"></KeyBinding>
-             <KeyBinding Key="D3" Modifiers="Alt" Command="{Binding OpenResultCommand}" CommandParameter="2"></KeyBinding>
-             <KeyBinding Key="D4" Modifiers="Alt" Command="{Binding OpenResultCommand}" CommandParameter="3"></KeyBinding>
-             <KeyBinding Key="D5" Modifiers="Alt" Command="{Binding OpenResultCommand}" CommandParameter="4"></KeyBinding>
-             <KeyBinding Key="D6" Modifiers="Alt" Command="{Binding OpenResultCommand}" CommandParameter="5"></KeyBinding>
-             <KeyBinding Key="D7" Modifiers="Alt" Command="{Binding OpenResultCommand}" CommandParameter="6"></KeyBinding>
-             <KeyBinding Key="D8" Modifiers="Alt" Command="{Binding OpenResultCommand}" CommandParameter="7"></KeyBinding>
-             <KeyBinding Key="D9" Modifiers="Alt" Command="{Binding OpenResultCommand}" CommandParameter="8"></KeyBinding>-->
+        <KeyBinding Key="Escape" Command="{StaticResource EscCommand}" />
+        <KeyBinding Key="F1" Command="{StaticResource StartHelpCommand}" />
+        <KeyBinding Key="Tab" Command="{StaticResource SelectNextItemCommand}" />
+        <KeyBinding Command="{StaticResource SelectPrevItemCommand}" Gesture="Shift+Tab" />
+        <KeyBinding Command="{StaticResource SelectNextItemCommand}" Gesture="Ctrl+N" />
+        <KeyBinding Command="{StaticResource SelectNextItemCommand}" Gesture="Ctrl+J" />
+        <KeyBinding Command="{StaticResource SelectNextPageCommand}" Gesture="Ctrl+D" />
+        <KeyBinding Command="{StaticResource SelectPrevItemCommand}" Gesture="Ctrl+P" />
+        <KeyBinding Command="{StaticResource SelectPrevItemCommand}" Gesture="Ctrl+K" />
+        <KeyBinding Command="{StaticResource SelectPrevPageCommand}" Gesture="Ctrl+U" />
+        <KeyBinding Command="{StaticResource LoadContextMenuCommand}" Gesture="Ctrl+0" />
+        <KeyBinding Command="{StaticResource LoadHistoryCommand}" Gesture="Ctrl+H" />
+        <KeyBinding Command="{StaticResource LoadContextMenuCommand}" Gesture="Shift+Enter" />
+        <KeyBinding Key="Enter" Command="{StaticResource OpenResultCommand}" />
+        <KeyBinding Command="{StaticResource OpenResultCommand}" Gesture="Ctrl+G" />
+        <KeyBinding
+            Command="{StaticResource OpenResultCommand}"
+            CommandParameter="0"
+            Gesture="Alt+D1" />
+        <KeyBinding
+            Command="{StaticResource OpenResultCommand}"
+            CommandParameter="1"
+            Gesture="Alt+D2" />
+        <KeyBinding
+            Command="{StaticResource OpenResultCommand}"
+            CommandParameter="2"
+            Gesture="Alt+D3" />
+        <KeyBinding
+            Command="{StaticResource OpenResultCommand}"
+            CommandParameter="3"
+            Gesture="Alt+D4" />
+        <KeyBinding
+            Command="{StaticResource OpenResultCommand}"
+            CommandParameter="4"
+            Gesture="Alt+D5" />
+        <KeyBinding
+            Command="{StaticResource OpenResultCommand}"
+            CommandParameter="5"
+            Gesture="Alt+D6" />
+        <KeyBinding
+            Command="{StaticResource OpenResultCommand}"
+            CommandParameter="6"
+            Gesture="Alt+D7" />
+        <KeyBinding
+            Command="{StaticResource OpenResultCommand}"
+            CommandParameter="7"
+            Gesture="Alt+D8" />
+        <KeyBinding
+            Command="{StaticResource OpenResultCommand}"
+            CommandParameter="8"
+            Gesture="Alt+D9" />
     </Window.InputBindings>
     <Border Style="{DynamicResource WindowBorderStyle}">
         <StackPanel Orientation="Vertical">
@@ -90,54 +119,10 @@
                     Y2="0" />
             </Border>
             <Grid MaxHeight="600" Visibility="{Binding ResultVisibility, Mode=OneWay}">
-                <i:Interaction.Triggers>
-                    <ei:DataTrigger Binding="{Binding ResultMode}" Value="ListOnly">
-                        <ei:ChangePropertyAction
-                            PropertyName="Width"
-                            TargetName="PluginCol"
-                            Value="Auto" />
-                        <ei:ChangePropertyAction
-                            PropertyName="Width"
-                            TargetName="ResultCol"
-                            Value="*" />
-                        <ei:ChangePropertyAction
-                            PropertyName="Width"
-                            TargetName="DetailCol"
-                            Value="0" />
-                    </ei:DataTrigger>
-                    <ei:DataTrigger Binding="{Binding ResultMode}" Value="ListDetail">
-                        <ei:ChangePropertyAction
-                            PropertyName="Width"
-                            TargetName="PluginCol"
-                            Value="0" />
-                        <ei:ChangePropertyAction
-                            PropertyName="Width"
-                            TargetName="ResultCol"
-                            Value="4*" />
-                        <ei:ChangePropertyAction
-                            PropertyName="Width"
-                            TargetName="DetailCol"
-                            Value="6*" />
-                    </ei:DataTrigger>
-                    <ei:DataTrigger Binding="{Binding ResultMode}" Value="DetailOnly">
-                        <ei:ChangePropertyAction
-                            PropertyName="Width"
-                            TargetName="PluginCol"
-                            Value="0" />
-                        <ei:ChangePropertyAction
-                            PropertyName="Width"
-                            TargetName="ResultCol"
-                            Value="0" />
-                        <ei:ChangePropertyAction
-                            PropertyName="Width"
-                            TargetName="DetailCol"
-                            Value="*" />
-                    </ei:DataTrigger>
-                </i:Interaction.Triggers>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition x:Name="PluginCol" Width="Auto" />
-                    <ColumnDefinition x:Name="ResultCol" Width="Auto" />
-                    <ColumnDefinition x:Name="DetailCol" Width="Auto" />
+                    <ColumnDefinition x:Name="ResultCol" Width="*" />
+                    <ColumnDefinition x:Name="DetailCol" Width="0" />
                 </Grid.ColumnDefinitions>
                 <views:SuggestionResultView
                     x:Name="SuggestionResultsListView"
@@ -150,7 +135,7 @@
                 <ContentControl
                     x:Name="MoreInfoContent"
                     Grid.Column="2"
-                    Content="{Binding MoreInfoContent}" />
+                    DataContext="{Binding DetailResultViewModel}" />
             </Grid>
         </StackPanel>
     </Border>

@@ -111,6 +111,9 @@ namespace LeaSearch
             _builder.RegisterType<QueryEngine>().SingleInstance();
 
             _builder.RegisterType<ShellViewModel>().SingleInstance();
+            _builder.RegisterType<SuggestionResultViewModel>().SingleInstance();
+            _builder.RegisterType<SearchResultViewModel>().SingleInstance();
+            _builder.RegisterType<DetailResultViewModel>().SingleInstance();
             _builder.RegisterType<ShellView>().SingleInstance();
 
             _container = _builder.Build();
@@ -124,7 +127,7 @@ namespace LeaSearch
 
             //// initalize image manager to start better manage img or cache img
             Ioc.Reslove<ImageManager>().Initialize();
-            
+
             //// load plugin before change language, because plugin language also needs be changed
             Ioc.Reslove<InternationalizationManager>().ChangeLanguage(settings.Language);
 

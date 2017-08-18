@@ -3,7 +3,6 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:LeaSearch.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:LeaSearch.ViewModels"
     d:DataContext="{d:DesignInstance viewModels:SearchResultViewModel}"
@@ -11,15 +10,19 @@
     d:DesignWidth="60"
     mc:Ignorable="d">
     <ListBox
+        x:Name="ListBox"
         HorizontalContentAlignment="Stretch"
         Focusable="False"
         IsSynchronizedWithCurrentItem="True"
         ItemContainerStyle="{StaticResource ListBoxItemStyle}"
         ItemsSource="{Binding Results}"
         KeyboardNavigation.DirectionalNavigation="Cycle"
+        SelectedIndex="{Binding CurrentIndex, Mode=TwoWay}"
+        SelectedItem="{Binding CurrentItem, Mode=OneWayToSource}"
         SelectionMode="Single"
         Style="{DynamicResource BaseListboxStyle}"
         VirtualizingStackPanel.IsVirtualizing="True"
+        SelectionChanged="ListBox_OnSelectionChanged"
         VirtualizingStackPanel.VirtualizationMode="Standard">
         <!--  IsSynchronizedWithCurrentItem: http://stackoverflow.com/a/7833798/2833083  -->
         <ListBox.ItemTemplate>
@@ -84,3 +87,4 @@
 
     </ListBox>
 </UserControl>
+

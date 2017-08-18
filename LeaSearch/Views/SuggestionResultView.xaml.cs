@@ -23,6 +23,9 @@ namespace LeaSearch.Views
         public SuggestionResultView()
         {
             InitializeComponent();
+
         }
+
+
     }
 }

@@ -1,16 +1,13 @@
-﻿<Application x:Class="LeaSearch.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:LeaSearch"
-             >
+﻿<Application
+    x:Class="LeaSearch.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Application.Resources>
-        <ResourceDictionary >
+        <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!--<ResourceDictionary>
-                    <local:AppBootstrapper x:Key="AppBootstrappr" />
-                </ResourceDictionary>-->
-                <ResourceDictionary x:Name="DefalutTheme" Source="pack://application:,,,/Themes/Dark.xaml" />
-                <ResourceDictionary x:Name="DefaultLanguage" Source="pack://application:,,,/Languages/en.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Themes/Dark.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Languages/en.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Commands/ShellViewCommand.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

@@ -20,30 +20,20 @@ namespace LeaSearch.ViewModels
 
         private string _queryText;
         private Visibility _resultVisibility = Visibility.Collapsed;
-        private  ResultMode _resultMode = ResultMode.ListOnly;
+        private ResultMode _resultMode = ResultMode.ListOnly;
 
         #endregion
 
-        public ShellViewModel(Settings settings) : base(settings)
+        public ShellViewModel(Settings settings, SuggestionResultViewModel suggestionResultViewModel, SearchResultViewModel searchResultViewModel, DetailResultViewModel detailResultViewModel) : base(settings)
         {
-
+            SuggestionResultViewModel = suggestionResultViewModel;
+            SearchResultViewModel = searchResultViewModel;
+            DetailResultViewModel = detailResultViewModel;
         }
 
         //use action is just to convenient and decoupe 
         #region Hotkey Action Event
 
-        public ICommand EscCommand { get; set; } = new ParameterCommand(_ =>
-        {
-            // Process.Start("http://www.baidu.com");
-        });
-        public ICommand SelectNextItemCommand { get; set; }
-        public ICommand SelectPrevItemCommand { get; set; }
-        public ICommand SelectNextPageCommand { get; set; }
-        public ICommand SelectPrevPageCommand { get; set; }
-        public ICommand StartHelpCommand { get; set; }
-        public ICommand LoadContextMenuCommand { get; set; }
-        public ICommand LoadHistoryCommand { get; set; }
-        public ICommand OpenResultCommand { get; set; }
 
         #endregion
 
@@ -67,12 +57,17 @@ namespace LeaSearch.ViewModels
         /// <summary>
         /// search result's suggestion such as :history、bookmark、plugin etc..
         /// </summary>
-        public SuggestionResultViewModel SuggestionResultViewModel { get; private set; } = new SuggestionResultViewModel();
+        public SuggestionResultViewModel SuggestionResultViewModel { get; }
 
         /// <summary>
         /// search result
         /// </summary>
-        public SearchResultViewModel SearchResultViewModel { get; private set; } = new SearchResultViewModel();
+        public SearchResultViewModel SearchResultViewModel { get; }
+
+        /// <summary>
+        /// detail result
+        /// </summary>
+        public DetailResultViewModel DetailResultViewModel { get; }
 
         /// <summary>
         /// should the result show
@@ -96,8 +91,18 @@ namespace LeaSearch.ViewModels
             set
             {
                 _resultMode = value;
-                OnPropertyChanged();
+                OnResultModeChanged(value);
             }
+        }
+
+        /// <summary>
+        /// notify the result mode has changed
+        /// </summary>
+        public event Action<ResultMode> ResultModeChanged;
+
+        protected virtual void OnResultModeChanged(ResultMode resultMod)
+        {
+            ResultModeChanged?.Invoke(resultMod);
         }
 
         #endregion
@@ -145,6 +150,7 @@ namespace LeaSearch.ViewModels
         }
 
         #endregion
+
 
     }
 

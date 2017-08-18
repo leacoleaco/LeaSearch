@@ -5,12 +5,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:LeaSearch.ViewModels"
-    Width="60"
     d:DataContext="{d:DesignInstance viewModels:SuggestionResultViewModel}"
     d:DesignHeight="300"
-    d:DesignWidth="60"
+    d:DesignWidth="120"
     mc:Ignorable="d">
     <ListBox
+        x:Name="List"
         HorizontalContentAlignment="Stretch"
         Focusable="False"
         IsSynchronizedWithCurrentItem="True"
