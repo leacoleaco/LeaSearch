@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace LeaSearch.Plugin.HelloWorld
 {
@@ -35,6 +36,7 @@ namespace LeaSearch.Plugin.HelloWorld
                     new ResultItem() { IconPath = "app.png", Title = "Query Sample For C#  row19", SubTitle = $"Query:{queryParam.Keyword}" },
                 }
             };
+            Thread.Sleep(3000);
             return result;
         }
 

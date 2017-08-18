@@ -95,20 +95,30 @@ namespace LeaSearch.ViewModels
             }
         }
 
+
+        #endregion
+
+        #region Event
+
+
         /// <summary>
         /// notify the result mode has changed
         /// </summary>
         public event Action<ResultMode> ResultModeChanged;
-
         protected virtual void OnResultModeChanged(ResultMode resultMod)
         {
             ResultModeChanged?.Invoke(resultMod);
         }
 
+        public event Action<QueryState> QueryStateChanged;
+        protected virtual void OnQueryStateChanged(QueryState queryState)
+        {
+            QueryStateChanged?.Invoke(queryState);
+        }
         #endregion
 
-
         #region QueryMethod
+
 
 
         /// <summary>
@@ -116,6 +126,8 @@ namespace LeaSearch.ViewModels
         /// </summary>
         private void Query()
         {
+            OnQueryStateChanged(QueryState.StartQuery);
+
             if (!string.IsNullOrEmpty(QueryText))
             {
                 Ioc.Reslove<QueryEngine>().Query(QueryText, result =>
@@ -123,8 +135,7 @@ namespace LeaSearch.ViewModels
 
                     if (result.Any())
                     {
-
-                        ResultVisibility = Visibility.Visible;
+                        OnQueryStateChanged(QueryState.QueryGotResult);
 
                         var plugins = result.Keys.ToList();
                         DispatcherHelper.BeginInvoke(new Action(() =>
@@ -135,7 +146,7 @@ namespace LeaSearch.ViewModels
                     }
                     else
                     {
-                        ResultVisibility = Visibility.Collapsed;
+                        OnQueryStateChanged(QueryState.QueryGotNoResult);
                     }
 
                 });
@@ -143,7 +154,7 @@ namespace LeaSearch.ViewModels
             else
             {
                 //if no result ,then close search
-                ResultVisibility = Visibility.Collapsed;
+                OnQueryStateChanged(QueryState.QueryGotNoResult);
                 SuggestionResultViewModel.Clear();
                 SearchResultViewModel.Clear();
             }
@@ -151,6 +162,12 @@ namespace LeaSearch.ViewModels
 
         #endregion
 
+      
+    }
+
+    public enum QueryState
+    {
+        StartQuery, QueryGotResult, QueryGotNoResult
 
     }
 

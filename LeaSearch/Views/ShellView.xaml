@@ -21,6 +21,7 @@
     WindowStartupLocation="Manual"
     WindowStyle="None"
     mc:Ignorable="d">
+    <Window.Resources />
     <Window.CommandBindings>
         <CommandBinding Command="{StaticResource StartHelpCommand}" Executed="StartHelpCommand_Executed" />
         <CommandBinding Command="{StaticResource EscCommand}" Executed="EscCommand_Executed" />
@@ -114,11 +115,12 @@
                     HorizontalAlignment="Right"
                     StrokeThickness="1"
                     Style="{DynamicResource PendingLineStyle}"
+                    Visibility="Hidden"
                     X2="100"
                     Y1="0"
                     Y2="0" />
             </Border>
-            <Grid MaxHeight="600" Visibility="{Binding ResultVisibility, Mode=OneWay}">
+            <Grid x:Name="ResultGrid" MaxHeight="600">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition x:Name="PluginCol" Width="Auto" />
                     <ColumnDefinition x:Name="ResultCol" Width="*" />

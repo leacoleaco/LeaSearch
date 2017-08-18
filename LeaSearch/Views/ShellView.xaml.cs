@@ -6,6 +6,7 @@ using LeaSearch.Common.Env;
 using LeaSearch.Common.View;
 using LeaSearch.Core.HotKey;
 using LeaSearch.Core.Ioc;
+using LeaSearch.Infrastructure.Dispatcher;
 using LeaSearch.Infrastructure.Helper;
 using LeaSearch.ViewModels;
 
@@ -31,7 +32,9 @@ namespace LeaSearch.Views
 
             Ioc.Reslove<HotKeyManager>().WakeUpCommand += Instance_WakeUpCommand;
 
-            Ioc.Reslove<ShellViewModel>().ResultModeChanged += ShellView_ResultModeChanged;
+            var shellViewModel = Ioc.Reslove<ShellViewModel>();
+            shellViewModel.ResultModeChanged += ShellView_ResultModeChanged;
+            shellViewModel.QueryStateChanged += ShellViewModel_QueryStateChanged;
 
             if (_settings.HideOnStartup)
             {
@@ -47,6 +50,8 @@ namespace LeaSearch.Views
         }
 
 
+
+
         /// <summary>
         /// change the result mode
         /// </summary>
@@ -56,7 +61,7 @@ namespace LeaSearch.Views
             switch (resultMode)
             {
                 case ResultMode.ListOnly:
-                    PluginCol.Width =GridLength.Auto; 
+                    PluginCol.Width = GridLength.Auto;
                     ResultCol.Width = new GridLength(1, GridUnitType.Star);
                     DetailCol.Width = new GridLength(0, GridUnitType.Pixel); ;
                     break;
@@ -76,6 +81,36 @@ namespace LeaSearch.Views
         }
 
 
+        private void ShellViewModel_QueryStateChanged(QueryState queryState)
+        {
+            switch (queryState)
+            {
+                case QueryState.StartQuery:
+                    DispatcherHelper.BeginInvoke(new Action(() =>
+                    {
+                        ProgressBar.Visibility = Visibility.Visible;
+                    }));
+                    break;
+                case QueryState.QueryGotResult:
+                    DispatcherHelper.BeginInvoke(new Action(() =>
+                    {
+                        ProgressBar.Visibility = Visibility.Hidden;
+                        ResultGrid.Visibility = Visibility.Visible;
+                    })); ;
+                    break;
+                case QueryState.QueryGotNoResult:
+                    DispatcherHelper.BeginInvoke(new Action(() =>
+                    {
+                        ProgressBar.Visibility = Visibility.Hidden;
+                        ResultGrid.Visibility = Visibility.Collapsed;
+                    }));
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(queryState), queryState, null);
+            }
+        }
+
+
         private void Instance_WakeUpCommand()
         {
             if (this.IsVisible)
@@ -89,7 +124,6 @@ namespace LeaSearch.Views
                 QueryTextBox.Focus();
             }
         }
-
 
 
         /// <summary>
