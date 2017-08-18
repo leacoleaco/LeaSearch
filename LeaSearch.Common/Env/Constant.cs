@@ -27,7 +27,8 @@ namespace LeaSearch.Common.Env
         /// <summary>
         /// the plugin's dir
         /// </summary>
-        public static readonly string PluginsDirectory = Path.Combine(DataDirectory, Plugins);
+        public static readonly string PluginsDirectory = Path.Combine(ProgramDirectory, Plugins);
+
         public static readonly string PreinstalledDirectory = Path.Combine(ProgramDirectory, Plugins);
 
 

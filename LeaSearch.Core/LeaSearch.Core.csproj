@@ -33,6 +33,9 @@
     <Reference Include="Autofac, Version=4.6.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\packages\Autofac.4.6.1\lib\net45\Autofac.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="NHotkey, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NHotkey.1.2.1\lib\net20\NHotkey.dll</HintPath>
     </Reference>
@@ -60,7 +63,13 @@
     <Compile Include="I18N\Language.cs" />
     <Compile Include="Ioc\Ioc.cs" />
     <Compile Include="Notice\MessageUiHelper.cs" />
+    <Compile Include="Plugin\Plugin.cs" />
+    <Compile Include="Plugin\PluginManager.cs" />
+    <Compile Include="Plugin\PluginMetadata.cs" />
+    <Compile Include="Plugin\PluginSettings.cs" />
+    <Compile Include="Plugin\PluginsLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QueryEngine\QueryEngine.cs" />
     <Compile Include="Theme\FontHelper.cs" />
     <Compile Include="Theme\ThemeManager.cs" />
   </ItemGroup>
@@ -76,6 +85,10 @@
     <ProjectReference Include="..\LeaSearch.Infrastructure\LeaSearch.Infrastructure.csproj">
       <Project>{F0FBAE7B-54AF-40D7-81CB-6C382A0B0060}</Project>
       <Name>LeaSearch.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LeaSearch.Plugin\LeaSearch.Plugin.csproj">
+      <Project>{DD4DF17A-D0A4-45DD-A108-8226A4DB78CD}</Project>
+      <Name>LeaSearch.Plugin</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

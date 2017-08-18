@@ -1,17 +1,22 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Windows;
+using System.Linq;
 using System.Windows.Input;
 using LeaSearch.Common.Env;
-using LeaSearch.Common.View;
 using LeaSearch.Common.ViewModel;
 using LeaSearch.Common.Windows.Input;
-using LeaSearch.Core.HotKey;
+using LeaSearch.Core.Ioc;
+using LeaSearch.Core.QueryEngine;
+using LeaSearch.Plugin;
 
 namespace LeaSearch.ViewModels
 {
     public class ShellViewModel : BaseViewModel
     {
+        private string _queryText;
+
         public ShellViewModel(Settings settings) : base(settings)
         {
 
@@ -50,11 +55,81 @@ namespace LeaSearch.ViewModels
         /// <summary>
         /// text to search 
         /// </summary>
-        public string QueryText { get; set; }
+        public string QueryText
+        {
+            get { return _queryText; }
+            set
+            {
+                _queryText = value;
+                Query();
+            }
+        }
+
+        /// <summary>
+        /// search result's suggestion such as :history、bookmark、plugin etc..
+        /// </summary>
+        public SuggestionResults SuggestionResults { get; private set; } = new SuggestionResults();
+
+        /// <summary>
+        /// search result
+        /// </summary>
+        public SearchResults SearchResults { get; private set; } = new SearchResults();
+
+        #endregion
+
+
+        #region QueryMethod
+
+
+
+
+        /// <summary>
+        /// do the query
+        /// </summary>
+        private void Query()
+        {
+            if (!string.IsNullOrEmpty(QueryText))
+            {
+                Ioc.Reslove<QueryEngine>().Query(QueryText, new Action<Dictionary<Core.Plugin.Plugin, QueryListResult>>(
+                    result =>
+                    {
+                        SuggestionResults.SetPlugins(result.Keys.ToList());
+                    }));
+            }
+            else
+            {
+                SearchResults.Clear();
+            }
+        }
 
         #endregion
 
     }
 
+    public class SearchResults
+    {
+        public void Clear()
+        {
 
+        }
+    }
+
+    public class SuggestionResults
+    {
+        public ObservableCollection<Core.Plugin.Plugin> Plugins { get; set; } = new ObservableCollection<Core.Plugin.Plugin>();
+
+
+        public void SetPlugins(List<Core.Plugin.Plugin> plugins)
+        {
+            Plugins.Clear();
+            if (plugins.Any())
+            {
+                plugins.ForEach(p =>
+                {
+                    Plugins.Add(p);
+                });
+            }
+
+        }
+    }
 }

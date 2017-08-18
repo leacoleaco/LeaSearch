@@ -13,6 +13,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeaSearch.Core", "LeaSearch
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeaSearch.UI", "LeaSearch.UI\LeaSearch.UI.csproj", "{A00F9841-953F-4454-810C-6184E654EC2C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{F07A2119-9E0A-4655-A86D-BDCFBB158018}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeaSearch.Plugin.HelloWorld", "Plugins\LeaSearch.Plugin.HelloWorld\LeaSearch.Plugin.HelloWorld.csproj", "{F7231CC8-5877-4531-8056-A154376987E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeaSearch.Plugin", "LeaSearch.Plugin\LeaSearch.Plugin.csproj", "{DD4DF17A-D0A4-45DD-A108-8226A4DB78CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,8 +45,19 @@ Global
 		{A00F9841-953F-4454-810C-6184E654EC2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A00F9841-953F-4454-810C-6184E654EC2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A00F9841-953F-4454-810C-6184E654EC2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7231CC8-5877-4531-8056-A154376987E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7231CC8-5877-4531-8056-A154376987E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7231CC8-5877-4531-8056-A154376987E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7231CC8-5877-4531-8056-A154376987E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD4DF17A-D0A4-45DD-A108-8226A4DB78CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD4DF17A-D0A4-45DD-A108-8226A4DB78CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD4DF17A-D0A4-45DD-A108-8226A4DB78CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD4DF17A-D0A4-45DD-A108-8226A4DB78CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F7231CC8-5877-4531-8056-A154376987E4} = {F07A2119-9E0A-4655-A86D-BDCFBB158018}
 	EndGlobalSection
 EndGlobal

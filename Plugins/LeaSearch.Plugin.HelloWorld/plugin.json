@@ -1,0 +1,12 @@
+﻿{
+  "PluginId": "LeaSearch.Plugin.HelloWorld",
+  "Name": "Hello World CSharp",
+  "DefalutPrefixKeyword": "leasearch",
+  "Author": "Rico Lee",
+  "Version": "1.0.0",
+  "Language": "csharp",
+  "Description": "Hello World CSharp Example",
+  "Website": "https://github.com/leacoleaco/LeaSearch",
+  "EntryFileName": "LeaSearch.Plugin.HelloWorld.dll",
+  "IcoPath": "app.png"
+}

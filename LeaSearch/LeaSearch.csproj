@@ -152,6 +152,14 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Page Include="Views\SuggestionResultsListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SearchResultListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ShellView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -159,6 +167,12 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Views\SuggestionResultsListView.xaml.cs">
+      <DependentUpon>SuggestionResultsListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SearchResultListView.xaml.cs">
+      <DependentUpon>SearchResultListView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ShellView.xaml.cs">
       <DependentUpon>ShellView.xaml</DependentUpon>
@@ -279,6 +293,10 @@
     <ProjectReference Include="..\LeaSearch.Infrastructure\LeaSearch.Infrastructure.csproj">
       <Project>{f0fbae7b-54af-40d7-81cb-6c382a0b0060}</Project>
       <Name>LeaSearch.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LeaSearch.Plugin\LeaSearch.Plugin.csproj">
+      <Project>{DD4DF17A-D0A4-45DD-A108-8226A4DB78CD}</Project>
+      <Name>LeaSearch.Plugin</Name>
     </ProjectReference>
     <ProjectReference Include="..\LeaSearch.UI\LeaSearch.UI.csproj">
       <Project>{A00F9841-953F-4454-810C-6184E654EC2C}</Project>

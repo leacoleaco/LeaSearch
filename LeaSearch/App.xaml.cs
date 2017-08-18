@@ -11,6 +11,8 @@ using LeaSearch.Common.Env;
 using LeaSearch.Core.HotKey;
 using LeaSearch.Core.I18N;
 using LeaSearch.Core.Ioc;
+using LeaSearch.Core.Plugin;
+using LeaSearch.Core.QueryEngine;
 using LeaSearch.Core.Theme;
 using LeaSearch.Infrastructure.ErrorReport;
 using LeaSearch.Infrastructure.Logger;
@@ -101,6 +103,8 @@ namespace LeaSearch
             _builder.RegisterType<ThemeManager>();
             _builder.RegisterType<InternationalizationManager>().SingleInstance();
             _builder.RegisterType<HotKeyManager>().SingleInstance();
+            _builder.RegisterType<PluginManager>().SingleInstance();
+            _builder.RegisterType<QueryEngine>().SingleInstance();
 
             _builder.RegisterType<ShellViewModel>().SingleInstance();
             _builder.RegisterType<ShellView>().SingleInstance();
@@ -122,6 +126,13 @@ namespace LeaSearch
 
             //// re-setup the global hotkey
             Ioc.Reslove<HotKeyManager>().RefreshGlobalHotkeyAction();
+
+
+            //// re-setup the global hotkey
+            Ioc.Reslove<PluginManager>().LoadPlugins();
+
+
+            Ioc.Reslove<QueryEngine>().Init();
 
 
             //get the windows to init a shellview and show windows

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
+using System.Collections;
 using System.Drawing;
 using LeaSearch.Common.ViewModel;
 
@@ -61,6 +62,8 @@ namespace LeaSearch.Common.Env
 
         [JsonConverter(typeof(StringEnumConverter))]
         public LastQueryMode LastQueryMode { get; set; } = LastQueryMode.Selected;
+        
+
 
     }
 

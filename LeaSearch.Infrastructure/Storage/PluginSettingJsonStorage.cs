@@ -7,11 +7,11 @@ namespace LeaSearch.Infrastructure.Storage
     /// store plugin settings in a json file
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class PluginJsonStorage<T> : JsonStrorage<T> where T : new()
+    public class PluginSettingJsonStorage<T> : JsonStrorage<T> where T : new()
     {
         public const string DirectoryName = "Settings\\PluginSettings";
 
-        public PluginJsonStorage()
+        public PluginSettingJsonStorage()
         {
             // C# releated, add python releated below
             var dataType = typeof(T);
