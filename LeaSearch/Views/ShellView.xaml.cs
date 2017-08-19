@@ -164,12 +164,13 @@ namespace LeaSearch.Views
 
         private void SelectNextPageCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            throw new NotImplementedException();
+
+            Ioc.Reslove<SearchResultViewModel>().MoveNext(8);
         }
 
         private void SelectPrevPageCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            Ioc.Reslove<SearchResultViewModel>().MovePrev(8);
         }
 
         private void LoadContextMenuCommand_Executed(object sender, ExecutedRoutedEventArgs e)

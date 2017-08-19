@@ -9,6 +9,16 @@ namespace LeaSearch.Plugin.HelloWorld
         {
         }
 
+        public bool SuitableForThisQuery(QueryParam queryParam)
+        {
+            var queryParamPrefixKeyword = queryParam.PrefixKeyword.ToLower();
+            if (queryParamPrefixKeyword == "lea" || queryParamPrefixKeyword == "leasearch")
+            {
+                return true;
+            }
+            return false;
+        }
+
         public QueryListResult Query(QueryParam queryParam)
         {
             var result = new QueryListResult()

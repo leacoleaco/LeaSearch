@@ -1,7 +1,8 @@
 ﻿{
   "PluginId": "LeaSearch.Plugin.HelloWorld",
   "Name": "Hello World CSharp",
-  "DefalutPrefixKeyword": "leasearch",
+  "": "LeaSearch",
+  "DefalutPrefixKeyword": "leasearch|lea",
   "Author": "Rico Lee",
   "Version": "1.0.0",
   "Language": "csharp",

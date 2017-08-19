@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Windows;
-using System.Windows.Input;
+using System.Windows.Media;
 using LeaSearch.Common.Env;
 using LeaSearch.Common.ViewModel;
-using LeaSearch.Common.Windows.Input;
+using LeaSearch.Core.Image;
 using LeaSearch.Core.Ioc;
 using LeaSearch.Core.QueryEngine;
 using LeaSearch.Infrastructure.Dispatcher;
-using LeaSearch.Plugin;
 
 namespace LeaSearch.ViewModels
 {
@@ -21,6 +18,7 @@ namespace LeaSearch.ViewModels
         private string _queryText;
         private Visibility _resultVisibility = Visibility.Collapsed;
         private ResultMode _resultMode = ResultMode.ListOnly;
+        private Core.Plugin.Plugin _currentSearchPlugin;
 
         #endregion
 
@@ -29,7 +27,12 @@ namespace LeaSearch.ViewModels
             SuggestionResultViewModel = suggestionResultViewModel;
             SearchResultViewModel = searchResultViewModel;
             DetailResultViewModel = detailResultViewModel;
+
+
+            Ioc.Reslove<QueryEngine>().GetSuitablePlugins += QueryEngine_GetSuitablePlugins;
+            Ioc.Reslove<QueryEngine>().GetResult += QueryEngine_GetResult;
         }
+
 
         //use action is just to convenient and decoupe 
         #region Hotkey Action Event
@@ -51,6 +54,30 @@ namespace LeaSearch.ViewModels
             {
                 _queryText = value;
                 Query();
+            }
+        }
+
+        /// <summary>
+        /// to show which plugin is frist to search
+        /// </summary>
+        public ImageSource CurrentSearchPluginImage { get; private set; } = Ioc.Reslove<ImageManager>().GetDefaultIcon();
+
+        public Core.Plugin.Plugin CurrentSearchPlugin
+        {
+            get { return _currentSearchPlugin; }
+            set
+            {
+                _currentSearchPlugin = value;
+
+                if (value != null)
+                {
+                    CurrentSearchPluginImage = Ioc.Reslove<ImageManager>().GetImageSource(value.PluginIconPath);
+                }
+                else
+                {
+                    CurrentSearchPluginImage = Ioc.Reslove<ImageManager>().GetDefaultIcon();
+                }
+                OnPropertyChanged("CurrentSearchPluginImage");
             }
         }
 
@@ -130,26 +157,7 @@ namespace LeaSearch.ViewModels
 
             if (!string.IsNullOrEmpty(QueryText))
             {
-                Ioc.Reslove<QueryEngine>().Query(QueryText, result =>
-                {
-
-                    if (result.Any())
-                    {
-                        OnQueryStateChanged(QueryState.QueryGotResult);
-
-                        var plugins = result.Keys.ToList();
-                        DispatcherHelper.BeginInvoke(new Action(() =>
-                        {
-                            SuggestionResultViewModel.SetPlugins(plugins);
-                            SearchResultViewModel.SetResults(result[plugins[0]].Results);
-                        }));
-                    }
-                    else
-                    {
-                        OnQueryStateChanged(QueryState.QueryGotNoResult);
-                    }
-
-                });
+                Ioc.Reslove<QueryEngine>().Query(QueryText);
             }
             else
             {
@@ -160,9 +168,46 @@ namespace LeaSearch.ViewModels
             }
         }
 
+
+        private void QueryEngine_GetSuitablePlugins(Core.Plugin.Plugin[] plugins)
+        {
+            DispatcherHelper.BeginInvoke(new Action(() =>
+            {
+                if (plugins != null && plugins.Any())
+                {
+                    CurrentSearchPlugin = plugins[0];
+                    SuggestionResultViewModel.SetPlugins(plugins);
+
+                }
+                else
+                {
+                    CurrentSearchPlugin = null;
+                }
+            }));
+        }
+
+        private void QueryEngine_GetResult(Plugin.QueryListResult result)
+        {
+            if (result.Results.Any())
+            {
+                OnQueryStateChanged(QueryState.QueryGotResult);
+
+                DispatcherHelper.BeginInvoke(new Action(() =>
+                {
+                    SearchResultViewModel.SetResults(result.Results);
+                }));
+            }
+            else
+            {
+                OnQueryStateChanged(QueryState.QueryGotNoResult);
+            }
+
+        }
+
+
         #endregion
 
-      
+
     }
 
     public enum QueryState

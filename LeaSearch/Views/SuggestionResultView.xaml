@@ -37,38 +37,26 @@
                             VerticalAlignment="Stretch"
                             Cursor="Hand"
                             UseLayoutRounding="False">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="32" />
-                                <ColumnDefinition />
-                                <ColumnDefinition Width="0" />
-                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="32" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
                             <Image
                                 x:Name="imgIco"
                                 Width="32"
                                 Height="32"
-                                HorizontalAlignment="Left"
-                                Source="{Binding PluginIconImage, IsAsync=True}" />
-                            <Grid
-                                Grid.Column="1"
-                                Margin="5,0,5,0"
-                                HorizontalAlignment="Stretch">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition x:Name="SubTitleRowDefinition" Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <TextBlock
-                                    x:Name="Title"
-                                    VerticalAlignment="Center"
-                                    DockPanel.Dock="Left"
-                                    Style="{DynamicResource ItemTitleStyle}"
-                                    Text="{Binding PluginMetadata.Name}"
-                                    ToolTip="{Binding PluginMetadata.Name}" />
-                                <TextBlock
-                                    x:Name="SubTitle"
-                                    Grid.Row="1"
-                                    Style="{DynamicResource ItemSubTitleStyle}"
-                                    Text="{Binding PluginMetadata.Name}" />
-                            </Grid>
+                                HorizontalAlignment="Center"
+                                RenderOptions.BitmapScalingMode="HighQuality"
+                                Source="{Binding PluginIconImage, IsAsync=True}"
+                                UseLayoutRounding="True" />
+
+                            <TextBlock
+                                x:Name="Title"
+                                Grid.Row="1"
+                                HorizontalAlignment="Center"
+                                Style="{DynamicResource ItemTitleStyle}"
+                                Text="{Binding PluginMetadata.DisplayName}"
+                                ToolTip="{Binding PluginMetadata.Name}" />
                         </Grid>
                     </Button.Content>
                 </Button>
@@ -76,7 +64,6 @@
                 <DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Value="True">
                         <Setter TargetName="Title" Property="Style" Value="{DynamicResource ItemTitleSelectedStyle}" />
-                        <Setter TargetName="SubTitle" Property="Style" Value="{DynamicResource ItemSubTitleSelectedStyle}" />
                     </DataTrigger>
                 </DataTemplate.Triggers>
             </DataTemplate>

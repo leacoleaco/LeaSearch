@@ -22,7 +22,7 @@ namespace LeaSearch.Core.Image
         private static BinaryStorage<ConcurrentDictionary<string, int>> _storage;
 
         private readonly IList<string> _imageExtions = new List<string>()
-       {
+        {
             ".png",
             ".jpg",
             ".jpeg",
@@ -65,7 +65,7 @@ namespace LeaSearch.Core.Image
 
         public ImageSource GetImageSource(string path)
         {
-            ImageSource image;
+            ImageSource image = null;
             if (string.IsNullOrEmpty(path))
             {
                 image = _imageCache[Constant.ErrorIcon];
@@ -76,9 +76,17 @@ namespace LeaSearch.Core.Image
             }
             else
             {
-                if (path.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
+                if (path.StartsWith("data:", StringComparison.OrdinalIgnoreCase) ||
+                    path.StartsWith("pack:", StringComparison.OrdinalIgnoreCase))
                 {
-                    image = new BitmapImage(new Uri(path));
+                    try
+                    {
+                        image = new BitmapImage(new Uri(path));
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error($"Read Plugin Image ERR: {e.Message}");
+                    }
                 }
                 else if (Path.IsPathRooted(path))
                 {
@@ -117,10 +125,18 @@ namespace LeaSearch.Core.Image
                         path = Constant.ErrorIcon;
                     }
                 }
-                _imageCache[path] = image;
-                image.Freeze();
+                if (image != null)
+                {
+                    _imageCache[path] = image;
+                    image.Freeze();
+                }
             }
             return image;
+        }
+
+        public ImageSource GetDefaultIcon()
+        {
+            return _imageCache[Constant.DefaultIcon];
         }
 
 

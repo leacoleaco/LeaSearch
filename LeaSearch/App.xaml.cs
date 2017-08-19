@@ -194,7 +194,7 @@ namespace LeaSearch
                 Application.Current.Shutdown();
             };
 
-            _notifyIcon.Icon = LeaSearch.Properties.Resources.favicon;
+            _notifyIcon.Icon = LeaSearch.Properties.Resources.app;
             _notifyIcon.ContextMenu = contextMenu1;
             _notifyIcon.Visible = true;
 

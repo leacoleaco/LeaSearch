@@ -68,14 +68,14 @@ namespace LeaSearch.ViewModels
             }
         }
 
-        public void MoveNext()
+        public void MoveNext(int pageSize=1)
         {
-            CurrentIndex = NewIndex(CurrentIndex + 1);
+            CurrentIndex = NewIndex(CurrentIndex + pageSize);
         }
 
-        public void MovePrev()
+        public void MovePrev(int pageSize=1)
         {
-            CurrentIndex = NewIndex(CurrentIndex - 1);
+            CurrentIndex = NewIndex(CurrentIndex - pageSize);
         }
 
     }

@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F7231CC8-5877-4531-8056-A154376987E4}</ProjectGuid>
+    <ProjectGuid>{58F81905-C37A-49F9-A57B-2777E8C28EE1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LeaSearch.Plugin.HelloWorld</RootNamespace>
-    <AssemblyName>LeaSearch.Plugin.HelloWorld</AssemblyName>
+    <RootNamespace>LeaSearch.Plugin.Calculator</RootNamespace>
+    <AssemblyName>LeaSearch.Plugin.Calculator</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -16,7 +16,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\output\debug\Plugins\LeaSearch.Plugin.HelloWorld\</OutputPath>
+    <OutputPath>..\..\output\debug\Plugins\LeaSearch.Plugin.Calculator\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -50,7 +50,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="app.png" />
+    <Resource Include="calculator.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="plugin.json">

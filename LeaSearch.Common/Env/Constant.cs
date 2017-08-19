@@ -12,6 +12,8 @@ namespace LeaSearch.Common.Env
 
         private static readonly Assembly Assembly = Assembly.GetExecutingAssembly();
 
+        public const string WpfResourceUriFormatStr = "pack://application:,,,/{0};component/{1}";
+
         /// <summary>
         /// get the program directory
         /// </summary>

@@ -38,7 +38,7 @@ namespace LeaSearch.Core.QueryEngine
 
         }
 
-        public void Query(string queryText, Action<Dictionary<Plugin.Plugin, QueryListResult>> GetResultAction)
+        public void Query(string queryText)
         {
             if (string.IsNullOrWhiteSpace(queryText)) return;
 
@@ -82,42 +82,70 @@ namespace LeaSearch.Core.QueryEngine
 
             }, _updateToken);
 
-            var suitableQueryPlugins = GetSutablePlugins(queryParam);
+            var suitableQueryPlugins = SearchSuitablePlugins(queryParam);
+            OnGetSuitablePlugins(suitableQueryPlugins);
+            if (suitableQueryPlugins == null || !suitableQueryPlugins.Any())
+            {
+                return;
+            }
+
             Task.Run(() =>
             {
-                Dictionary<Plugin.Plugin, QueryListResult> results = new Dictionary<Plugin.Plugin, QueryListResult>();
-                Parallel.ForEach(suitableQueryPlugins, plugin =>
-                {
-                    var queryListResult = plugin.PluginInstance.Query(queryParam);
-                    results.Add(plugin, queryListResult);
-                });
+                //Dictionary<Plugin.Plugin, QueryListResult> results = new Dictionary<Plugin.Plugin, QueryListResult>();
+                //Parallel.ForEach(suitableQueryPlugins, plugin =>
+                //{
+                //    var queryListResult = plugin.PluginInstance.Query(queryParam);
+                //    results.Add(plugin, queryListResult);
+                //});
 
+                var queryListResult = suitableQueryPlugins[0].PluginInstance.Query(queryParam);
                 //return the result
-                GetResultAction?.Invoke(results);
+                OnGetResult(queryListResult);
 
             }, _updateToken);
         }
 
 
-        private IEnumerable<Plugin.Plugin> GetSutablePlugins(QueryParam queryParam)
+        private Plugin.Plugin[] SearchSuitablePlugins(QueryParam queryParam)
         {
-            return _pluginManager.GetPlugins()?.Where(p =>
+            var result = new List<Plugin.Plugin>();
+            _pluginManager.GetPlugins()?.ForEach(p =>
             {
-                if (p.IsDisabled)
-                {
-                    return false;
-                }
+                if (p.IsDisabled) return;
 
-                var pk = p.PrefixKeyword;
-                if (!string.IsNullOrWhiteSpace(pk))
+                var prefixKeywords = p.PrefixKeywords;
+                if (prefixKeywords == null || prefixKeywords.Length <= 0) return;
+
+                if (prefixKeywords.Contains(queryParam.PrefixKeyword))
                 {
-                    return pk == queryParam.PrefixKeyword;
+                    //command mode, display in first choice
+                    result.Insert(0, p);
                 }
-                return false;
-            }).ToList();
+                else if (p.PluginInstance.SuitableForThisQuery(queryParam))
+                {
+                    //other plugin is add to second choice if suitable
+                    result.Add(p);
+                }
+            });
+            return result.ToArray();
         }
 
 
+        #region Event
 
+        public event Action<QueryListResult> GetResult;
+        public event Action<Plugin.Plugin[]> GetSuitablePlugins;
+
+        #endregion
+
+        protected virtual void OnGetResult(QueryListResult result)
+        {
+            GetResult?.Invoke(result);
+        }
+
+        protected virtual void OnGetSuitablePlugins(Plugin.Plugin[] suitablePlugins)
+        {
+            GetSuitablePlugins?.Invoke(suitablePlugins);
+        }
     }
 }

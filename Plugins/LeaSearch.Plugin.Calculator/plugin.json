@@ -1,0 +1,13 @@
+﻿{
+  "PluginId": "LeaSearch.Plugin.Calculator",
+  "Name": "Calcuator",
+  "DisplayName": "Calcuator",
+  "DefalutPrefixKeyword": "cal|calculator",
+  "Author": "Rico Lee",
+  "Version": "1.0.0",
+  "Language": "csharp",
+  "Description": "calcuator",
+  "Website": "https://github.com/leacoleaco/LeaSearch",
+  "EntryFileName": "LeaSearch.Plugin.Calculator.dll",
+  "IcoPath": "calculator.png"
+}

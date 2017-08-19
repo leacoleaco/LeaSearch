@@ -43,6 +43,16 @@ namespace LeaSearch.Core.Plugin
             PluginRootPath = pluginRootPath;
             PluginMetadata = pluginMetadata;
             PluginSettings = pluginSettings;
+
+            if (pluginMetadata.Language?.ToLower() == "csharp")
+            {
+                //C# image need to in dll
+                PluginIconImageSource = Ioc.Ioc.Reslove<ImageManager>().GetImageSource(String.Format(Constant.WpfResourceUriFormatStr, Path.GetFileNameWithoutExtension(pluginMetadata.EntryFileName), pluginMetadata.IcoPath));
+            }
+            else
+            {
+                PluginIconImageSource = Ioc.Ioc.Reslove<ImageManager>().GetImageSource(Path.Combine(pluginRootPath, pluginMetadata.IcoPath));
+            }
         }
 
         /// <summary>
@@ -56,24 +66,29 @@ namespace LeaSearch.Core.Plugin
         /// </summary>
         public PluginMetadata PluginMetadata { get; set; }
 
+        public ImageSource PluginIconImageSource
+        {
+            get; private set;
+        }
+
         /// <summary>
         /// plugin's custom setting
         /// </summary>
         public PluginSettings PluginSettings { get; set; }
 
 
-        public string PrefixKeyword
+        public string[] PrefixKeywords
         {
             get
             {
                 if (!string.IsNullOrWhiteSpace(PluginSettings?.PrefixKeyword))
                 {
-                    return PluginSettings.PrefixKeyword;
+                    return PluginSettings.PrefixKeyword.Split('|');
                 }
 
                 if (!string.IsNullOrWhiteSpace(PluginMetadata?.DefalutPrefixKeyword))
                 {
-                    return PluginMetadata.DefalutPrefixKeyword;
+                    return PluginMetadata.DefalutPrefixKeyword.Split('|');
                 }
 
                 return null;

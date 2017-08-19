@@ -10,6 +10,14 @@ namespace LeaSearch.Plugin
         /// <param name="sharedContext"></param>
         void InitPlugin(SharedContext sharedContext);
 
+
+        /// <summary>
+        /// check the queryParam to judge should we do query method
+        /// </summary>
+        /// <param name="queryParam"></param>
+        /// <returns></returns>
+        bool SuitableForThisQuery(QueryParam queryParam);
+
         /// <summary>
         /// query result for list 
         /// </summary>
