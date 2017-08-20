@@ -104,7 +104,7 @@
                     Style="{DynamicResource QueryBoxStyle}"
                     Text="{Binding QueryText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     Visibility="Visible"
-                    Watermark="LeaSearch:Please input some words to start">
+                    Watermark="{DynamicResource leaSearchWatermark}">
                     <TextBox.ContextMenu>
                         <ContextMenu>
                             <MenuItem Command="ApplicationCommands.Cut" />

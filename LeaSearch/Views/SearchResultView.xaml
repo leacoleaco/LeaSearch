@@ -51,7 +51,7 @@
                                 Height="32"
                                 HorizontalAlignment="Left"
                                 RenderOptions.BitmapScalingMode="HighQuality"
-                                Source="{Binding IconPath, IsAsync=True}"
+                                Source="{Binding IconPath, IsAsync=True, Converter={StaticResource Path2ImageSourceConvert}}"
                                 UseLayoutRounding="True" />
                             <Grid
                                 Grid.Column="1"

@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Threading;
 using LeaSearch.Common.Env;
 using LeaSearch.Common.ViewModel;
 using LeaSearch.Plugin;
@@ -39,13 +42,16 @@ namespace LeaSearch.ViewModels
 
 
 
-        public void SetResults(IEnumerable<ResultItem> list)
+        public void SetResults(ResultItem[] list)
         {
-            Results.Clear();
-            foreach (var resultItem in list)
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
             {
-                Results.Add(resultItem);
-            }
+                Results.Clear();
+                foreach (var resultItem in list)
+                {
+                    Results.Add(resultItem);
+                }
+            }));
         }
 
         public void Clear()
@@ -68,12 +74,12 @@ namespace LeaSearch.ViewModels
             }
         }
 
-        public void MoveNext(int pageSize=1)
+        public void MoveNext(int pageSize = 1)
         {
             CurrentIndex = NewIndex(CurrentIndex + pageSize);
         }
 
-        public void MovePrev(int pageSize=1)
+        public void MovePrev(int pageSize = 1)
         {
             CurrentIndex = NewIndex(CurrentIndex - pageSize);
         }

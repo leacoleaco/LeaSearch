@@ -7,7 +7,6 @@ using LeaSearch.Common.ViewModel;
 using LeaSearch.Core.Image;
 using LeaSearch.Core.Ioc;
 using LeaSearch.Core.QueryEngine;
-using LeaSearch.Infrastructure.Dispatcher;
 
 namespace LeaSearch.ViewModels
 {
@@ -29,9 +28,12 @@ namespace LeaSearch.ViewModels
             DetailResultViewModel = detailResultViewModel;
 
 
-            Ioc.Reslove<QueryEngine>().GetSuitablePlugins += QueryEngine_GetSuitablePlugins;
-            Ioc.Reslove<QueryEngine>().GetResult += QueryEngine_GetResult;
+            var queryEngine = Ioc.Reslove<QueryEngine>();
+            queryEngine.GetSuitablePlugins += QueryEngine_GetSuitablePlugins;
+            queryEngine.BeginPluginSearch += QueryEngine_BeginPluginSearch;
+            queryEngine.GetResult += QueryEngine_GetResult;
         }
+
 
 
         //use action is just to convenient and decoupe 
@@ -171,19 +173,32 @@ namespace LeaSearch.ViewModels
 
         private void QueryEngine_GetSuitablePlugins(Core.Plugin.Plugin[] plugins)
         {
-            DispatcherHelper.BeginInvoke(new Action(() =>
+            if (plugins != null && plugins.Any())
             {
-                if (plugins != null && plugins.Any())
+                if (plugins.Length > 1)
                 {
-                    CurrentSearchPlugin = plugins[0];
-                    SuggestionResultViewModel.SetPlugins(plugins);
-
+                    OnQueryStateChanged(QueryState.QuerySuitManyPlugin);
                 }
                 else
                 {
-                    CurrentSearchPlugin = null;
+                    OnQueryStateChanged(QueryState.QuerySuitOnePlugin);
                 }
-            }));
+
+                SuggestionResultViewModel.SetPlugins(plugins);
+            }
+            else
+            {
+                OnQueryStateChanged(QueryState.QuerySuitNoPlugin);
+
+                CurrentSearchPlugin = null;
+                SuggestionResultViewModel.Clear();
+            }
+        }
+
+        private void QueryEngine_BeginPluginSearch(Core.Plugin.Plugin currentPlugin)
+        {
+            CurrentSearchPlugin = currentPlugin;
+            OnQueryStateChanged(QueryState.BeginPluginSearch);
         }
 
         private void QueryEngine_GetResult(Plugin.QueryListResult result)
@@ -191,15 +206,12 @@ namespace LeaSearch.ViewModels
             if (result.Results.Any())
             {
                 OnQueryStateChanged(QueryState.QueryGotResult);
-
-                DispatcherHelper.BeginInvoke(new Action(() =>
-                {
-                    SearchResultViewModel.SetResults(result.Results);
-                }));
+                SearchResultViewModel.SetResults(result.Results.ToArray());
             }
             else
             {
                 OnQueryStateChanged(QueryState.QueryGotNoResult);
+                SearchResultViewModel.Clear();
             }
 
         }
@@ -212,8 +224,8 @@ namespace LeaSearch.ViewModels
 
     public enum QueryState
     {
-        StartQuery, QueryGotResult, QueryGotNoResult
-
+        StartQuery, QuerySuitNoPlugin, QuerySuitOnePlugin, QuerySuitManyPlugin, QueryGotResult, QueryGotNoResult,
+        BeginPluginSearch
     }
 
     public enum ResultMode

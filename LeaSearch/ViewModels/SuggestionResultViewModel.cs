@@ -51,7 +51,7 @@ namespace LeaSearch.ViewModels
 
         public void Clear()
         {
-
+            Plugins.Clear();
         }
 
     }

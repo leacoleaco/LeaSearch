@@ -6,7 +6,6 @@ using LeaSearch.Common.Env;
 using LeaSearch.Common.View;
 using LeaSearch.Core.HotKey;
 using LeaSearch.Core.Ioc;
-using LeaSearch.Infrastructure.Dispatcher;
 using LeaSearch.Infrastructure.Helper;
 using LeaSearch.ViewModels;
 
@@ -83,33 +82,46 @@ namespace LeaSearch.Views
 
         private void ShellViewModel_QueryStateChanged(QueryState queryState)
         {
-            switch (queryState)
-            {
-                case QueryState.StartQuery:
-                    DispatcherHelper.BeginInvoke(new Action(() =>
-                    {
-                        ProgressBar.Visibility = Visibility.Visible;
-                    }));
-                    break;
-                case QueryState.QueryGotResult:
-                    DispatcherHelper.BeginInvoke(new Action(() =>
-                    {
-                        ProgressBar.Visibility = Visibility.Hidden;
-                        ResultGrid.Visibility = Visibility.Visible;
-                    })); ;
-                    break;
-                case QueryState.QueryGotNoResult:
-                    DispatcherHelper.BeginInvoke(new Action(() =>
-                    {
-                        ProgressBar.Visibility = Visibility.Hidden;
-                        ResultGrid.Visibility = Visibility.Collapsed;
-                    }));
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(queryState), queryState, null);
-            }
-        }
+            this.Dispatcher.BeginInvoke(new Action(() =>
+                       {
 
+                           switch (queryState)
+                           {
+                               case QueryState.StartQuery:
+
+                                   ProgressBar.Visibility = Visibility.Hidden;
+                                   break;
+                               case QueryState.QuerySuitNoPlugin:
+                                   //PluginCol.Width = new GridLength(0, GridUnitType.Pixel);
+                                   ResultGrid.Visibility = Visibility.Collapsed;
+                                   break;
+                               case QueryState.QuerySuitOnePlugin:
+                                   PluginCol.Width = new GridLength(0, GridUnitType.Pixel);
+                                   ProgressBar.Visibility = Visibility.Hidden;
+                                   ResultGrid.Visibility = Visibility.Collapsed;
+                                   break;
+                               case QueryState.QuerySuitManyPlugin:
+                                   //PluginCol.Width = new GridLength(0, GridUnitType.Pixel);
+                                   ProgressBar.Visibility = Visibility.Hidden;
+                                   ResultGrid.Visibility = Visibility.Collapsed;
+                                   break;
+                               case QueryState.BeginPluginSearch:
+                                   ProgressBar.Visibility = Visibility.Visible;
+                                   break;
+                               case QueryState.QueryGotResult:
+                                   ProgressBar.Visibility = Visibility.Hidden;
+                                   ResultGrid.Visibility = Visibility.Visible;
+                                   break;
+                               case QueryState.QueryGotNoResult:
+                                   ProgressBar.Visibility = Visibility.Hidden;
+                                   ResultGrid.Visibility = Visibility.Collapsed;
+                                   break;
+
+                               default:
+                                   throw new ArgumentOutOfRangeException(nameof(queryState), queryState, null);
+                           }
+                       }));
+        }
 
         private void Instance_WakeUpCommand()
         {
@@ -149,7 +161,7 @@ namespace LeaSearch.Views
 
         private void EscCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            this.Hide();
         }
 
         private void SelectNextItemCommand_Executed(object sender, ExecutedRoutedEventArgs e)

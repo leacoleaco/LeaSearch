@@ -38,22 +38,22 @@
                             Cursor="Hand"
                             UseLayoutRounding="False">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="32" />
+                                <RowDefinition Height="16" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <Image
                                 x:Name="imgIco"
-                                Width="32"
-                                Height="32"
-                                HorizontalAlignment="Center"
-                                RenderOptions.BitmapScalingMode="HighQuality"
+                                Width="16"
+                                Height="16"
+                                HorizontalAlignment="Left"
+                                RenderOptions.BitmapScalingMode="LowQuality"
                                 Source="{Binding PluginIconImage, IsAsync=True}"
                                 UseLayoutRounding="True" />
 
                             <TextBlock
                                 x:Name="Title"
                                 Grid.Row="1"
-                                HorizontalAlignment="Center"
+                                HorizontalAlignment="Left"
                                 Style="{DynamicResource ItemTitleStyle}"
                                 Text="{Binding PluginMetadata.DisplayName}"
                                 ToolTip="{Binding PluginMetadata.Name}" />

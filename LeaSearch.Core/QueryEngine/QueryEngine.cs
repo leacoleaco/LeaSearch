@@ -23,10 +23,8 @@ namespace LeaSearch.Core.QueryEngine
         private const char NoneQueryPrefix = '*';
 
         private CancellationTokenSource _updateSource;
-        private CancellationToken _updateToken;
-        private bool _queryHasReturn;
 
-        private PluginManager _pluginManager;
+        private readonly PluginManager _pluginManager;
 
         public QueryEngine(PluginManager pluginManager)
         {
@@ -45,12 +43,9 @@ namespace LeaSearch.Core.QueryEngine
             //we need to trim start space
             queryText = queryText.TrimStart();
 
+            //if a new search start, cancle the last one
             _updateSource?.Cancel();
             _updateSource = new CancellationTokenSource();
-            _updateToken = _updateSource.Token;
-
-            _queryHasReturn = false;
-
 
             var queryParam = new QueryParam
             {
@@ -77,11 +72,6 @@ namespace LeaSearch.Core.QueryEngine
             }
 
 
-            Task.Delay(200, _updateToken).ContinueWith(_ =>
-            {
-
-            }, _updateToken);
-
             var suitableQueryPlugins = SearchSuitablePlugins(queryParam);
             OnGetSuitablePlugins(suitableQueryPlugins);
             if (suitableQueryPlugins == null || !suitableQueryPlugins.Any())
@@ -89,7 +79,7 @@ namespace LeaSearch.Core.QueryEngine
                 return;
             }
 
-            Task.Run(() =>
+            var task = Task.Run(() =>
             {
                 //Dictionary<Plugin.Plugin, QueryListResult> results = new Dictionary<Plugin.Plugin, QueryListResult>();
                 //Parallel.ForEach(suitableQueryPlugins, plugin =>
@@ -97,12 +87,15 @@ namespace LeaSearch.Core.QueryEngine
                 //    var queryListResult = plugin.PluginInstance.Query(queryParam);
                 //    results.Add(plugin, queryListResult);
                 //});
-
-                var queryListResult = suitableQueryPlugins[0].PluginInstance.Query(queryParam);
+                var currentSearchPlugin = suitableQueryPlugins[0];
+                OnBeginPluginSearch(currentSearchPlugin);
+                var queryListResult = currentSearchPlugin.PluginInstance.Query(queryParam);
                 //return the result
                 OnGetResult(queryListResult);
 
-            }, _updateToken);
+            }, _updateSource.Token);
+            
+            task.Dispose();
         }
 
 
@@ -135,6 +128,7 @@ namespace LeaSearch.Core.QueryEngine
 
         public event Action<QueryListResult> GetResult;
         public event Action<Plugin.Plugin[]> GetSuitablePlugins;
+        public event Action<Plugin.Plugin> BeginPluginSearch;
 
         #endregion
 
@@ -146,6 +140,11 @@ namespace LeaSearch.Core.QueryEngine
         protected virtual void OnGetSuitablePlugins(Plugin.Plugin[] suitablePlugins)
         {
             GetSuitablePlugins?.Invoke(suitablePlugins);
+        }
+
+        protected virtual void OnBeginPluginSearch(Plugin.Plugin plugin)
+        {
+            BeginPluginSearch?.Invoke(plugin);
         }
     }
 }
