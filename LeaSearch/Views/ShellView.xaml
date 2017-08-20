@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:LeaSearch.UI.Controls;assembly=LeaSearch.UI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:env="clr-namespace:LeaSearch.Common.Env;assembly=LeaSearch.Common"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:LeaSearch.ViewModels"
     xmlns:views="clr-namespace:LeaSearch.Views"
@@ -87,38 +88,26 @@
             Gesture="Alt+D9" />
     </Window.InputBindings>
     <Border Style="{DynamicResource WindowBorderStyle}">
-        <StackPanel Orientation="Vertical">
-            <DockPanel LastChildFill="True">
-                <Image
-                    Width="32"
-                    Height="32"
-                    Margin="0,3,6,0"
-                    HorizontalAlignment="Center"
-                    DockPanel.Dock="Left"
-                    RenderOptions.BitmapScalingMode="HighQuality"
-                    Source="{Binding CurrentSearchPluginImage, IsAsync=True}"
-                    UseLayoutRounding="True" />
-                <controls:TextBoxEx
-                    x:Name="QueryTextBox"
-                    AllowDrop="True"
-                    Style="{DynamicResource QueryBoxStyle}"
-                    Text="{Binding QueryText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                    Visibility="Visible"
-                    Watermark="{DynamicResource leaSearchWatermark}">
-                    <TextBox.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Command="ApplicationCommands.Cut" />
-                            <MenuItem Command="ApplicationCommands.Copy" />
-                            <MenuItem Command="ApplicationCommands.Paste" />
-                            <Separator />
-                        </ContextMenu>
-                    </TextBox.ContextMenu>
-                    <TextBox.InputBindings>
-                        <KeyBinding Key="F1" Command="{StaticResource StartHelpCommand}" />
-                    </TextBox.InputBindings>
-                </controls:TextBoxEx>
-            </DockPanel>
-            <Border Padding="0" Style="{DynamicResource ProgressBorderStyle}">
+        <StackPanel>
+            <controls:TextBoxEx
+                x:Name="QueryTextBox"
+                AllowDrop="True"
+                Style="{DynamicResource QueryBoxStyle}"
+                Text="{Binding QueryText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Watermark="{DynamicResource leaSearchWatermark}">
+                <TextBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="ApplicationCommands.Cut" />
+                        <MenuItem Command="ApplicationCommands.Copy" />
+                        <MenuItem Command="ApplicationCommands.Paste" />
+                        <Separator />
+                    </ContextMenu>
+                </TextBox.ContextMenu>
+                <TextBox.InputBindings>
+                    <KeyBinding Key="F1" Command="{StaticResource StartHelpCommand}" />
+                </TextBox.InputBindings>
+            </controls:TextBoxEx>
+            <Border Style="{DynamicResource ProgressBorderStyle}">
                 <Line
                     x:Name="ProgressBar"
                     Width="752"

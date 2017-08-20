@@ -32,6 +32,7 @@ namespace LeaSearch.ViewModels
             queryEngine.GetSuitablePlugins += QueryEngine_GetSuitablePlugins;
             queryEngine.BeginPluginSearch += QueryEngine_BeginPluginSearch;
             queryEngine.GetResult += QueryEngine_GetResult;
+
         }
 
 
@@ -60,10 +61,8 @@ namespace LeaSearch.ViewModels
         }
 
         /// <summary>
-        /// to show which plugin is frist to search
+        /// which plugin is current using
         /// </summary>
-        public ImageSource CurrentSearchPluginImage { get; private set; } = Ioc.Reslove<ImageManager>().GetDefaultIcon();
-
         public Core.Plugin.Plugin CurrentSearchPlugin
         {
             get { return _currentSearchPlugin; }
@@ -71,15 +70,7 @@ namespace LeaSearch.ViewModels
             {
                 _currentSearchPlugin = value;
 
-                if (value != null)
-                {
-                    CurrentSearchPluginImage = Ioc.Reslove<ImageManager>().GetImageSource(value.PluginIconPath);
-                }
-                else
-                {
-                    CurrentSearchPluginImage = Ioc.Reslove<ImageManager>().GetDefaultIcon();
-                }
-                OnPropertyChanged("CurrentSearchPluginImage");
+                OnPropertyChanged();
             }
         }
 

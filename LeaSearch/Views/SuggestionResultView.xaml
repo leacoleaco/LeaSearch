@@ -47,7 +47,7 @@
                                 Height="16"
                                 HorizontalAlignment="Left"
                                 RenderOptions.BitmapScalingMode="LowQuality"
-                                Source="{Binding PluginIconImage, IsAsync=True}"
+                                Source="{Binding PluginIconPath, IsAsync=True, Converter={StaticResource Path2ImageSourceConvert}}"
                                 UseLayoutRounding="True" />
 
                             <TextBlock

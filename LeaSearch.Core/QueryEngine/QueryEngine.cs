@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -90,12 +91,24 @@ namespace LeaSearch.Core.QueryEngine
                 var currentSearchPlugin = suitableQueryPlugins[0];
                 OnBeginPluginSearch(currentSearchPlugin);
                 var queryListResult = currentSearchPlugin.PluginInstance.Query(queryParam);
+
+                //prepare some data for result display
+                NormalizeResult(currentSearchPlugin, queryListResult);
+
                 //return the result
                 OnGetResult(queryListResult);
 
             }, _updateSource.Token);
-            
+
             task.Dispose();
+        }
+
+        private void NormalizeResult(Plugin.Plugin currentPlugin, QueryListResult queryListResult)
+        {
+            queryListResult?.Results?.ForEach(x =>
+            {
+                x.IconPath = Path.Combine(currentPlugin.PluginRootPath, x.IconPath);
+            });
         }
 
 

@@ -44,15 +44,6 @@ namespace LeaSearch.Core.Plugin
             PluginMetadata = pluginMetadata;
             PluginSettings = pluginSettings;
 
-            if (pluginMetadata.Language?.ToLower() == "csharp")
-            {
-                //C# image need to in dll
-                PluginIconImageSource = Ioc.Ioc.Reslove<ImageManager>().GetImageSource(String.Format(Constant.WpfResourceUriFormatStr, Path.GetFileNameWithoutExtension(pluginMetadata.EntryFileName), pluginMetadata.IcoPath));
-            }
-            else
-            {
-                PluginIconImageSource = Ioc.Ioc.Reslove<ImageManager>().GetImageSource(Path.Combine(pluginRootPath, pluginMetadata.IcoPath));
-            }
         }
 
         /// <summary>
@@ -66,10 +57,7 @@ namespace LeaSearch.Core.Plugin
         /// </summary>
         public PluginMetadata PluginMetadata { get; set; }
 
-        public ImageSource PluginIconImageSource
-        {
-            get; private set;
-        }
+
 
         /// <summary>
         /// plugin's custom setting
@@ -106,9 +94,5 @@ namespace LeaSearch.Core.Plugin
         /// </summary>
         public string PluginEntryPath => Path.Combine(PluginRootPath, PluginMetadata.EntryFileName);
 
-        /// <summary>
-        /// Icon Img
-        /// </summary>
-        public ImageSource PluginIconImage => Ioc.Ioc.Reslove<ImageManager>().GetImageSource(PluginIconPath);
     }
 }

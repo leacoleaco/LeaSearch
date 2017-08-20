@@ -29,6 +29,7 @@ namespace LeaSearch.Views
         {
             base.OnInitialized(e);
 
+            //Global wake up hotkey
             Ioc.Reslove<HotKeyManager>().WakeUpCommand += Instance_WakeUpCommand;
 
             var shellViewModel = Ioc.Reslove<ShellViewModel>();
@@ -125,6 +126,12 @@ namespace LeaSearch.Views
 
         private void Instance_WakeUpCommand()
         {
+
+            //if ignore hotkey on fullscreen, 
+            //double if to omit calling win32 function
+            if (_settings.IgnoreHotkeysOnFullscreen && WindowsInteropHelper.IsWindowFullscreen())
+                return;
+
             if (this.IsVisible)
             {
                 this.Hide();
@@ -162,6 +169,7 @@ namespace LeaSearch.Views
         private void EscCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             this.Hide();
+            QueryTextBox.Text = string.Empty;
         }
 
         private void SelectNextItemCommand_Executed(object sender, ExecutedRoutedEventArgs e)
