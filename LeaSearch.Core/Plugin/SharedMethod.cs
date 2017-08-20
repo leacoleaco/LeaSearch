@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LeaSearch.Core.I18N;
 using LeaSearch.Core.Notice;
+using LeaSearch.Infrastructure.Logger;
 using LeaSearch.Plugin;
 
 namespace LeaSearch.Core.Plugin
@@ -33,6 +34,11 @@ namespace LeaSearch.Core.Plugin
         public bool ShowMessage(string i18NKey, params object[] paramObjects)
         {
             return MessageUiHelper.ShowMessage(i18NKey, paramObjects);
+        }
+
+        public void LogInfo(string message)
+        {
+            Logger.Info(message);
         }
     }
 }

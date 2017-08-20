@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeaSearch.Plugin.Calculator
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeaSearch.Plugin.OpenUrl", "Plugins\LeaSearch.Plugin.OpenUrl\LeaSearch.Plugin.OpenUrl.csproj", "{B890D699-F0EE-4A10-91BB-175EEEB2AC3D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeaSearch.Plugin.Baidu", "Plugins\LeaSearch.Plugin.Baidu\LeaSearch.Plugin.Baidu.csproj", "{FF36D7A3-E618-4EC3-8890-AE9AFC9471DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +67,10 @@ Global
 		{B890D699-F0EE-4A10-91BB-175EEEB2AC3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B890D699-F0EE-4A10-91BB-175EEEB2AC3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B890D699-F0EE-4A10-91BB-175EEEB2AC3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF36D7A3-E618-4EC3-8890-AE9AFC9471DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF36D7A3-E618-4EC3-8890-AE9AFC9471DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF36D7A3-E618-4EC3-8890-AE9AFC9471DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF36D7A3-E618-4EC3-8890-AE9AFC9471DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -73,5 +79,6 @@ Global
 		{F7231CC8-5877-4531-8056-A154376987E4} = {F07A2119-9E0A-4655-A86D-BDCFBB158018}
 		{58F81905-C37A-49F9-A57B-2777E8C28EE1} = {F07A2119-9E0A-4655-A86D-BDCFBB158018}
 		{B890D699-F0EE-4A10-91BB-175EEEB2AC3D} = {F07A2119-9E0A-4655-A86D-BDCFBB158018}
+		{FF36D7A3-E618-4EC3-8890-AE9AFC9471DE} = {F07A2119-9E0A-4655-A86D-BDCFBB158018}
 	EndGlobalSection
 EndGlobal

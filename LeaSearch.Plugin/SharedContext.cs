@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using LeaSearch.Infrastructure.Logger;
+using System.Windows.Controls;
 
 namespace LeaSearch.Plugin
 {
@@ -20,9 +21,13 @@ namespace LeaSearch.Plugin
         /// </summary>
         public ISharedMethod SharedMethod { get; }
 
+
         /// <summary>
         /// the detail view
         /// </summary>
         public ContentControl DetailViewControl { get; internal set; }
+
+
+
     }
 }

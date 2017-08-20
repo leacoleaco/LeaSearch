@@ -44,14 +44,13 @@ namespace LeaSearch.ViewModels
 
         public void SetResults(ResultItem[] list)
         {
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+
+            Results.Clear();
+            foreach (var resultItem in list)
             {
-                Results.Clear();
-                foreach (var resultItem in list)
-                {
-                    Results.Add(resultItem);
-                }
-            }));
+                Results.Add(resultItem);
+            }
+
         }
 
         public void Clear()

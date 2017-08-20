@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Threading;
 using LeaSearch.Common.Env;
 using LeaSearch.Common.ViewModel;
 using LeaSearch.Core.Image;
@@ -197,12 +198,20 @@ namespace LeaSearch.ViewModels
             if (result.Results.Any())
             {
                 OnQueryStateChanged(QueryState.QueryGotResult);
-                SearchResultViewModel.SetResults(result.Results.ToArray());
+
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                {
+                    SearchResultViewModel.SetResults(result.Results.ToArray());
+                }));
             }
             else
             {
                 OnQueryStateChanged(QueryState.QueryGotNoResult);
-                SearchResultViewModel.Clear();
+
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                {
+                    SearchResultViewModel.Clear();
+                }));
             }
 
         }

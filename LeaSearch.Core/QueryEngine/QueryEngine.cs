@@ -90,6 +90,8 @@ namespace LeaSearch.Core.QueryEngine
                 //    results.Add(plugin, queryListResult);
                 //});
                 var currentSearchPlugin = suitableQueryPlugins[0];
+
+
                 OnBeginPluginSearch(currentSearchPlugin);
 
                 try

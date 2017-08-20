@@ -1,0 +1,13 @@
+﻿{
+  "PluginId": "LeaSearch.Plugin.Baidu",
+  "Name": "Baidu",
+  "DisplayName": "Baidu",
+  "DefalutPrefixKeyword": "bd|baidu",
+  "Author": "Rico Lee",
+  "Version": "1.0.0",
+  "Language": "csharp",
+  "Description": "Search with baidu",
+  "Website": "https://github.com/leacoleaco/LeaSearch",
+  "EntryFileName": "LeaSearch.Plugin.Baidu.dll",
+  "IcoPath": "baidu.png"
+}
