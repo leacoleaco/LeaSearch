@@ -21,7 +21,6 @@ namespace LeaSearch.Plugin.Calculator
 
         public void InitPlugin(SharedContext sharedContext)
         {
-            throw new System.NotImplementedException();
         }
 
         public bool SuitableForThisQuery(QueryParam queryParam)

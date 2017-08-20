@@ -1,0 +1,13 @@
+﻿{
+  "PluginId": "LeaSearch.Plugin.OpenUrl",
+  "Name": "OpenUrl",
+  "DisplayName": "Url",
+  "DefalutPrefixKeyword": "openurl|url",
+  "Author": "Rico Lee",
+  "Version": "1.0.0",
+  "Language": "csharp",
+  "Description": "open url with leasearch",
+  "Website": "https://github.com/leacoleaco/LeaSearch",
+  "EntryFileName": "LeaSearch.Plugin.OpenUrl.dll",
+  "IcoPath": "url.png"
+}

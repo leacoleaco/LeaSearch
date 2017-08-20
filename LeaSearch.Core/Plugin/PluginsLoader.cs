@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using LeaSearch.Infrastructure.Logger;
 using LeaSearch.Infrastructure.Storage;
 using Newtonsoft.Json;
 
@@ -14,6 +15,12 @@ namespace LeaSearch.Core.Plugin
         public const string Python = "python";
         public const string PythonExecutable = "pythonw.exe";
 
+        private SharedContext _sharedContext;
+
+        public PluginsLoader(SharedContext sharedContext)
+        {
+            this._sharedContext = sharedContext;
+        }
 
         public List<Plugin> LoadPlugins(string pluginInstallPath)
         {
@@ -72,6 +79,7 @@ namespace LeaSearch.Core.Plugin
             pluginBase.ForEach(p =>
             {
                 var plugin = LoadCSharpPlugin(p);
+
                 csharpPlugins.Add(plugin);
             });
 
@@ -80,6 +88,24 @@ namespace LeaSearch.Core.Plugin
             //var plugins = csharpPlugins.Concat(pythonPlugins).Concat(executablePlugins).ToList();
             var plugins = csharpPlugins;
             return plugins;
+        }
+
+        private Plugin InitPlugin(Plugin plugin)
+        {
+            try
+            {
+                plugin.PluginInstance?.InitPlugin(this._sharedContext);
+                return plugin;
+            }
+            catch (Exception e)
+            {
+                Logger.Error($"plugin call init method error: {e.Message}");
+#if DEBUG
+                throw;
+#else
+                return null;
+#endif
+            }
         }
 
         /// <summary>
@@ -132,7 +158,9 @@ namespace LeaSearch.Core.Plugin
                 return null;
             }
 #endif
-            return new Plugin(pluginBase, pluginInstance);
+            var csharpPlugin = new Plugin(pluginBase, pluginInstance);
+
+            return InitPlugin(csharpPlugin);
         }
     }
 

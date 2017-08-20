@@ -7,6 +7,7 @@ using LeaSearch.Common.View;
 using LeaSearch.Core.HotKey;
 using LeaSearch.Core.Ioc;
 using LeaSearch.Infrastructure.Helper;
+using LeaSearch.Plugin;
 using LeaSearch.ViewModels;
 
 namespace LeaSearch.Views
@@ -205,7 +206,13 @@ namespace LeaSearch.Views
 
         private void OpenResultCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-
+            SharedContext sharedContext = Ioc.Reslove<SharedContext>();
+            var r = Ioc.Reslove<SearchResultViewModel>().CurrentItem?.SelectedAction?.Invoke(sharedContext);
+            if (r != null && r.Value)
+            {
+                this.Hide();
+                this.QueryTextBox.Clear();
+            }
         }
     }
 

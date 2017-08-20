@@ -1,4 +1,5 @@
-﻿using System.Windows.Media;
+﻿using System;
+using System.Windows.Media;
 
 namespace LeaSearch.Plugin
 {
@@ -16,5 +17,10 @@ namespace LeaSearch.Plugin
 
         public string IconPath { get; set; }
 
+        /// <summary>
+        /// choose after action
+        /// return true to hide leasearch after selected 
+        /// </summary>
+        public Func<SharedContext,bool> SelectedAction { get; set; }
     }
 }

@@ -18,6 +18,7 @@ using LeaSearch.Core.Theme;
 using LeaSearch.Infrastructure.ErrorReport;
 using LeaSearch.Infrastructure.Logger;
 using LeaSearch.Infrastructure.Storage;
+using LeaSearch.Plugin;
 using LeaSearch.ViewModels;
 using LeaSearch.Views;
 
@@ -106,8 +107,13 @@ namespace LeaSearch
 
             _builder.RegisterType<ThemeManager>();
             _builder.RegisterType<InternationalizationManager>().SingleInstance();
+
             _builder.RegisterType<HotKeyManager>().SingleInstance();
+
+            _builder.RegisterType<SharedMethod>().As<ISharedMethod>().SingleInstance();
+            _builder.RegisterType<SharedContext>().SingleInstance();
             _builder.RegisterType<PluginManager>().SingleInstance();
+
             _builder.RegisterType<QueryEngine>().SingleInstance();
 
             _builder.RegisterType<ShellViewModel>().SingleInstance();

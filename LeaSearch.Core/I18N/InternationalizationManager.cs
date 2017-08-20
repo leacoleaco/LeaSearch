@@ -27,6 +27,7 @@ namespace LeaSearch.Core.I18N
         }
 
 
+
         private void AddWoxLanguageDirectory()
         {
             var directory = Path.Combine(Constant.ProgramDirectory, Folder);
@@ -147,6 +148,11 @@ namespace LeaSearch.Core.I18N
                 Logger.Error($"|Internationalization.GetTranslation|No Translation for key {key}");
                 return $"No Translation for key {key}";
             }
+        }
+
+        public string GetTranslation(string i18NKey, object[] paramObjects)
+        {
+            return String.Format(GetTranslation(i18NKey), paramObjects);
         }
 
         //private void UpdatePluginMetadataTranslations()

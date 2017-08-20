@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using LeaSearch.Core.Plugin;
+using LeaSearch.Infrastructure.Logger;
 using LeaSearch.Plugin;
 
 namespace LeaSearch.Core.QueryEngine
@@ -90,17 +91,30 @@ namespace LeaSearch.Core.QueryEngine
                 //});
                 var currentSearchPlugin = suitableQueryPlugins[0];
                 OnBeginPluginSearch(currentSearchPlugin);
-                var queryListResult = currentSearchPlugin.PluginInstance.Query(queryParam);
 
-                //prepare some data for result display
-                NormalizeResult(currentSearchPlugin, queryListResult);
+                try
+                {
+                    var queryListResult = currentSearchPlugin.PluginInstance.Query(queryParam);
 
-                //return the result
-                OnGetResult(queryListResult);
+                    //prepare some data for result display
+                    NormalizeResult(currentSearchPlugin, queryListResult);
+
+                    //return the result
+                    OnGetResult(queryListResult);
+                }
+                catch (Exception e)
+                {
+                    Logger.Error($"plugin call query error: {e.Message}");
+#if DEBUG
+                    throw;
+#else
+                    OnGetResult(null);
+#endif
+                }
+
 
             }, _updateSource.Token);
 
-            task.Dispose();
         }
 
         private void NormalizeResult(Plugin.Plugin currentPlugin, QueryListResult queryListResult)
@@ -127,10 +141,24 @@ namespace LeaSearch.Core.QueryEngine
                     //command mode, display in first choice
                     result.Insert(0, p);
                 }
-                else if (p.PluginInstance.SuitableForThisQuery(queryParam))
+                else
                 {
-                    //other plugin is add to second choice if suitable
-                    result.Add(p);
+                    try
+                    {
+                        if (p.PluginInstance.SuitableForThisQuery(queryParam))
+                        {
+                            //other plugin is add to second choice if suitable
+                            result.Add(p);
+                        }
+
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error($"plugin call SuitableForThisQuery method error: {e.Message}");
+#if DEBUG
+                        throw;
+#endif
+                    }
                 }
             });
             return result.ToArray();
