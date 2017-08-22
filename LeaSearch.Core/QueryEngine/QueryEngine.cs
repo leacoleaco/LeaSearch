@@ -4,12 +4,22 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using LeaSearch.Core.Plugin;
 using LeaSearch.Infrastructure.Logger;
 using LeaSearch.Plugin;
 
 namespace LeaSearch.Core.QueryEngine
 {
+
+    /// <summary>
+    /// 查询引擎的策略思路：
+    /// 
+    /// 1、为每个查询的plugin都设置查询类型
+    /// 2、用户输入查询字符串后，首先进行字符串的判断，先预判是匹配那几个查询类型。
+    /// 3、吧符合要求的查询 plugin 都读到待执行 列表中
+    /// 4、吧每个插件的查询结果都进行一个排序优化，  对本次调用插件排名靠前的插件的数据也优先展示
+    /// </summary>
     public class QueryEngine
     {
         /// <summary>
@@ -20,7 +30,7 @@ namespace LeaSearch.Core.QueryEngine
         /// <summary>
         /// this is the split word that use to indicate action word   
         /// </summary>
-        private const char QueryActionSplitChar = ' ';
+        private const char PluginActiveKeyword = ' ';
 
         private const char NoneQueryPrefix = '*';
 
@@ -38,8 +48,14 @@ namespace LeaSearch.Core.QueryEngine
 
         }
 
+
+        /// <summary>
+        /// 启动查询
+        /// </summary>
+        /// <param name="queryText"></param>
         public void Query(string queryText)
         {
+            //如果什么字符都没传入，则不执行查询
             if (string.IsNullOrWhiteSpace(queryText)) return;
 
             //we need to trim start space
@@ -56,97 +72,204 @@ namespace LeaSearch.Core.QueryEngine
             };
 
 
-            if (!queryText.Contains(QueryActionSplitChar))
+            if (queryText.Contains(PluginActiveKeyword))
             {
-                // do the normal search
-                queryParam.Keyword = queryText;
-                queryParam.PrefixKeyword = "*";
-            }
-            else
-            {
-                //do the prefix search
-                var actionCharIndex = queryText.IndexOf(QueryActionSplitChar);
+
+                //do the plugin call mode search
+                //如果包含有插件关键字分隔符 判断是否有符合要求的插件
+                var actionCharIndex = queryText.IndexOf(PluginActiveKeyword);
                 string part1 = queryText.Substring(0, actionCharIndex);
                 string part2 = queryText.Substring(actionCharIndex + 1);
                 queryParam.PrefixKeyword = part1;
                 queryParam.Keyword = part2;
 
+                var pluginCallSuitablePlugins = SearchSuitablePlugins(queryParam, QueryMode.PluginCall);
+                if (pluginCallSuitablePlugins.Any())
+                {
+                    //进入 plugin call模式 
+                    DoPluginCallQuery(queryParam, pluginCallSuitablePlugins.First());
+                    return;
+                }
+
+                //否则继续建议模式
             }
 
+            //如果不包含插件关键词分割符，则进入  建议模式
+            // do the normal search
+            queryParam.Keyword = queryText;
+            queryParam.PrefixKeyword = "*";
 
-            var suitableQueryPlugins = SearchSuitablePlugins(queryParam);
-            OnGetSuitablePlugins(suitableQueryPlugins);
+            var suitableQueryPlugins = SearchSuitablePlugins(queryParam, QueryMode.Suggection);
+
             if (suitableQueryPlugins == null || !suitableQueryPlugins.Any())
             {
                 return;
             }
 
-            var task = Task.Run(() =>
+            //进入 suggect 模式
+            DoSuggestionQuery(queryParam, suitableQueryPlugins);
+
+
+        }
+
+        /// <summary>
+        /// 执行插件查询，每次只能有一个插件被激活
+        /// </summary>
+        /// <param name="queryParam"></param>
+        /// <param name="queryPlugin"></param>
+        private void DoPluginCallQuery(QueryParam queryParam, Plugin.Plugin queryPlugin)
+        {
+            if (string.IsNullOrWhiteSpace(queryParam.Keyword))
             {
-                //Dictionary<Plugin.Plugin, QueryListResult> results = new Dictionary<Plugin.Plugin, QueryListResult>();
-                //Parallel.ForEach(suitableQueryPlugins, plugin =>
-                //{
-                //    var queryListResult = plugin.PluginInstance.Query(queryParam);
-                //    results.Add(plugin, queryListResult);
-                //});
-                var currentSearchPlugin = suitableQueryPlugins[0];
+                //如果只是刚刚激活plugin call 查询模式
+                try
+                {
+                    var pluginCalledArg = queryPlugin.PluginInstance.PluginCallActive(queryParam);
+                    OnPluginCallActive(queryPlugin, pluginCalledArg);
+                }
+                catch (Exception e)
+                {
+                    Logger.Exception($"plugin call PluginCallActive error: {e.Message}", e);
+#if DEBUG
+                    MessageBox.Show($"plugin call PluginCallActive error: {e.Message}");
+#endif
+                }
+            }
+            else
+            {
+                //如果激活了 plugin call 查询模式并已经传入数据
 
 
-                OnBeginPluginSearch(currentSearchPlugin);
+                //使用 提供的 plugin ，进行查询
+                Task.Factory.StartNew(() =>
+                {
+
+                    var currentSearchPlugin = queryPlugin;
+
+                    OnPluginCallQuery(currentSearchPlugin);
+
+                    try
+                    {
+                        var queryListResult = currentSearchPlugin.PluginInstance.Query(queryParam);
+
+                        //预处理一些需要展示的数据
+                        //prepare some data for result display
+                        queryListResult?.Results?.ForEach(x =>
+                        {
+                            if (!string.IsNullOrWhiteSpace(x.IconPath))
+                            {
+                                x.IconPath = Path.Combine(currentSearchPlugin.PluginRootPath, x.IconPath);
+                            }
+                        });
+
+                        //return the result
+                        OnGetResult(queryListResult);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Exception($"plugin call query error: {e.Message}", e);
+#if DEBUG
+                        MessageBox.Show($"plugin call query error: {e.Message}");
+#endif
+                        OnGetResult(null);
+                    }
+
+
+
+                }, _updateSource.Token);
+
+
+
+            }
+        }
+
+        private void DoSuggestionQuery(QueryParam queryParam, Plugin.Plugin[] queryPlugins)
+        {
+
+            //使用 提供的所有 plugin ，按照关联度进行查询
+            //TODO : 按照关联度执行多个查询
+            Task.Factory.StartNew(() =>
+            {
+
+                var currentSearchPlugin = queryPlugins[0];
+
 
                 try
                 {
+                    OnSuggectionQuery(currentSearchPlugin);
+
                     var queryListResult = currentSearchPlugin.PluginInstance.Query(queryParam);
 
                     //prepare some data for result display
-                    NormalizeResult(currentSearchPlugin, queryListResult);
+                    queryListResult?.Results?.ForEach(x =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(x.IconPath))
+                        {
+                            x.IconPath = Path.Combine(currentSearchPlugin.PluginRootPath, x.IconPath);
+                        }
+                    });
 
                     //return the result
                     OnGetResult(queryListResult);
                 }
                 catch (Exception e)
                 {
-                    Logger.Error($"plugin call query error: {e.Message}");
+                    Logger.Exception($"plugin call query error: {e.Message}", e);
 #if DEBUG
-                    throw;
-#else
-                    OnGetResult(null);
+                    MessageBox.Show($"plugin call query error: {e.Message}");
 #endif
+                    OnGetResult(null);
                 }
+
+
 
 
             }, _updateSource.Token);
 
         }
 
-        private void NormalizeResult(Plugin.Plugin currentPlugin, QueryListResult queryListResult)
-        {
-            queryListResult?.Results?.ForEach(x =>
-            {
-                x.IconPath = Path.Combine(currentPlugin.PluginRootPath, x.IconPath);
-            });
-        }
 
-
-        private Plugin.Plugin[] SearchSuitablePlugins(QueryParam queryParam)
+        /// <summary>
+        /// list the plugin that suit for this query
+        /// 查找合适的查询插件
+        /// or suggection
+        /// </summary>
+        /// <param name="queryParam">
+        /// 如果为 插件调取 模式， 则本参数的 prefixKeyword 应该不能为空
+        /// 如果为 建议模式， 则 prefixKeyword必须为 “*”
+        /// </param>
+        /// <param name="queryMode"></param>
+        /// <returns></returns>
+        private Plugin.Plugin[] SearchSuitablePlugins(QueryParam queryParam, QueryMode queryMode)
         {
             var result = new List<Plugin.Plugin>();
             _pluginManager.GetPlugins()?.ForEach(p =>
             {
+
                 if (p.IsDisabled) return;
 
                 var prefixKeywords = p.PrefixKeywords;
                 if (prefixKeywords == null || prefixKeywords.Length <= 0) return;
 
-                if (prefixKeywords.Contains(queryParam.PrefixKeyword))
+                if (queryMode == QueryMode.PluginCall)
                 {
-                    //command mode, display in first choice
-                    result.Insert(0, p);
+                    if (prefixKeywords.Contains(queryParam.PrefixKeyword))
+                    {
+                        //pluin call mode, display in first choice
+                        result.Add(p);
+                    }
                 }
-                else
+                else if (queryMode == QueryMode.Suggection)
                 {
+
+                    //suggection mode
+
+                    //do not give suggection
+                    if (!p.PluginMetadata.ParticipateSuggection) return;
+
                     try
                     {
+                        //if plugin will give suggection ,then it must have some rule
                         if (p.PluginInstance.SuitableForThisQuery(queryParam))
                         {
                             //other plugin is add to second choice if suitable
@@ -156,12 +279,13 @@ namespace LeaSearch.Core.QueryEngine
                     }
                     catch (Exception e)
                     {
-                        Logger.Error($"plugin call SuitableForThisQuery method error: {e.Message}");
+                        Logger.Exception($"plugin call SuitableForThisQuery method error: {e.Message}", e);
 #if DEBUG
-                        throw;
+                        MessageBox.Show($"plugin call SuitableForThisQuery method error: {e.Message}");
 #endif
                     }
                 }
+
             });
             return result.ToArray();
         }
@@ -169,9 +293,27 @@ namespace LeaSearch.Core.QueryEngine
 
         #region Event
 
+        /// <summary>
+        /// 当得到了返回列表数据的时候，发生事件
+        /// </summary>
         public event Action<QueryListResult> GetResult;
-        public event Action<Plugin.Plugin[]> GetSuitablePlugins;
-        public event Action<Plugin.Plugin> BeginPluginSearch;
+
+
+        /// <summary>
+        /// 当激活插件查询，但是并未传入数据的时候 发生事件
+        /// </summary>
+        public event Action<Plugin.Plugin, PluginCalledArg> PluginCallActive;
+
+        /// <summary>
+        /// 当开始插件查询模式，并传入查询数据的时候 发生事件
+        /// </summary>
+        public event Action<Plugin.Plugin> PluginCallQuery;
+
+
+        /// <summary>
+        /// 开始建议模式 ，并传入查询数据的时候发生事件
+        /// </summary>
+        public event Action<Plugin.Plugin> SuggectionQuery;
 
         #endregion
 
@@ -180,14 +322,19 @@ namespace LeaSearch.Core.QueryEngine
             GetResult?.Invoke(result);
         }
 
-        protected virtual void OnGetSuitablePlugins(Plugin.Plugin[] suitablePlugins)
+        protected virtual void OnPluginCallActive(Plugin.Plugin calledPlugin, PluginCalledArg arg)
         {
-            GetSuitablePlugins?.Invoke(suitablePlugins);
+            PluginCallActive?.Invoke(calledPlugin, arg);
         }
 
-        protected virtual void OnBeginPluginSearch(Plugin.Plugin plugin)
+        protected virtual void OnPluginCallQuery(Plugin.Plugin plugin)
         {
-            BeginPluginSearch?.Invoke(plugin);
+            PluginCallQuery?.Invoke(plugin);
+        }
+
+        protected virtual void OnSuggectionQuery(Plugin.Plugin plugin)
+        {
+            SuggectionQuery?.Invoke(plugin);
         }
     }
 }

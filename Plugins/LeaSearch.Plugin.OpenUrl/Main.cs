@@ -57,6 +57,14 @@ namespace LeaSearch.Plugin.OpenUrl
             return IsUrl(queryParam.Keyword);
         }
 
+        public PluginCalledArg PluginCallActive(QueryParam queryParam)
+        {
+            return new PluginCalledArg()
+            {
+                InfoMessage = "请输入一个网址以用默认浏览器打开"
+            };
+        }
+
         public QueryListResult Query(QueryParam queryParam)
         {
             var res = new QueryListResult();

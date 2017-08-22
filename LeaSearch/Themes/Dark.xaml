@@ -62,4 +62,19 @@
         x:Key="ProgressBorderStyle"
         BasedOn="{StaticResource BaseProgressBorderStyle}"
         TargetType="{x:Type Border}" />
+
+
+    <Style
+        x:Key="NoticeErrorTextBlockStyle"
+        BasedOn="{StaticResource NullNotShowTextBlockStyle}"
+        TargetType="{x:Type TextBlock}">
+        <Setter Property="Foreground" Value="#FF2467" />
+    </Style>
+
+    <Style
+        x:Key="NoticeInfoTextBlockStyle"
+        BasedOn="{StaticResource NullNotShowTextBlockStyle}"
+        TargetType="{x:Type TextBlock}">
+        <Setter Property="Foreground" Value="AliceBlue" />
+    </Style>
 </ResourceDictionary>

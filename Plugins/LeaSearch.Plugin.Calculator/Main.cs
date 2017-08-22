@@ -18,9 +18,11 @@ namespace LeaSearch.Plugin.Calculator
 
         private static Regex regBrackets = new Regex(@"[\(\)\[\]]", RegexOptions.Compiled);
 
+        private SharedContext _sharedContext;
 
         public void InitPlugin(SharedContext sharedContext)
         {
+            _sharedContext = sharedContext;
         }
 
         public bool SuitableForThisQuery(QueryParam queryParam)
@@ -33,6 +35,14 @@ namespace LeaSearch.Plugin.Calculator
             }
             return true;
 
+        }
+
+        public PluginCalledArg PluginCallActive(QueryParam queryParam)
+        {
+            return new PluginCalledArg()
+            {
+                InfoMessage = _sharedContext.SharedMethod.GetTranslation("leasearch_plugin_calculator_pluginCallActive")
+            };
         }
 
 

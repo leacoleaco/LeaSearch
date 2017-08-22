@@ -4,6 +4,7 @@
     xmlns:controls="clr-namespace:LeaSearch.UI.Controls;assembly=LeaSearch.UI">
 
     <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Controls/TextBlockTheme.xaml" />
         <ResourceDictionary Source="Controls/ProgressBar.xaml" />
         <ResourceDictionary Source="Controls/ListBoxTheme.xaml" />
     </ResourceDictionary.MergedDictionaries>

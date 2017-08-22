@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using LeaSearch.Common.Env;
+using LeaSearch.Core.Plugin;
 using LeaSearch.Infrastructure.Logger;
 
 namespace LeaSearch.Core.I18N
@@ -18,12 +19,18 @@ namespace LeaSearch.Core.I18N
         private readonly List<string> _languageDirectories = new List<string>();
         private readonly List<ResourceDictionary> _oldResources = new List<ResourceDictionary>();
 
-        public InternationalizationManager()
+        private PluginManager _pluginManager;
+
+        public InternationalizationManager(PluginManager pluginManager)
         {
+            _pluginManager = pluginManager;
+
             LoadDefaultLanguage();
             // we don't want to load /Languages/en.xaml twice
             // so add wox language directory after load plugin language files
             AddWoxLanguageDirectory();
+
+            AddPluginLanguageDirectories();
         }
 
 
@@ -35,23 +42,24 @@ namespace LeaSearch.Core.I18N
         }
 
 
-        //private void AddPluginLanguageDirectories()
-        //{
-        //    foreach (var plugin in PluginManager.GetPluginsForInterface<IPluginI18n>())
-        //    {
-        //        var location = Assembly.GetAssembly(plugin.Plugin.GetType()).Location;
-        //        var dir = Path.GetDirectoryName(location);
-        //        if (dir != null)
-        //        {
-        //            var pluginThemeDirectory = Path.Combine(dir, Folder);
-        //            _languageDirectories.Add(pluginThemeDirectory);
-        //        }
-        //        else
-        //        {
-        //            Logger.Error($"|Internationalization.AddPluginLanguageDirectories|Can't find plugin path <{location}> for <{plugin.Metadata.Name}>");
-        //        }
-        //    }
-        //}
+        private void AddPluginLanguageDirectories()
+        {
+            foreach (var plugin in _pluginManager.GetPlugins())
+            {
+                if (!string.IsNullOrWhiteSpace(plugin.PluginRootPath))
+                {
+                    var pluginThemeDirectory = Path.Combine(plugin.PluginRootPath, Folder);
+                    if (Directory.Exists(pluginThemeDirectory))
+                    {
+                        _languageDirectories.Add(pluginThemeDirectory);
+                    }
+                    else
+                    {
+                        Logger.Error($"|Internationalization.AddPluginLanguageDirectories|Can't find plugin path <{pluginThemeDirectory}> for <{plugin.PluginMetadata?.Name}>");
+                    }
+                }
+            }
+        }
 
         private void LoadDefaultLanguage()
         {

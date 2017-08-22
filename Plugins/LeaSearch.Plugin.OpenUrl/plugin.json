@@ -3,6 +3,7 @@
   "Name": "OpenUrl",
   "DisplayName": "Url",
   "DefalutPrefixKeyword": "openurl|url",
+  "ParticipateSuggection": true,
   "Author": "Rico Lee",
   "Version": "1.0.0",
   "Language": "csharp",

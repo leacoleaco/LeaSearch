@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
 using LeaSearch.Common.Env;
 using LeaSearch.Common.ViewModel;
+using LeaSearch.Core.I18N;
 using LeaSearch.Core.Image;
 using LeaSearch.Core.Ioc;
 using LeaSearch.Core.QueryEngine;
+using LeaSearch.Plugin;
 
 namespace LeaSearch.ViewModels
 {
@@ -19,6 +22,8 @@ namespace LeaSearch.ViewModels
         private Visibility _resultVisibility = Visibility.Collapsed;
         private ResultMode _resultMode = ResultMode.ListOnly;
         private Core.Plugin.Plugin _currentSearchPlugin;
+        private string _errorTextBlock;
+        private string _infoTextBlock;
 
         #endregion
 
@@ -30,19 +35,14 @@ namespace LeaSearch.ViewModels
 
 
             var queryEngine = Ioc.Reslove<QueryEngine>();
-            queryEngine.GetSuitablePlugins += QueryEngine_GetSuitablePlugins;
-            queryEngine.BeginPluginSearch += QueryEngine_BeginPluginSearch;
+
+            queryEngine.PluginCallActive += QueryEngine_PluginCallActive;
+            queryEngine.PluginCallQuery += QueryEngine_PluginCallQuery;
+            queryEngine.SuggectionQuery += QueryEngine_SuggectionQuery;
             queryEngine.GetResult += QueryEngine_GetResult;
 
         }
 
-
-
-        //use action is just to convenient and decoupe 
-        #region Hotkey Action Event
-
-
-        #endregion
 
 
 
@@ -116,6 +116,31 @@ namespace LeaSearch.ViewModels
             }
         }
 
+        /// <summary>
+        /// Info we show
+        /// </summary>
+        public string InfoTextBlock
+        {
+            get { return _infoTextBlock; }
+            set
+            {
+                _infoTextBlock = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// error we show
+        /// </summary>
+        public string ErrorTextBlock
+        {
+            get { return _errorTextBlock; }
+            set
+            {
+                _errorTextBlock = value;
+                OnPropertyChanged();
+            }
+        }
 
         #endregion
 
@@ -147,6 +172,7 @@ namespace LeaSearch.ViewModels
         /// </summary>
         private void Query()
         {
+
             OnQueryStateChanged(QueryState.StartQuery);
 
             if (!string.IsNullOrEmpty(QueryText))
@@ -160,57 +186,56 @@ namespace LeaSearch.ViewModels
                 SuggestionResultViewModel.Clear();
                 SearchResultViewModel.Clear();
             }
+
+
         }
 
 
-        private void QueryEngine_GetSuitablePlugins(Core.Plugin.Plugin[] plugins)
+        private void QueryEngine_PluginCallActive(Core.Plugin.Plugin currentPlugin, PluginCalledArg pluginCalledArg)
         {
-            if (plugins != null && plugins.Any())
-            {
-                if (plugins.Length > 1)
-                {
-                    OnQueryStateChanged(QueryState.QuerySuitManyPlugin);
-                }
-                else
-                {
-                    OnQueryStateChanged(QueryState.QuerySuitOnePlugin);
-                }
+            //插件模式如果激活了，则产生指示
+            InfoTextBlock = pluginCalledArg.InfoMessage;
 
-                SuggestionResultViewModel.SetPlugins(plugins);
-            }
-            else
-            {
-                OnQueryStateChanged(QueryState.QuerySuitNoPlugin);
+            CurrentSearchPlugin = currentPlugin;
 
-                CurrentSearchPlugin = null;
-                SuggestionResultViewModel.Clear();
-            }
+            SearchResultViewModel.Clear();
+
         }
 
-        private void QueryEngine_BeginPluginSearch(Core.Plugin.Plugin currentPlugin)
+        private void QueryEngine_PluginCallQuery(Core.Plugin.Plugin currentPlugin)
         {
             CurrentSearchPlugin = currentPlugin;
+            //清理指示
+            InfoTextBlock = null;
             OnQueryStateChanged(QueryState.BeginPluginSearch);
+        }
+
+        private void QueryEngine_SuggectionQuery(Core.Plugin.Plugin currentPlugin)
+        {
+            //建议模式激活了，清理指示
+            InfoTextBlock = null;
         }
 
         private void QueryEngine_GetResult(Plugin.QueryListResult result)
         {
-            if (result.Results.Any())
+            if (result == null || !result.Results.Any())
+            {
+                OnQueryStateChanged(QueryState.QueryGotNoResult);
+
+                InfoTextBlock = @"notice_EnterChooseMode".GetTranslation();
+
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                {
+                    SearchResultViewModel.Clear();
+                }));
+            }
+            else
             {
                 OnQueryStateChanged(QueryState.QueryGotResult);
 
                 Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
                 {
                     SearchResultViewModel.SetResults(result.Results.ToArray());
-                }));
-            }
-            else
-            {
-                OnQueryStateChanged(QueryState.QueryGotNoResult);
-
-                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
-                {
-                    SearchResultViewModel.Clear();
                 }));
             }
 

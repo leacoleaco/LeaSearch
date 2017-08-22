@@ -32,7 +32,15 @@ namespace LeaSearch.Core.Plugin
         /// </summary>
         public bool IsDisabled => PluginMetadata == null || PluginSettings == null || PluginInstance == null || PluginSettings.Disabled;
 
+        /// <summary>
+        /// the mode that we call for this plugin 
+        /// </summary>
+        public QueryMode QueryMode { get; set; }
+    }
 
+    public enum QueryMode
+    {
+        Suggection, PluginCall
     }
 
     public class PluginBase

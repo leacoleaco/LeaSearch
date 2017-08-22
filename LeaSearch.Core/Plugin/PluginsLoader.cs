@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Windows;
 using LeaSearch.Infrastructure.Logger;
 using LeaSearch.Infrastructure.Storage;
 using Newtonsoft.Json;
@@ -79,8 +80,8 @@ namespace LeaSearch.Core.Plugin
             pluginBase.ForEach(p =>
             {
                 var plugin = LoadCSharpPlugin(p);
-
-                csharpPlugins.Add(plugin);
+                if (plugin != null)
+                    csharpPlugins.Add(plugin);
             });
 
             //var pythonPlugins = PythonPlugins(metadatas, settings.PythonDirectory);
@@ -101,10 +102,10 @@ namespace LeaSearch.Core.Plugin
             {
                 Logger.Error($"plugin call init method error: {e.Message}");
 #if DEBUG
-                throw;
-#else
-                return null;
+                MessageBox.Show($"plugin call init method error: {e.Message}");
 #endif
+
+                return null;
             }
         }
 

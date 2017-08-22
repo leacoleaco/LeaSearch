@@ -19,6 +19,11 @@ namespace LeaSearch.Plugin.HelloWorld
             return false;
         }
 
+        public PluginCalledArg PluginCallActive(QueryParam queryParam)
+        {
+            throw new NotImplementedException();
+        }
+
         public QueryListResult Query(QueryParam queryParam)
         {
             var result = new QueryListResult()

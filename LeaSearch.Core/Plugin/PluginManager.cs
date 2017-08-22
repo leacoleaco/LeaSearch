@@ -33,12 +33,6 @@ namespace LeaSearch.Core.Plugin
         public void LoadPlugins()
         {
             _plugins = _pluginsLoader.LoadPlugins(Constant.PluginsDirectory);
-
-            //init every plugin
-            _plugins.ForEach(x =>
-            {
-                x.PluginInstance.InitPlugin(_sharedContext);
-            });
         }
 
 

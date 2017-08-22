@@ -6,6 +6,7 @@ using LeaSearch.Common.Env;
 using LeaSearch.Common.View;
 using LeaSearch.Core.HotKey;
 using LeaSearch.Core.Ioc;
+using LeaSearch.Core.QueryEngine;
 using LeaSearch.Infrastructure.Helper;
 using LeaSearch.Plugin;
 using LeaSearch.ViewModels;
@@ -30,12 +31,18 @@ namespace LeaSearch.Views
         {
             base.OnInitialized(e);
 
+#if !DEBUG
+            this.ShowInTaskbar = false;
+            this.Topmost = true;
+#endif
+
             //Global wake up hotkey
             Ioc.Reslove<HotKeyManager>().WakeUpCommand += Instance_WakeUpCommand;
 
             var shellViewModel = Ioc.Reslove<ShellViewModel>();
             shellViewModel.ResultModeChanged += ShellView_ResultModeChanged;
             shellViewModel.QueryStateChanged += ShellViewModel_QueryStateChanged;
+
 
             if (_settings.HideOnStartup)
             {
@@ -141,7 +148,9 @@ namespace LeaSearch.Views
             {
                 this.Show();
                 //we need to focus textbox when wake up
-                QueryTextBox.Focus();
+                //why use dispatcher:
+                //http://blog.csdn.net/xuewen880926/article/details/6910561
+                Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Render,new Action(() => QueryTextBox.Focus()));
             }
         }
 
@@ -206,6 +215,9 @@ namespace LeaSearch.Views
 
         private void OpenResultCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+
+            //当点击了获取结果的按钮后
+            //根据是否执行命令后回调结果是 true 还是 false，来显示、隐藏输入框
             SharedContext sharedContext = Ioc.Reslove<SharedContext>();
             var r = Ioc.Reslove<SearchResultViewModel>().CurrentItem?.SelectedAction?.Invoke(sharedContext);
             if (r != null && r.Value)
