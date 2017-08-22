@@ -5,6 +5,7 @@
     xmlns:controls="clr-namespace:LeaSearch.UI.Controls;assembly=LeaSearch.UI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:userControls="clr-namespace:LeaSearch.UI.UserControls;assembly=LeaSearch.UI"
     xmlns:viewModels="clr-namespace:LeaSearch.ViewModels"
     xmlns:views="clr-namespace:LeaSearch.Views"
     Title="LeaSearch"
@@ -117,8 +118,12 @@
                     Y1="0"
                     Y2="0" />
             </Border>
-            <TextBlock Style="{DynamicResource NoticeInfoTextBlockStyle}" Text="{Binding InfoTextBlock, Mode=OneWay}" />
-            <TextBlock Style="{DynamicResource NoticeErrorTextBlockStyle}" Text="{Binding ErrorTextBlock, Mode=OneWay}" />
+
+            <userControls:NoticePanel
+                ErrorText="{Binding ErrorTextBlock, Mode=OneWay}"
+                IconSource="{Binding CurrentSearchPlugin.PluginIconPath, Mode=OneWay, Converter={StaticResource Path2ImageSourceConvert}}"
+                InfoText="{Binding InfoTextBlock, Mode=OneWay}" />
+
             <Grid x:Name="ResultGrid" MaxHeight="600">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition x:Name="PluginCol" Width="Auto" />

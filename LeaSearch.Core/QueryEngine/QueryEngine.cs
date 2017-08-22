@@ -103,6 +103,7 @@ namespace LeaSearch.Core.QueryEngine
 
             if (suitableQueryPlugins == null || !suitableQueryPlugins.Any())
             {
+                OnEndQuery();
                 return;
             }
 
@@ -315,6 +316,12 @@ namespace LeaSearch.Core.QueryEngine
         /// </summary>
         public event Action<Plugin.Plugin> SuggectionQuery;
 
+        /// <summary>
+        /// 指示结束查询，没有合适的查询插件或者查询词为空等，导致无法继续查询
+        /// </summary>
+        public event Action EndQuery;
+
+
         #endregion
 
         protected virtual void OnGetResult(QueryListResult result)
@@ -335,6 +342,11 @@ namespace LeaSearch.Core.QueryEngine
         protected virtual void OnSuggectionQuery(Plugin.Plugin plugin)
         {
             SuggectionQuery?.Invoke(plugin);
+        }
+
+        protected virtual void OnEndQuery()
+        {
+            EndQuery?.Invoke();
         }
     }
 }

@@ -75,6 +75,6 @@
         x:Key="NoticeInfoTextBlockStyle"
         BasedOn="{StaticResource NullNotShowTextBlockStyle}"
         TargetType="{x:Type TextBlock}">
-        <Setter Property="Foreground" Value="AliceBlue" />
+        <Setter Property="Foreground" Value="#FFAAAAAA" />
     </Style>
 </ResourceDictionary>

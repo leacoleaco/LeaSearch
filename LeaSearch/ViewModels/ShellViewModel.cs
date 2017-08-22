@@ -40,8 +40,10 @@ namespace LeaSearch.ViewModels
             queryEngine.PluginCallQuery += QueryEngine_PluginCallQuery;
             queryEngine.SuggectionQuery += QueryEngine_SuggectionQuery;
             queryEngine.GetResult += QueryEngine_GetResult;
+            queryEngine.EndQuery += QueryEngine_EndQuery;
 
         }
+
 
 
 
@@ -206,23 +208,31 @@ namespace LeaSearch.ViewModels
         {
             CurrentSearchPlugin = currentPlugin;
             //清理指示
-            InfoTextBlock = null;
+            ShowNotice(null);
             OnQueryStateChanged(QueryState.BeginPluginSearch);
         }
 
         private void QueryEngine_SuggectionQuery(Core.Plugin.Plugin currentPlugin)
         {
             //建议模式激活了，清理指示
-            InfoTextBlock = null;
+            ShowNotice(null);
         }
+
+        private void QueryEngine_EndQuery()
+        {
+            //如果查询终止，无法继续查询，则清理指示
+            ShowNotice(null);
+        }
+
 
         private void QueryEngine_GetResult(Plugin.QueryListResult result)
         {
             if (result == null || !result.Results.Any())
             {
+                //如果没有返回结果
                 OnQueryStateChanged(QueryState.QueryGotNoResult);
 
-                InfoTextBlock = @"notice_EnterChooseMode".GetTranslation();
+                ShowNotice(@"notice_NoResult".GetTranslation());
 
                 Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
                 {
@@ -231,7 +241,14 @@ namespace LeaSearch.ViewModels
             }
             else
             {
+                //如果返回了结果
                 OnQueryStateChanged(QueryState.QueryGotResult);
+
+                if (result.Results.Count > 1)
+                {
+                    //大于1条记录，则需要进行选择模式
+                    ShowNotice(@"notice_EnterChooseMode".GetTranslation());
+                }
 
                 Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
                 {
@@ -241,6 +258,15 @@ namespace LeaSearch.ViewModels
 
         }
 
+
+        /// <summary>
+        /// 显示提示
+        /// </summary>
+        /// <param name="noticeInfo"></param>
+        private void ShowNotice(string noticeInfo)
+        {
+            InfoTextBlock = noticeInfo;
+        }
 
         #endregion
 
