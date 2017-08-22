@@ -44,6 +44,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="StateAfterCommandInvoke.cs" />
     <Compile Include="IPlugin.cs" />
     <Compile Include="PluginCalledArg.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

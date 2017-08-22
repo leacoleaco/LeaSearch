@@ -38,7 +38,7 @@ namespace LeaSearch.Core.HotKey
             catch (Exception e)
             {
                 Logger.Exception(e.Message, e);
-                MessageUiHelper.ShowMessage("registerHotkeyFailed", hotkeyStr);
+                MessageUiHelper.ShowMessageWithInternation("registerHotkeyFailed", hotkeyStr);
             }
         }
 

@@ -16,7 +16,7 @@ namespace LeaSearch.Plugin.Calculator
             @"[ei]|[0-9]|[\+\-\*\/\^\., ""]|[\(\)\|\!\[\]]" +
             @")+$", RegexOptions.Compiled);
 
-        private static Regex regBrackets = new Regex(@"[\(\)\[\]]", RegexOptions.Compiled);
+        private static readonly Regex RegBrackets = new Regex(@"[\(\)\[\]]", RegexOptions.Compiled);
 
         private SharedContext _sharedContext;
 
@@ -25,7 +25,7 @@ namespace LeaSearch.Plugin.Calculator
             _sharedContext = sharedContext;
         }
 
-        public bool SuitableForThisQuery(QueryParam queryParam)
+        public bool SuitableForSuggectionQuery(QueryParam queryParam)
         {
             if (queryParam.Keyword.Length <= 2 // don't affect when user only input "e" or "i" keyword
                 || !regValidExpressChar.IsMatch(queryParam.Keyword)
@@ -64,7 +64,7 @@ namespace LeaSearch.Plugin.Calculator
 
         private bool IsBracketComplete(string query)
         {
-            var matchs = regBrackets.Matches(query);
+            var matchs = RegBrackets.Matches(query);
             var leftBracketCount = 0;
             foreach (Match match in matchs)
             {

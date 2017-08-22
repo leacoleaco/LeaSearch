@@ -21,6 +21,6 @@ namespace LeaSearch.Plugin
         /// choose after action
         /// return true to hide leasearch after selected 
         /// </summary>
-        public Func<SharedContext,bool> SelectedAction { get; set; }
+        public Func<SharedContext, StateAfterCommandInvoke> SelectedAction { get; set; }
     }
 }

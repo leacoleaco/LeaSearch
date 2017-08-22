@@ -12,12 +12,23 @@ namespace LeaSearch.Core.Notice
         /// </summary>
         /// <param name="i18NKey"></param>
         /// <param name="paramObjects"></param>
-        public static bool ShowMessage(string i18NKey, params object[] paramObjects)
+        public static bool ShowMessageWithInternation(string i18NKey, params object[] paramObjects)
         {
-            
+
             var translation = Ioc.Ioc.Reslove<InternationalizationManager>().GetTranslation(i18NKey);
             var s = string.Format(translation, paramObjects);
-            MessageBox.Show(s);
+
+            return ShowMessage(s);
+        }
+
+
+        /// <summary>
+        /// 返回国际化的提示信息
+        /// </summary>
+        /// <param name="message"></param>
+        public static bool ShowMessage(string message)
+        {
+            MessageBox.Show(message);
 
             return true;
         }

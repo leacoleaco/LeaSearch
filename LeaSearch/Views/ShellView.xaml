@@ -23,20 +23,13 @@
     <Window.Resources />
     <Window.CommandBindings>
         <CommandBinding Command="{StaticResource StartHelpCommand}" Executed="StartHelpCommand_Executed" />
-        <CommandBinding Command="{StaticResource EscCommand}" Executed="EscCommand_Executed" />
-        <CommandBinding Command="{StaticResource SelectNextItemCommand}" Executed="SelectNextItemCommand_Executed" />
-        <CommandBinding Command="{StaticResource SelectPrevItemCommand}" Executed="SelectPrevItemCommand_Executed" />
-        <CommandBinding Command="{StaticResource SelectNextPageCommand}" Executed="SelectNextPageCommand_Executed" />
-        <CommandBinding Command="{StaticResource SelectPrevPageCommand}" Executed="SelectPrevPageCommand_Executed" />
-        <CommandBinding Command="{StaticResource LoadContextMenuCommand}" Executed="LoadContextMenuCommand_Executed" />
-        <CommandBinding Command="{StaticResource LoadHistoryCommand}" Executed="LoadHistoryCommand_Executed" />
-        <CommandBinding Command="{StaticResource OpenResultCommand}" Executed="OpenResultCommand_Executed" />
     </Window.CommandBindings>
     <Window.InputBindings>
         <KeyBinding Key="Escape" Command="{StaticResource EscCommand}" />
         <KeyBinding Key="F1" Command="{StaticResource StartHelpCommand}" />
         <KeyBinding Key="Tab" Command="{StaticResource SelectNextItemCommand}" />
         <KeyBinding Command="{StaticResource SelectPrevItemCommand}" Gesture="Shift+Tab" />
+        <KeyBinding Key="J" Command="{Binding SelectNextItemCommand}" />
         <KeyBinding Command="{StaticResource SelectNextItemCommand}" Gesture="Ctrl+N" />
         <KeyBinding Command="{StaticResource SelectNextItemCommand}" Gesture="Ctrl+J" />
         <KeyBinding Command="{StaticResource SelectNextPageCommand}" Gesture="Ctrl+D" />
@@ -46,42 +39,42 @@
         <KeyBinding Command="{StaticResource LoadContextMenuCommand}" Gesture="Ctrl+0" />
         <KeyBinding Command="{StaticResource LoadHistoryCommand}" Gesture="Ctrl+H" />
         <KeyBinding Command="{StaticResource LoadContextMenuCommand}" Gesture="Shift+Enter" />
-        <KeyBinding Key="Enter" Command="{StaticResource OpenResultCommand}" />
-        <KeyBinding Command="{StaticResource OpenResultCommand}" Gesture="Ctrl+G" />
+        <KeyBinding Key="Enter" Command="{Binding EnterCommand}" />
+        <KeyBinding Command="{Binding OpenResultCommand}" Gesture="Ctrl+G" />
         <KeyBinding
-            Command="{StaticResource OpenResultCommand}"
+            Command="{Binding OpenResultCommand}"
             CommandParameter="0"
             Gesture="Alt+D1" />
         <KeyBinding
-            Command="{StaticResource OpenResultCommand}"
+            Command="{Binding OpenResultCommand}"
             CommandParameter="1"
             Gesture="Alt+D2" />
         <KeyBinding
-            Command="{StaticResource OpenResultCommand}"
+            Command="{Binding OpenResultCommand}"
             CommandParameter="2"
             Gesture="Alt+D3" />
         <KeyBinding
-            Command="{StaticResource OpenResultCommand}"
+            Command="{Binding OpenResultCommand}"
             CommandParameter="3"
             Gesture="Alt+D4" />
         <KeyBinding
-            Command="{StaticResource OpenResultCommand}"
+            Command="{Binding OpenResultCommand}"
             CommandParameter="4"
             Gesture="Alt+D5" />
         <KeyBinding
-            Command="{StaticResource OpenResultCommand}"
+            Command="{Binding OpenResultCommand}"
             CommandParameter="5"
             Gesture="Alt+D6" />
         <KeyBinding
-            Command="{StaticResource OpenResultCommand}"
+            Command="{Binding OpenResultCommand}"
             CommandParameter="6"
             Gesture="Alt+D7" />
         <KeyBinding
-            Command="{StaticResource OpenResultCommand}"
+            Command="{Binding OpenResultCommand}"
             CommandParameter="7"
             Gesture="Alt+D8" />
         <KeyBinding
-            Command="{StaticResource OpenResultCommand}"
+            Command="{Binding OpenResultCommand}"
             CommandParameter="8"
             Gesture="Alt+D9" />
     </Window.InputBindings>

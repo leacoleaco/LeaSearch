@@ -37,27 +37,67 @@ namespace LeaSearch.Views
 #endif
 
             //Global wake up hotkey
-            Ioc.Reslove<HotKeyManager>().WakeUpCommand += Instance_WakeUpCommand;
+            Ioc.Reslove<HotKeyManager>().WakeUpCommand += () =>
+            {
+                if (this.IsVisible)
+                {
+                    HideProgram();
+                }
+                else
+                {
+                    WakeUpProgram();
+                }
+            };
 
             var shellViewModel = Ioc.Reslove<ShellViewModel>();
             shellViewModel.ResultModeChanged += ShellView_ResultModeChanged;
             shellViewModel.QueryStateChanged += ShellViewModel_QueryStateChanged;
+            shellViewModel.NotifyWakeUpProgram += WakeUpProgram;
+            shellViewModel.NotifyHideProgram += HideProgram;
+
+
+            var searchResultViewModel = Ioc.Reslove<SearchResultViewModel>();
+            searchResultViewModel.AfterOpenResultCommand += (o) =>
+            {
+                //打开查询结果后，如果插件建议关闭主窗口，则隐藏窗口
+                if (!o.ShowProgram)
+                {
+                    HideProgram();
+                }
+            };
 
 
             if (_settings.HideOnStartup)
             {
-                this.Hide();
+                HideProgram();
             }
             else
             {
-                this.Show();
-                //we need to focus textbox when startup
-                QueryTextBox.Focus();
+                WakeUpProgram();
             }
 
         }
 
 
+        private void HideProgram()
+        {
+            this.Hide();
+            QueryTextBox.Text = string.Empty;
+        }
+
+        private void WakeUpProgram()
+        {
+            //if ignore hotkey on fullscreen, 
+            //double if to omit calling win32 function
+            if (_settings.IgnoreHotkeysOnFullscreen && WindowsInteropHelper.IsWindowFullscreen())
+                return;
+
+            this.Show();
+            //we need to focus textbox when wake up
+            //why use dispatcher:
+            //http://blog.csdn.net/xuewen880926/article/details/6910561
+            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Render, new Action(() => QueryTextBox.Focus()));
+        }
 
 
         /// <summary>
@@ -117,7 +157,8 @@ namespace LeaSearch.Views
                                case QueryState.BeginPluginSearch:
                                    ProgressBar.Visibility = Visibility.Visible;
                                    break;
-                               case QueryState.QueryGotResult:
+                               case QueryState.QueryGotOneResult:
+                               case QueryState.QueryGotManyResult:
                                    ProgressBar.Visibility = Visibility.Hidden;
                                    ResultGrid.Visibility = Visibility.Visible;
                                    break;
@@ -130,28 +171,6 @@ namespace LeaSearch.Views
                                    throw new ArgumentOutOfRangeException(nameof(queryState), queryState, null);
                            }
                        }));
-        }
-
-        private void Instance_WakeUpCommand()
-        {
-
-            //if ignore hotkey on fullscreen, 
-            //double if to omit calling win32 function
-            if (_settings.IgnoreHotkeysOnFullscreen && WindowsInteropHelper.IsWindowFullscreen())
-                return;
-
-            if (this.IsVisible)
-            {
-                this.Hide();
-            }
-            else
-            {
-                this.Show();
-                //we need to focus textbox when wake up
-                //why use dispatcher:
-                //http://blog.csdn.net/xuewen880926/article/details/6910561
-                Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Render,new Action(() => QueryTextBox.Focus()));
-            }
         }
 
 
@@ -176,57 +195,6 @@ namespace LeaSearch.Views
             //Process.Start("http://doc.getwox.com");
         }
 
-        private void EscCommand_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            this.Hide();
-            QueryTextBox.Text = string.Empty;
-        }
 
-        private void SelectNextItemCommand_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            Ioc.Reslove<SearchResultViewModel>().MoveNext();
-        }
-
-        private void SelectPrevItemCommand_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            Ioc.Reslove<SearchResultViewModel>().MovePrev();
-        }
-
-        private void SelectNextPageCommand_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-
-            Ioc.Reslove<SearchResultViewModel>().MoveNext(8);
-        }
-
-        private void SelectPrevPageCommand_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            Ioc.Reslove<SearchResultViewModel>().MovePrev(8);
-        }
-
-        private void LoadContextMenuCommand_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void LoadHistoryCommand_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void OpenResultCommand_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-
-            //当点击了获取结果的按钮后
-            //根据是否执行命令后回调结果是 true 还是 false，来显示、隐藏输入框
-            SharedContext sharedContext = Ioc.Reslove<SharedContext>();
-            var r = Ioc.Reslove<SearchResultViewModel>().CurrentItem?.SelectedAction?.Invoke(sharedContext);
-            if (r != null && r.Value)
-            {
-                this.Hide();
-                this.QueryTextBox.Clear();
-            }
-        }
     }
-
-
 }

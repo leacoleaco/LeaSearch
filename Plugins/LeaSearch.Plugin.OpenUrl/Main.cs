@@ -52,7 +52,7 @@ namespace LeaSearch.Plugin.OpenUrl
             _sharedContext = sharedContext;
         }
 
-        public bool SuitableForThisQuery(QueryParam queryParam)
+        public bool SuitableForSuggectionQuery(QueryParam queryParam)
         {
             return IsUrl(queryParam.Keyword);
         }
@@ -84,12 +84,12 @@ namespace LeaSearch.Plugin.OpenUrl
                         try
                         {
                             Process.Start(keyword);
-                            return true;
+                            return new StateAfterCommandInvoke();
                         }
                         catch (Exception ex)
                         {
-                            x.SharedMethod.ShowMessage("leasearch_plugin_openurl_canot_open_url", keyword);
-                            return false;
+                            x.SharedMethod.ShowMessageWithTranslation("leasearch_plugin_openurl_canot_open_url", keyword);
+                            return new StateAfterCommandInvoke();
                         }
                     }
                 }

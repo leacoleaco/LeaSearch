@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
+using System.Windows.Input;
 using System.Windows.Threading;
 using LeaSearch.Common.Env;
 using LeaSearch.Common.ViewModel;
 using LeaSearch.Core.I18N;
-using LeaSearch.Core.Image;
 using LeaSearch.Core.Ioc;
 using LeaSearch.Core.QueryEngine;
 using LeaSearch.Plugin;
+using Microsoft.Expression.Interactivity.Core;
 
 namespace LeaSearch.ViewModels
 {
@@ -24,6 +23,7 @@ namespace LeaSearch.ViewModels
         private Core.Plugin.Plugin _currentSearchPlugin;
         private string _errorTextBlock;
         private string _infoTextBlock;
+        private QueryState _queryState = QueryState.StartQuery;
 
         #endregion
 
@@ -34,6 +34,8 @@ namespace LeaSearch.ViewModels
             DetailResultViewModel = detailResultViewModel;
 
 
+
+
             var queryEngine = Ioc.Reslove<QueryEngine>();
 
             queryEngine.PluginCallActive += QueryEngine_PluginCallActive;
@@ -42,7 +44,94 @@ namespace LeaSearch.ViewModels
             queryEngine.GetResult += QueryEngine_GetResult;
             queryEngine.EndQuery += QueryEngine_EndQuery;
 
+
+            EnterCommand = new ActionCommand(o =>
+             {
+
+                 switch (KeyInputMode)
+                 {
+                     case KeyInputMode.Input:
+                         switch (_queryState)
+                         {
+                             case QueryState.StartQuery:
+                                 break;
+                             case QueryState.BeginPluginSearch:
+                                 break;
+                             case QueryState.QuerySuitNoPlugin:
+                                 break;
+                             case QueryState.QuerySuitOnePlugin:
+                                 break;
+                             case QueryState.QuerySuitManyPlugin:
+                                 break;
+                             case QueryState.QueryGotNoResult:
+                                 break;
+                             case QueryState.QueryGotOneResult:
+                                 SearchResultViewModel.OpenResult();
+                                 break;
+                             case QueryState.QueryGotManyResult:
+                                 KeyInputMode = KeyInputMode.Select;
+                                 break;
+                             default:
+                                 throw new ArgumentOutOfRangeException();
+                         }
+                         break;
+                     case KeyInputMode.Select:
+                         switch (_queryState)
+                         {
+                             case QueryState.StartQuery:
+                                 break;
+                             case QueryState.BeginPluginSearch:
+                                 break;
+                             case QueryState.QuerySuitNoPlugin:
+                                 break;
+                             case QueryState.QuerySuitOnePlugin:
+                                 break;
+                             case QueryState.QuerySuitManyPlugin:
+                                 break;
+                             case QueryState.QueryGotOneResult:
+                                 break;
+                             case QueryState.QueryGotManyResult:
+                                 SearchResultViewModel.OpenResult();
+                                 break;
+                             case QueryState.QueryGotNoResult:
+                                 break;
+                             default:
+                                 throw new ArgumentOutOfRangeException();
+                         }
+                         break;
+                     default:
+                         throw new ArgumentOutOfRangeException();
+                 }
+             });
+
+            EscCommand = new ActionCommand(o =>
+           {
+               switch (KeyInputMode)
+               {
+                   case KeyInputMode.Input:
+                       OnNotifyHideProgram();
+                       break;
+                   case KeyInputMode.Select:
+                       KeyInputMode = KeyInputMode.Input;
+                       break;
+                   default:
+                       throw new ArgumentOutOfRangeException();
+               }
+
+           });
+
+            SelectNextItemCommand = new ActionCommand(o =>
+              {
+                  if (KeyInputMode == KeyInputMode.Select)
+                  {
+                      SearchResultViewModel.MoveNext();
+                  }
+              });
         }
+
+
+
+
 
 
 
@@ -91,6 +180,12 @@ namespace LeaSearch.ViewModels
         /// detail result
         /// </summary>
         public DetailResultViewModel DetailResultViewModel { get; }
+
+
+        /// <summary>
+        /// 目前按键模式
+        /// </summary>
+        public KeyInputMode KeyInputMode { get; private set; } = KeyInputMode.Input;
 
         /// <summary>
         /// should the result show
@@ -144,6 +239,26 @@ namespace LeaSearch.ViewModels
             }
         }
 
+
+
+        #endregion
+
+        #region Command
+
+        public ICommand OpenResultCommand { get; }
+
+        private ICommand EscCommand { get; }
+
+        public ICommand EnterCommand { get; }
+
+        public ICommand SelectNextItemCommand { get; }
+
+        #endregion
+
+        #region Method
+
+
+
         #endregion
 
         #region Event
@@ -161,7 +276,26 @@ namespace LeaSearch.ViewModels
         public event Action<QueryState> QueryStateChanged;
         protected virtual void OnQueryStateChanged(QueryState queryState)
         {
+            _queryState = queryState;
             QueryStateChanged?.Invoke(queryState);
+        }
+
+        /// <summary>
+        /// 通知唤醒界面
+        /// </summary>
+        public event Action NotifyWakeUpProgram;
+        protected virtual void OnNotifyWakeUpProgram()
+        {
+            NotifyWakeUpProgram?.Invoke();
+        }
+
+        /// <summary>
+        /// 通知隐藏界面
+        /// </summary>
+        public event Action NotifyHideProgram;
+        protected virtual void OnNotifyHideProgram()
+        {
+            NotifyHideProgram?.Invoke();
         }
         #endregion
 
@@ -242,17 +376,23 @@ namespace LeaSearch.ViewModels
             else
             {
                 //如果返回了结果
-                OnQueryStateChanged(QueryState.QueryGotResult);
+
 
                 if (result.Results.Count > 1)
                 {
                     //大于1条记录，则需要进行选择模式
                     ShowNotice(@"notice_EnterChooseMode".GetTranslation());
+                    OnQueryStateChanged(QueryState.QueryGotManyResult);
+                }
+                else
+                {
+                    //只返回了一条记录
+                    OnQueryStateChanged(QueryState.QueryGotOneResult);
                 }
 
                 Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
                 {
-                    SearchResultViewModel.SetResults(result.Results.ToArray());
+                    SearchResultViewModel.SetResults(result);
                 }));
             }
 
@@ -270,13 +410,34 @@ namespace LeaSearch.ViewModels
 
         #endregion
 
+    }
+
+    /// <summary>
+    /// 目前点击按键用作什么模式
+    /// </summary>
+    public enum KeyInputMode
+    {
+        /// <summary>
+        /// 输入模式
+        /// </summary>
+        Input,
+        /// <summary>
+        /// 选择模式
+        /// </summary>
+        Select
 
     }
 
     public enum QueryState
     {
-        StartQuery, QuerySuitNoPlugin, QuerySuitOnePlugin, QuerySuitManyPlugin, QueryGotResult, QueryGotNoResult,
-        BeginPluginSearch
+        StartQuery,
+        BeginPluginSearch,
+        QuerySuitNoPlugin,
+        QuerySuitOnePlugin,
+        QuerySuitManyPlugin,
+        QueryGotOneResult,
+        QueryGotManyResult,
+        QueryGotNoResult,
     }
 
     public enum ResultMode

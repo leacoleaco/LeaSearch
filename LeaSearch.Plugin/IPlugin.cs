@@ -24,7 +24,7 @@ namespace LeaSearch.Plugin
         /// </summary>
         /// <param name="queryParam"></param>
         /// <returns></returns>
-        bool SuitableForThisQuery(QueryParam queryParam);
+        bool SuitableForSuggectionQuery(QueryParam queryParam);
 
         ///  <summary>
         ///  this method will call when in "direct call plugin mode",

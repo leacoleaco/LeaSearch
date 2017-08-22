@@ -24,17 +24,22 @@ namespace LeaSearch.Core.Plugin
             return Ioc.Ioc.Reslove<InternationalizationManager>().GetTranslation(i18NKey, paramObjects);
         }
 
-        /// <summary>
-        /// Show message in UI.
-        /// 在主界面弹出消息提示.
-        /// </summary>
-        /// <param name="i18NKey"></param>
-        /// <param name="paramObjects"></param>
-        /// <returns></returns>
-        public bool ShowMessage(string i18NKey, params object[] paramObjects)
+        public bool ShowMessage(string message)
         {
-            return MessageUiHelper.ShowMessage(i18NKey, paramObjects);
+            return MessageUiHelper.ShowMessage(message);
         }
+
+        public bool ShowMessageWithFormat(string format, params object[] paramObjects)
+        {
+            return MessageUiHelper.ShowMessage(string.Format(format, paramObjects));
+        }
+
+        public bool ShowMessageWithTranslation(string i18NKey, params object[] paramObjects)
+        {
+            return MessageUiHelper.ShowMessageWithInternation(i18NKey, paramObjects);
+        }
+
+      
 
         public void LogInfo(string message)
         {

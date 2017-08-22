@@ -271,7 +271,7 @@ namespace LeaSearch.Core.QueryEngine
                     try
                     {
                         //if plugin will give suggection ,then it must have some rule
-                        if (plugin.PluginInstance.SuitableForThisQuery(queryParam))
+                        if (plugin.PluginInstance.SuitableForSuggectionQuery(queryParam))
                         {
                             //other plugin is add to second choice if suitable
                             result.Add(plugin);

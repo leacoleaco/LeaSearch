@@ -13,7 +13,7 @@ namespace LeaSearch.Plugin.Baidu
             _sharedContext = sharedContext;
         }
 
-        public bool SuitableForThisQuery(QueryParam queryParam)
+        public bool SuitableForSuggectionQuery(QueryParam queryParam)
         {
             return true;
         }
@@ -51,11 +51,11 @@ namespace LeaSearch.Plugin.Baidu
                             if (!string.IsNullOrWhiteSpace(url))
                             {
                                 Process.Start(url);
-                                return true;
+                                return new StateAfterCommandInvoke();
                             }
                             else
                             {
-                                return false;
+                                return new StateAfterCommandInvoke();
                             }
                         }
 

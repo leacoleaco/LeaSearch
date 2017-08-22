@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Threading;
+using System.Linq;
 using LeaSearch.Common.Env;
 using LeaSearch.Common.ViewModel;
 using LeaSearch.Plugin;
@@ -13,9 +11,12 @@ namespace LeaSearch.ViewModels
     {
         private ResultItem _currentItem;
         private int _currentIndex;
+        private SharedContext _sharedContext;
+        private QueryListResult _queryListResult;
 
-        public SearchResultViewModel(Settings settings) : base(settings)
+        public SearchResultViewModel(Settings settings, SharedContext sharedContext) : base(settings)
         {
+            _sharedContext = sharedContext;
         }
 
         public int CurrentIndex
@@ -39,24 +40,13 @@ namespace LeaSearch.ViewModels
         }
 
         public ObservableCollection<ResultItem> Results { get; } = new ObservableCollection<ResultItem>();
+        #region Event
 
-
-
-        public void SetResults(ResultItem[] list)
-        {
-
-            Results.Clear();
-            foreach (var resultItem in list)
-            {
-                Results.Add(resultItem);
-            }
-
-        }
-
-        public void Clear()
-        {
-            Results.Clear();
-        }
+        /// <summary>
+        /// 执行打开命令完毕
+        /// </summary>
+        public event Action<StateAfterCommandInvoke> AfterOpenResultCommand;
+        #endregion
 
         private int NewIndex(int i)
         {
@@ -73,15 +63,69 @@ namespace LeaSearch.ViewModels
             }
         }
 
-        public void MoveNext(int pageSize = 1)
+        /// <summary>
+        /// 设置查询结果
+        /// </summary>
+        /// <param name="queryListResult"></param>
+        public void SetResults(QueryListResult queryListResult)
         {
-            CurrentIndex = NewIndex(CurrentIndex + pageSize);
+            _queryListResult = queryListResult;
+
+            if (queryListResult == null) return;
+            
+            Results.Clear();
+            foreach (var resultItem in queryListResult.Results)
+            {
+                Results.Add(resultItem);
+            }
         }
 
-        public void MovePrev(int pageSize = 1)
+        public void Clear()
         {
-            CurrentIndex = NewIndex(CurrentIndex - pageSize);
+            Results.Clear();
         }
 
+        public void MoveNext(int stepSize = 1)
+        {
+            CurrentIndex = NewIndex(CurrentIndex + stepSize);
+        }
+
+        public void MovePrev(int stepSize = 1)
+        {
+            CurrentIndex = NewIndex(CurrentIndex - stepSize);
+        }
+
+
+        /// <summary>
+        ///打开查询结果
+        /// </summary>
+        public void OpenResult()
+        {
+            if (!Results.Any()) return;
+
+            if (Results.Count == 1) CurrentItem = Results[0];
+
+            if (CurrentItem == null) return;
+
+            //当点击了获取结果的按钮后
+            //按照不同的结果执行不同的操作方案
+            var r = CurrentItem.SelectedAction?.Invoke(_sharedContext);
+            if (r != null)
+            {
+                OnAfterOpenResultCommand(r);
+            }
+
+            //执行全局的 selectedAction，仅适用于 plugin call 模式
+            var r1 = _queryListResult?.SelectedAction?.Invoke(_sharedContext, CurrentItem);
+            if (r1 != null)
+            {
+                OnAfterOpenResultCommand(r1);
+            }
+        }
+
+        protected virtual void OnAfterOpenResultCommand(StateAfterCommandInvoke state)
+        {
+            AfterOpenResultCommand?.Invoke(state);
+        }
     }
 }

@@ -5,11 +5,14 @@ namespace LeaSearch.Plugin.HelloWorld
 {
     public class Main : IPlugin
     {
+        private SharedContext _sharedContext;
+
         public void InitPlugin(SharedContext sharedContext)
         {
+            _sharedContext = sharedContext;
         }
 
-        public bool SuitableForThisQuery(QueryParam queryParam)
+        public bool SuitableForSuggectionQuery(QueryParam queryParam)
         {
             var queryParamPrefixKeyword = queryParam.PrefixKeyword.ToLower();
             if (queryParamPrefixKeyword == "lea" || queryParamPrefixKeyword == "leasearch")
@@ -21,7 +24,7 @@ namespace LeaSearch.Plugin.HelloWorld
 
         public PluginCalledArg PluginCallActive(QueryParam queryParam)
         {
-            throw new NotImplementedException();
+            return new PluginCalledArg() { InfoMessage = _sharedContext.SharedMethod.GetTranslation(@"leasearch_plugin_helloWorld_pluginCallActive") };
         }
 
         public QueryListResult Query(QueryParam queryParam)
@@ -30,7 +33,16 @@ namespace LeaSearch.Plugin.HelloWorld
             {
                 Results =
                 {
-                    new ResultItem() { IconPath = "app.png", Title = "Query Sample For C#  row1", SubTitle = $"Query:{queryParam.Keyword}" },
+                    new ResultItem() {
+                        IconPath = "app.png",
+                        Title = "Query Sample For C#  row1",
+                        SubTitle = $"Query:{queryParam.Keyword}" ,
+                        SelectedAction =shareContext =>
+                        {
+                            shareContext.SharedMethod.ShowMessage("test");
+                            return new StateAfterCommandInvoke();
+                        }
+                    },
                     new ResultItem() { IconPath = "app.png", Title = "Query Sample For C#  row2", SubTitle = $"Query:{queryParam.Keyword}" },
                     new ResultItem() { IconPath = "app.png", Title = "Query Sample For C#  row3", SubTitle = $"Query:{queryParam.Keyword}" },
                     new ResultItem() { IconPath = "app.png", Title = "Query Sample For C#  row4", SubTitle = $"Query:{queryParam.Keyword}" },
@@ -49,7 +61,16 @@ namespace LeaSearch.Plugin.HelloWorld
                     new ResultItem() { IconPath = "app.png", Title = "Query Sample For C#  row17", SubTitle = $"Query:{queryParam.Keyword}" },
                     new ResultItem() { IconPath = "app.png", Title = "Query Sample For C#  row18", SubTitle = $"Query:{queryParam.Keyword}" },
                     new ResultItem() { IconPath = "app.png", Title = "Query Sample For C#  row19", SubTitle = $"Query:{queryParam.Keyword}" },
-                }
+                },
+
+                SelectedAction = (shareContext, resultItem) =>
+                 {
+                     shareContext.SharedMethod.ShowMessage(resultItem.Title);
+
+                     //执行命令后保持程序不隐藏
+                     return new StateAfterCommandInvoke() { ShowProgram = true };
+                 },
+
             };
             Thread.Sleep(3000);
             return result;
