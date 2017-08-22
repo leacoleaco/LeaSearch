@@ -70,6 +70,7 @@ namespace LeaSearch.ViewModels
                                  break;
                              case QueryState.QueryGotManyResult:
                                  KeyInputMode = KeyInputMode.Select;
+                                 searchResultViewModel.SelectFirst();
                                  break;
                              default:
                                  throw new ArgumentOutOfRangeException();
@@ -124,7 +125,15 @@ namespace LeaSearch.ViewModels
               {
                   if (KeyInputMode == KeyInputMode.Select)
                   {
-                      SearchResultViewModel.MoveNext();
+                      SearchResultViewModel.SelectNext();
+                  }
+              });
+
+            SelectPrefItemCommand = new ActionCommand(o =>
+              {
+                  if (KeyInputMode == KeyInputMode.Select)
+                  {
+                      SearchResultViewModel.SelectPrev();
                   }
               });
         }
@@ -252,6 +261,8 @@ namespace LeaSearch.ViewModels
         public ICommand EnterCommand { get; }
 
         public ICommand SelectNextItemCommand { get; }
+
+        public ICommand SelectPrefItemCommand { get; set; }
 
         #endregion
 

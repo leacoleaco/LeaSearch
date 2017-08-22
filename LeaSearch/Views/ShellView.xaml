@@ -30,6 +30,7 @@
         <KeyBinding Key="Tab" Command="{StaticResource SelectNextItemCommand}" />
         <KeyBinding Command="{StaticResource SelectPrevItemCommand}" Gesture="Shift+Tab" />
         <KeyBinding Key="J" Command="{Binding SelectNextItemCommand}" />
+        <KeyBinding Key="K" Command="{Binding SelectPrefItemCommand}" />
         <KeyBinding Command="{StaticResource SelectNextItemCommand}" Gesture="Ctrl+N" />
         <KeyBinding Command="{StaticResource SelectNextItemCommand}" Gesture="Ctrl+J" />
         <KeyBinding Command="{StaticResource SelectNextPageCommand}" Gesture="Ctrl+D" />

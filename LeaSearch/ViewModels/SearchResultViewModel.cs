@@ -72,7 +72,7 @@ namespace LeaSearch.ViewModels
             _queryListResult = queryListResult;
 
             if (queryListResult == null) return;
-            
+
             Results.Clear();
             foreach (var resultItem in queryListResult.Results)
             {
@@ -85,12 +85,17 @@ namespace LeaSearch.ViewModels
             Results.Clear();
         }
 
-        public void MoveNext(int stepSize = 1)
+        public void SelectFirst()
+        {
+            CurrentIndex = 0;
+        }
+
+        public void SelectNext(int stepSize = 1)
         {
             CurrentIndex = NewIndex(CurrentIndex + stepSize);
         }
 
-        public void MovePrev(int stepSize = 1)
+        public void SelectPrev(int stepSize = 1)
         {
             CurrentIndex = NewIndex(CurrentIndex - stepSize);
         }
@@ -127,5 +132,6 @@ namespace LeaSearch.ViewModels
         {
             AfterOpenResultCommand?.Invoke(state);
         }
+
     }
 }
