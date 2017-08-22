@@ -16,7 +16,9 @@
             Height="20"
             Margin="4,0"
             DockPanel.Dock="Left"
-            Source="{Binding IconSource, ElementName=noticePanel}" />
+            RenderOptions.BitmapScalingMode="HighQuality"
+            Source="{Binding IconSource, ElementName=noticePanel}"
+            UseLayoutRounding="True" />
         <StackPanel>
             <TextBlock
                 x:Name="NoticeInfoTextBlock"

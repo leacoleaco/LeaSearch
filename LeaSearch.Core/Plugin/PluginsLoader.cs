@@ -100,9 +100,9 @@ namespace LeaSearch.Core.Plugin
             }
             catch (Exception e)
             {
-                Logger.Error($"plugin call init method error: {e.Message}");
+                Logger.Error($"plugin <{plugin}> call init method throw error: {e.Message}");
 #if DEBUG
-                MessageBox.Show($"plugin call init method error: {e.Message}");
+                MessageBox.Show($"plugin <{plugin}> call init method throw error: {e.Message}");
 #endif
 
                 return null;

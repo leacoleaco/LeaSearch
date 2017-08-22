@@ -36,6 +36,16 @@ namespace LeaSearch.Core.Plugin
         /// the mode that we call for this plugin 
         /// </summary>
         public QueryMode QueryMode { get; set; }
+
+        public override string ToString()
+        {
+            if (this.PluginMetadata != null && string.IsNullOrEmpty(this.PluginMetadata.Name))
+            {
+                return this.PluginMetadata.Name;
+            }
+
+            return base.ToString();
+        }
     }
 
     public enum QueryMode

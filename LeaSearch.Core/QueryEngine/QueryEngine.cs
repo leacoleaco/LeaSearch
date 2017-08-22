@@ -130,9 +130,9 @@ namespace LeaSearch.Core.QueryEngine
                 }
                 catch (Exception e)
                 {
-                    Logger.Exception($"plugin call PluginCallActive error: {e.Message}", e);
+                    Logger.Exception($"plugin <{queryPlugin}> call PluginCallActive error: {e.Message}", e);
 #if DEBUG
-                    MessageBox.Show($"plugin call PluginCallActive error: {e.Message}");
+                    MessageBox.Show($"plugin <{queryPlugin}> call PluginCallActive error: {e.Message}");
 #endif
                 }
             }
@@ -168,9 +168,9 @@ namespace LeaSearch.Core.QueryEngine
                     }
                     catch (Exception e)
                     {
-                        Logger.Exception($"plugin call query error: {e.Message}", e);
+                        Logger.Exception($"plugin <{queryPlugin}> call query error: {e.Message}", e);
 #if DEBUG
-                        MessageBox.Show($"plugin call query error: {e.Message}");
+                        MessageBox.Show($"plugin <{queryPlugin}> call query error: {e.Message}");
 #endif
                         OnGetResult(null);
                     }
@@ -192,21 +192,21 @@ namespace LeaSearch.Core.QueryEngine
             Task.Factory.StartNew(() =>
             {
 
-                var currentSearchPlugin = queryPlugins[0];
+                var queryPlugin = queryPlugins[0];
 
 
                 try
                 {
-                    OnSuggectionQuery(currentSearchPlugin);
+                    OnSuggectionQuery(queryPlugin);
 
-                    var queryListResult = currentSearchPlugin.PluginInstance.Query(queryParam);
+                    var queryListResult = queryPlugin.PluginInstance.Query(queryParam);
 
                     //prepare some data for result display
                     queryListResult?.Results?.ForEach(x =>
                     {
                         if (!string.IsNullOrWhiteSpace(x.IconPath))
                         {
-                            x.IconPath = Path.Combine(currentSearchPlugin.PluginRootPath, x.IconPath);
+                            x.IconPath = Path.Combine(queryPlugin.PluginRootPath, x.IconPath);
                         }
                     });
 
@@ -215,9 +215,9 @@ namespace LeaSearch.Core.QueryEngine
                 }
                 catch (Exception e)
                 {
-                    Logger.Exception($"plugin call query error: {e.Message}", e);
+                    Logger.Exception($"plugin <{queryPlugin}> call query error: {e.Message}", e);
 #if DEBUG
-                    MessageBox.Show($"plugin call query error: {e.Message}");
+                    MessageBox.Show($"plugin <{queryPlugin}> call query error: {e.Message}");
 #endif
                     OnGetResult(null);
                 }
@@ -244,12 +244,12 @@ namespace LeaSearch.Core.QueryEngine
         private Plugin.Plugin[] SearchSuitablePlugins(QueryParam queryParam, QueryMode queryMode)
         {
             var result = new List<Plugin.Plugin>();
-            _pluginManager.GetPlugins()?.ForEach(p =>
+            _pluginManager.GetPlugins()?.ForEach(plugin =>
             {
 
-                if (p.IsDisabled) return;
+                if (plugin.IsDisabled) return;
 
-                var prefixKeywords = p.PrefixKeywords;
+                var prefixKeywords = plugin.PrefixKeywords;
                 if (prefixKeywords == null || prefixKeywords.Length <= 0) return;
 
                 if (queryMode == QueryMode.PluginCall)
@@ -257,7 +257,7 @@ namespace LeaSearch.Core.QueryEngine
                     if (prefixKeywords.Contains(queryParam.PrefixKeyword))
                     {
                         //pluin call mode, display in first choice
-                        result.Add(p);
+                        result.Add(plugin);
                     }
                 }
                 else if (queryMode == QueryMode.Suggection)
@@ -266,23 +266,23 @@ namespace LeaSearch.Core.QueryEngine
                     //suggection mode
 
                     //do not give suggection
-                    if (!p.PluginMetadata.ParticipateSuggection) return;
+                    if (!plugin.PluginMetadata.ParticipateSuggection) return;
 
                     try
                     {
                         //if plugin will give suggection ,then it must have some rule
-                        if (p.PluginInstance.SuitableForThisQuery(queryParam))
+                        if (plugin.PluginInstance.SuitableForThisQuery(queryParam))
                         {
                             //other plugin is add to second choice if suitable
-                            result.Add(p);
+                            result.Add(plugin);
                         }
 
                     }
                     catch (Exception e)
                     {
-                        Logger.Exception($"plugin call SuitableForThisQuery method error: {e.Message}", e);
+                        Logger.Exception($"plugin <{plugin}>  call SuitableForThisQuery method error: {e.Message}", e);
 #if DEBUG
-                        MessageBox.Show($"plugin call SuitableForThisQuery method error: {e.Message}");
+                        MessageBox.Show($"plugin  <{plugin}> call SuitableForThisQuery method error: {e.Message}");
 #endif
                     }
                 }

@@ -120,6 +120,7 @@
             </Border>
 
             <userControls:NoticePanel
+                Margin="0,2,0,5"
                 ErrorText="{Binding ErrorTextBlock, Mode=OneWay}"
                 IconSource="{Binding CurrentSearchPlugin.PluginIconPath, Mode=OneWay, Converter={StaticResource Path2ImageSourceConvert}}"
                 InfoText="{Binding InfoTextBlock, Mode=OneWay}" />
