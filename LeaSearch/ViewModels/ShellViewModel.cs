@@ -3,7 +3,11 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
 using LeaSearch.Common.Env;
+using LeaSearch.Common.Messages;
 using LeaSearch.Common.ViewModel;
 using LeaSearch.Core.I18N;
 using LeaSearch.Core.Ioc;
@@ -34,8 +38,6 @@ namespace LeaSearch.ViewModels
             DetailResultViewModel = detailResultViewModel;
 
 
-
-
             var queryEngine = Ioc.Reslove<QueryEngine>();
 
             queryEngine.PluginCallActive += QueryEngine_PluginCallActive;
@@ -43,108 +45,7 @@ namespace LeaSearch.ViewModels
             queryEngine.SuggectionQuery += QueryEngine_SuggectionQuery;
             queryEngine.GetResult += QueryEngine_GetResult;
             queryEngine.EndQuery += QueryEngine_EndQuery;
-
-
-            EnterCommand = new ActionCommand(o =>
-             {
-
-                 switch (KeyInputMode)
-                 {
-                     case KeyInputMode.Input:
-                         switch (_queryState)
-                         {
-                             case QueryState.StartQuery:
-                                 break;
-                             case QueryState.BeginPluginSearch:
-                                 break;
-                             case QueryState.QuerySuitNoPlugin:
-                                 break;
-                             case QueryState.QuerySuitOnePlugin:
-                                 break;
-                             case QueryState.QuerySuitManyPlugin:
-                                 break;
-                             case QueryState.QueryGotNoResult:
-                                 break;
-                             case QueryState.QueryGotOneResult:
-                                 SearchResultViewModel.OpenResult();
-                                 break;
-                             case QueryState.QueryGotManyResult:
-                                 KeyInputMode = KeyInputMode.Select;
-                                 searchResultViewModel.SelectFirst();
-                                 break;
-                             default:
-                                 throw new ArgumentOutOfRangeException();
-                         }
-                         break;
-                     case KeyInputMode.Select:
-                         switch (_queryState)
-                         {
-                             case QueryState.StartQuery:
-                                 break;
-                             case QueryState.BeginPluginSearch:
-                                 break;
-                             case QueryState.QuerySuitNoPlugin:
-                                 break;
-                             case QueryState.QuerySuitOnePlugin:
-                                 break;
-                             case QueryState.QuerySuitManyPlugin:
-                                 break;
-                             case QueryState.QueryGotOneResult:
-                                 break;
-                             case QueryState.QueryGotManyResult:
-                                 SearchResultViewModel.OpenResult();
-                                 break;
-                             case QueryState.QueryGotNoResult:
-                                 break;
-                             default:
-                                 throw new ArgumentOutOfRangeException();
-                         }
-                         break;
-                     default:
-                         throw new ArgumentOutOfRangeException();
-                 }
-             });
-
-            EscCommand = new ActionCommand(o =>
-           {
-               switch (KeyInputMode)
-               {
-                   case KeyInputMode.Input:
-                       OnNotifyHideProgram();
-                       break;
-                   case KeyInputMode.Select:
-                       KeyInputMode = KeyInputMode.Input;
-                       break;
-                   default:
-                       throw new ArgumentOutOfRangeException();
-               }
-
-           });
-
-            SelectNextItemCommand = new ActionCommand(o =>
-              {
-                  if (KeyInputMode == KeyInputMode.Select)
-                  {
-                      SearchResultViewModel.SelectNext();
-                  }
-              });
-
-            SelectPrefItemCommand = new ActionCommand(o =>
-              {
-                  if (KeyInputMode == KeyInputMode.Select)
-                  {
-                      SearchResultViewModel.SelectPrev();
-                  }
-              });
         }
-
-
-
-
-
-
-
-
 
         #region Property
 
@@ -171,7 +72,7 @@ namespace LeaSearch.ViewModels
             {
                 _currentSearchPlugin = value;
 
-                OnPropertyChanged();
+                RaisePropertyChanged();
             }
         }
 
@@ -191,10 +92,7 @@ namespace LeaSearch.ViewModels
         public DetailResultViewModel DetailResultViewModel { get; }
 
 
-        /// <summary>
-        /// 目前按键模式
-        /// </summary>
-        public KeyInputMode KeyInputMode { get; private set; } = KeyInputMode.Input;
+
 
         /// <summary>
         /// should the result show
@@ -205,7 +103,7 @@ namespace LeaSearch.ViewModels
             set
             {
                 _resultVisibility = value;
-                OnPropertyChanged();
+                RaisePropertyChanged();
             }
         }
 
@@ -231,7 +129,7 @@ namespace LeaSearch.ViewModels
             set
             {
                 _infoTextBlock = value;
-                OnPropertyChanged();
+                RaisePropertyChanged();
             }
         }
 
@@ -244,7 +142,7 @@ namespace LeaSearch.ViewModels
             set
             {
                 _errorTextBlock = value;
-                OnPropertyChanged();
+                RaisePropertyChanged();
             }
         }
 
@@ -254,11 +152,58 @@ namespace LeaSearch.ViewModels
 
         #region Command
 
+
+        public ICommand EscCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    ShowNotice(null);
+                    NotifyHideProgram();
+                });
+            }
+        }
+
+        public ICommand EnterCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+
+                    switch (_queryState)
+                    {
+                        case QueryState.StartQuery:
+                            break;
+                        case QueryState.BeginPluginSearch:
+                            break;
+                        case QueryState.QuerySuitNoPlugin:
+                            break;
+                        case QueryState.QuerySuitOnePlugin:
+                            break;
+                        case QueryState.QuerySuitManyPlugin:
+                            break;
+                        case QueryState.QueryGotOneResult:
+                            SearchResultViewModel?.OpenResult();
+                            break;
+                        case QueryState.QueryGotManyResult:
+                            SearchResultViewModel?.SelectFirst();
+                            ShowNotice(@"notice_SelectMode".GetTranslation());
+                            Messenger.Default.Send<FocusMessage>(new FocusMessage() { FocusTarget = FocusTarget.ResultList });
+                            break;
+                        case QueryState.QueryGotNoResult:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
+
+                });
+            }
+        }
+
         public ICommand OpenResultCommand { get; }
-
-        private ICommand EscCommand { get; }
-
-        public ICommand EnterCommand { get; }
 
         public ICommand SelectNextItemCommand { get; }
 
@@ -278,35 +223,35 @@ namespace LeaSearch.ViewModels
         /// <summary>
         /// notify the result mode has changed
         /// </summary>
-        public event Action<ResultMode> ResultModeChanged;
+        //public event Action<ResultMode> ResultModeChanged;
         protected virtual void OnResultModeChanged(ResultMode resultMod)
         {
-            ResultModeChanged?.Invoke(resultMod);
+            Messenger.Default.Send<ResultMode>(resultMod);
+            //ResultModeChanged?.Invoke(resultMod);
         }
 
-        public event Action<QueryState> QueryStateChanged;
+        //public event Action<QueryState> QueryStateChanged;
         protected virtual void OnQueryStateChanged(QueryState queryState)
         {
             _queryState = queryState;
-            QueryStateChanged?.Invoke(queryState);
+            Messenger.Default.Send<QueryState>(queryState);
+            //QueryStateChanged?.Invoke(queryState);
         }
 
         /// <summary>
         /// 通知唤醒界面
         /// </summary>
-        public event Action NotifyWakeUpProgram;
-        protected virtual void OnNotifyWakeUpProgram()
+        protected virtual void NotifyWakeUpProgram()
         {
-            NotifyWakeUpProgram?.Invoke();
+            Messenger.Default.Send(new ShellDisplayMessage() { Display = Display.WakeUp });
         }
 
         /// <summary>
         /// 通知隐藏界面
         /// </summary>
-        public event Action NotifyHideProgram;
-        protected virtual void OnNotifyHideProgram()
+        protected virtual void NotifyHideProgram()
         {
-            NotifyHideProgram?.Invoke();
+            Messenger.Default.Send(new ShellDisplayMessage() { Display = Display.Hide });
         }
         #endregion
 
@@ -414,7 +359,7 @@ namespace LeaSearch.ViewModels
         /// 显示提示
         /// </summary>
         /// <param name="noticeInfo"></param>
-        private void ShowNotice(string noticeInfo)
+        public void ShowNotice(string noticeInfo)
         {
             InfoTextBlock = noticeInfo;
         }

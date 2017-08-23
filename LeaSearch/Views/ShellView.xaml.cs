@@ -2,7 +2,9 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
+using GalaSoft.MvvmLight.Messaging;
 using LeaSearch.Common.Env;
+using LeaSearch.Common.Messages;
 using LeaSearch.Common.View;
 using LeaSearch.Core.HotKey;
 using LeaSearch.Core.Ioc;
@@ -25,6 +27,36 @@ namespace LeaSearch.Views
         {
             _settings = settings;
             InitializeComponent();
+
+
+            Messenger.Default.Register<ResultMode>(this, ShellView_ResultModeChanged);
+            Messenger.Default.Register<QueryState>(this, ShellViewModel_QueryStateChanged);
+            Messenger.Default.Register<FocusMessage>(this, o =>
+            {
+                switch (o.FocusTarget)
+                {
+                    case FocusTarget.QueryTextBox:
+                        this.QueryTextBox.Focus();
+                        break;
+                    case FocusTarget.ResultList:
+                        this.SearchResultListView.SetFocus();
+                        break;
+                }
+            });
+            Messenger.Default.Register<ShellDisplayMessage>(this, (m) =>
+            {
+                switch (m.Display)
+                {
+                    case Display.WakeUp:
+                        WakeUpProgram();
+                        break;
+                    case Display.Hide:
+                        HideProgram();
+                        break;
+                }
+            });
+
+            this.Unloaded += (sender, e) => Messenger.Default.Unregister(this);
         }
 
         protected override void OnInitialized(EventArgs e)
@@ -49,22 +81,6 @@ namespace LeaSearch.Views
                 }
             };
 
-            var shellViewModel = Ioc.Reslove<ShellViewModel>();
-            shellViewModel.ResultModeChanged += ShellView_ResultModeChanged;
-            shellViewModel.QueryStateChanged += ShellViewModel_QueryStateChanged;
-            shellViewModel.NotifyWakeUpProgram += WakeUpProgram;
-            shellViewModel.NotifyHideProgram += HideProgram;
-
-
-            var searchResultViewModel = Ioc.Reslove<SearchResultViewModel>();
-            searchResultViewModel.AfterOpenResultCommand += (o) =>
-            {
-                //打开查询结果后，如果插件建议关闭主窗口，则隐藏窗口
-                if (!o.ShowProgram)
-                {
-                    HideProgram();
-                }
-            };
 
 
             if (_settings.HideOnStartup)
@@ -194,7 +210,6 @@ namespace LeaSearch.Views
             //TODO: help website
             //Process.Start("http://doc.getwox.com");
         }
-
 
     }
 }

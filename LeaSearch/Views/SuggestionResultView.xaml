@@ -8,6 +8,7 @@
     d:DataContext="{d:DesignInstance viewModels:SuggestionResultViewModel}"
     d:DesignHeight="300"
     d:DesignWidth="120"
+    DataContext="{Binding Source={StaticResource Locator}, Path=SuggestionResultViewModel}"
     mc:Ignorable="d">
     <ListBox
         x:Name="List"

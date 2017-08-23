@@ -8,11 +8,22 @@
     d:DataContext="{d:DesignInstance viewModels:SearchResultViewModel}"
     d:DesignHeight="300"
     d:DesignWidth="60"
+    DataContext="{Binding Source={StaticResource Locator}, Path=SearchResultViewModel}"
+    FocusVisualStyle="{x:Null}"
+    Focusable="False"
     mc:Ignorable="d">
+    <UserControl.InputBindings>
+        <KeyBinding Key="Tab" Command="{Binding SelectNextItemCommand}" />
+        <KeyBinding Command="{Binding SelectPrevItemCommand}" Gesture="Shift+Tab" />
+        <KeyBinding Key="J" Command="{Binding SelectNextItemCommand}" />
+        <KeyBinding Key="K" Command="{Binding SelectPrevItemCommand}" />
+        <KeyBinding Key="Enter" Command="{Binding OpenResultCommand}" />
+        <KeyBinding Key="Escape" Command="{Binding EscCommand}" />
+    </UserControl.InputBindings>
     <ListBox
         x:Name="ListBox"
         HorizontalContentAlignment="Stretch"
-        Focusable="False"
+        Focusable="True"
         IsSynchronizedWithCurrentItem="True"
         ItemContainerStyle="{StaticResource ListBoxItemStyle}"
         ItemsSource="{Binding Results}"

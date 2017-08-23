@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Threading;
 using System.Windows;
 using LeaSearch.Helper;
-using System.IO;
 using Autofac;
 using LeaSearch.Common.Env;
 using LeaSearch.Core.HotKey;
@@ -116,11 +112,13 @@ namespace LeaSearch
 
             _builder.RegisterType<QueryEngine>().SingleInstance();
 
+
             _builder.RegisterType<ShellViewModel>().SingleInstance();
             _builder.RegisterType<SuggestionResultViewModel>().SingleInstance();
             _builder.RegisterType<SearchResultViewModel>().SingleInstance();
             _builder.RegisterType<DetailResultViewModel>().SingleInstance();
-            _builder.RegisterType<ShellView>().SingleInstance();
+
+
 
             _container = _builder.Build();
             Ioc.SetContainer(_container);
@@ -151,8 +149,7 @@ namespace LeaSearch
 
 
             //get the windows to init a shellview and show windows
-            var shellview = Ioc.Reslove<ShellView>();
-            shellview.DataContext = Ioc.Reslove<ShellViewModel>();
+            var shellView = new ShellView(settings);
         }
 
 

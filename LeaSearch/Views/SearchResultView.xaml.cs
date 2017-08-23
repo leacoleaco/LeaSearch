@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace LeaSearch.Views
 {
@@ -20,6 +21,11 @@ namespace LeaSearch.Views
             {
                 ListBox.ScrollIntoView(e.AddedItems[0]);
             }
+        }
+
+        public void SetFocus()
+        {
+            this.ListBox.Focus();
         }
     }
 }

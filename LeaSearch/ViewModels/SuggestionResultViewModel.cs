@@ -22,7 +22,7 @@ namespace LeaSearch.ViewModels
             set
             {
                 _currentPluginIndex = value;
-                OnPropertyChanged();
+                RaisePropertyChanged();
             }
         }
 
@@ -32,7 +32,7 @@ namespace LeaSearch.ViewModels
             set
             {
                 _currentPlugin = value;
-                OnPropertyChanged();
+                RaisePropertyChanged();
             }
         }
 

@@ -1,9 +1,15 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
+using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
 using LeaSearch.Common.Env;
+using LeaSearch.Common.Messages;
 using LeaSearch.Common.ViewModel;
+using LeaSearch.Core.Ioc;
 using LeaSearch.Plugin;
+using Microsoft.Expression.Interactivity.Core;
 
 namespace LeaSearch.ViewModels
 {
@@ -11,12 +17,15 @@ namespace LeaSearch.ViewModels
     {
         private ResultItem _currentItem;
         private int _currentIndex;
-        private SharedContext _sharedContext;
+        private readonly SharedContext _sharedContext;
         private QueryListResult _queryListResult;
 
         public SearchResultViewModel(Settings settings, SharedContext sharedContext) : base(settings)
         {
             _sharedContext = sharedContext;
+
+
+
         }
 
         public int CurrentIndex
@@ -25,7 +34,7 @@ namespace LeaSearch.ViewModels
             set
             {
                 _currentIndex = value;
-                OnPropertyChanged();
+                RaisePropertyChanged();
             }
         }
 
@@ -35,18 +44,12 @@ namespace LeaSearch.ViewModels
             set
             {
                 _currentItem = value;
-                OnPropertyChanged();
+                RaisePropertyChanged();
             }
         }
 
         public ObservableCollection<ResultItem> Results { get; } = new ObservableCollection<ResultItem>();
-        #region Event
 
-        /// <summary>
-        /// 执行打开命令完毕
-        /// </summary>
-        public event Action<StateAfterCommandInvoke> AfterOpenResultCommand;
-        #endregion
 
         private int NewIndex(int i)
         {
@@ -121,17 +124,78 @@ namespace LeaSearch.ViewModels
             }
 
             //执行全局的 selectedAction，仅适用于 plugin call 模式
-            var r1 = _queryListResult?.SelectedAction?.Invoke(_sharedContext, CurrentItem);
-            if (r1 != null)
+            if (CurrentItem != null)
             {
-                OnAfterOpenResultCommand(r1);
+                var r1 = _queryListResult?.SelectedAction?.Invoke(_sharedContext, CurrentItem);
+                if (r1 != null)
+                {
+                    OnAfterOpenResultCommand(r1);
+                }
             }
         }
 
-        protected virtual void OnAfterOpenResultCommand(StateAfterCommandInvoke state)
+        protected void OnAfterOpenResultCommand(StateAfterCommandInvoke state)
         {
-            AfterOpenResultCommand?.Invoke(state);
+            if (state == null) return;
+
+            if (!state.ShowProgram)
+                //如果指示隐藏主界面，则发送隐藏消息
+                Messenger.Default.Send(new ShellDisplayMessage() { Display = Display.Hide });
+
         }
 
+
+        #region Command
+
+        public ICommand SelectNextItemCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    SelectNext();
+                });
+            }
+        }
+
+        public ICommand SelectPrevItemCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    SelectPrev();
+                });
+            }
+        }
+
+        public ICommand OpenResultCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    OpenResult();
+                });
+            }
+        }
+
+        public ICommand EscCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    CurrentIndex = -1;
+                    Messenger.Default.Send(new FocusMessage() { FocusTarget = FocusTarget.QueryTextBox });
+                    Ioc.Reslove<ShellViewModel>().ShowNotice(null);
+                });
+            }
+        }
+
+        #endregion
+
     }
+
+
 }

@@ -12,6 +12,7 @@
     d:DataContext="{d:DesignInstance viewModels:ShellViewModel}"
     AllowDrop="True"
     AllowsTransparency="True"
+    DataContext="{Binding Source={StaticResource Locator}, Path=ShellViewModel}"
     Icon="..\Images\app.png"
     Loaded="MainWindow_OnLoaded"
     ResizeMode="NoResize"
@@ -25,21 +26,11 @@
         <CommandBinding Command="{StaticResource StartHelpCommand}" Executed="StartHelpCommand_Executed" />
     </Window.CommandBindings>
     <Window.InputBindings>
-        <KeyBinding Key="Escape" Command="{StaticResource EscCommand}" />
+        <KeyBinding Key="Escape" Command="{Binding EscCommand}" />
         <KeyBinding Key="F1" Command="{StaticResource StartHelpCommand}" />
-        <KeyBinding Key="Tab" Command="{StaticResource SelectNextItemCommand}" />
-        <KeyBinding Command="{StaticResource SelectPrevItemCommand}" Gesture="Shift+Tab" />
-        <KeyBinding Key="J" Command="{Binding SelectNextItemCommand}" />
-        <KeyBinding Key="K" Command="{Binding SelectPrefItemCommand}" />
-        <KeyBinding Command="{StaticResource SelectNextItemCommand}" Gesture="Ctrl+N" />
-        <KeyBinding Command="{StaticResource SelectNextItemCommand}" Gesture="Ctrl+J" />
-        <KeyBinding Command="{StaticResource SelectNextPageCommand}" Gesture="Ctrl+D" />
-        <KeyBinding Command="{StaticResource SelectPrevItemCommand}" Gesture="Ctrl+P" />
-        <KeyBinding Command="{StaticResource SelectPrevItemCommand}" Gesture="Ctrl+K" />
-        <KeyBinding Command="{StaticResource SelectPrevPageCommand}" Gesture="Ctrl+U" />
-        <KeyBinding Command="{StaticResource LoadContextMenuCommand}" Gesture="Ctrl+0" />
+        <!--<KeyBinding Command="{StaticResource LoadContextMenuCommand}" Gesture="Ctrl+0" />
         <KeyBinding Command="{StaticResource LoadHistoryCommand}" Gesture="Ctrl+H" />
-        <KeyBinding Command="{StaticResource LoadContextMenuCommand}" Gesture="Shift+Enter" />
+        <KeyBinding Command="{StaticResource LoadContextMenuCommand}" Gesture="Shift+Enter" />-->
         <KeyBinding Key="Enter" Command="{Binding EnterCommand}" />
         <KeyBinding Command="{Binding OpenResultCommand}" Gesture="Ctrl+G" />
         <KeyBinding
@@ -125,18 +116,9 @@
                     <ColumnDefinition x:Name="ResultCol" Width="*" />
                     <ColumnDefinition x:Name="DetailCol" Width="0" />
                 </Grid.ColumnDefinitions>
-                <views:SuggestionResultView
-                    x:Name="SuggestionResultsListView"
-                    Grid.Column="0"
-                    DataContext="{Binding SuggestionResultViewModel}" />
-                <views:SearchResultView
-                    x:Name="SearchResultListView"
-                    Grid.Column="1"
-                    DataContext="{Binding SearchResultViewModel}" />
-                <ContentControl
-                    x:Name="MoreInfoContent"
-                    Grid.Column="2"
-                    DataContext="{Binding DetailResultViewModel}" />
+                <views:SuggestionResultView x:Name="SuggestionResultsListView" Grid.Column="0" />
+                <views:SearchResultView x:Name="SearchResultListView" Grid.Column="1" />
+                <ContentControl x:Name="MoreInfoContent" Grid.Column="2" />
             </Grid>
         </StackPanel>
     </Border>

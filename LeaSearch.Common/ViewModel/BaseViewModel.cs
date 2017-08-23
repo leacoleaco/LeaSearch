@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using GalaSoft.MvvmLight;
 using LeaSearch.Common.Env;
 
 namespace LeaSearch.Common.ViewModel
 {
-    public abstract class BaseViewModel : INotifyPropertyChanged
+    public abstract class BaseViewModel : ViewModelBase
     {
         public Settings _settings;
 
@@ -13,11 +14,6 @@ namespace LeaSearch.Common.ViewModel
             _settings = settings;
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }
