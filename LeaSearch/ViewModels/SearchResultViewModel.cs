@@ -13,6 +13,7 @@ using LeaSearch.Common.Env;
 using LeaSearch.Common.Messages;
 using LeaSearch.Common.ViewModel;
 using LeaSearch.Core.Ioc;
+using LeaSearch.Core.QueryEngine;
 using LeaSearch.Plugin;
 using Microsoft.Expression.Interactivity.Core;
 
@@ -25,13 +26,12 @@ namespace LeaSearch.ViewModels
         private readonly SharedContext _sharedContext;
         private QueryListResult _queryListResult;
         private object _moreInfoContent;
+        private QueryEngine _queryEngine;
 
-        public SearchResultViewModel(Settings settings, SharedContext sharedContext) : base(settings)
+        public SearchResultViewModel(Settings settings, SharedContext sharedContext, QueryEngine queryEngine) : base(settings)
         {
             _sharedContext = sharedContext;
-
-
-
+            _queryEngine = queryEngine;
         }
 
         public int CurrentIndex
@@ -83,9 +83,9 @@ namespace LeaSearch.ViewModels
             if (queryListResult == null) return;
 
             //如果有默认信息，则显示信息,否则清理信息
-            if (queryListResult.DefaultInfo != null)
+            if (queryListResult.MoreInfo != null)
             {
-                SetMoreInfo(queryListResult.DefaultInfo);
+                SetMoreInfo(queryListResult.MoreInfo);
             }
             else
             {
@@ -213,6 +213,18 @@ namespace LeaSearch.ViewModels
             }
         }
 
+
+        public ICommand PreviewCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    _queryEngine.QueryDetail(CurrentItem);
+                });
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -227,6 +239,7 @@ namespace LeaSearch.ViewModels
                 RaisePropertyChanged();
             }
         }
+
 
         private void ClearMoreInfo()
         {

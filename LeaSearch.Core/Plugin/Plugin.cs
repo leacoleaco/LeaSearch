@@ -17,15 +17,18 @@ namespace LeaSearch.Core.Plugin
     public class Plugin : PluginBase
     {
 
-        public Plugin(PluginBase pluginBase, IPlugin pluginInstance) : base(pluginBase.PluginRootPath, pluginBase.PluginMetadata, pluginBase.PluginSettings)
+        public Plugin(PluginBase pluginBase, IPlugin pluginInstance, string pluginId) : base(pluginBase.PluginRootPath, pluginBase.PluginMetadata, pluginBase.PluginSettings)
         {
             this.PluginInstance = pluginInstance;
+            this.PluginId = pluginId;
         }
 
         /// <summary>
         /// plugin 's instance
         /// </summary>
         public IPlugin PluginInstance { get; }
+
+        public String PluginId { get; }
 
         /// <summary>
         /// if plugin is not correct load, or set to disabled, then it will disabled

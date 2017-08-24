@@ -56,11 +56,11 @@ namespace LeaSearch.Plugin.Calculator
                 IconPath = "calculator.png",
                 Title = $"{queryParam.Keyword}"
             }},
-                DefaultInfo = new TextInfo() { Text = "test" }
+                MoreInfo = new TextInfo() { Text = "test" }
             };
         }
 
-        public QueryDetailResult QueryDetail(QueryParam queryParam)
+        public QueryDetailResult QueryDetail(ResultItem currentItem)
         {
             throw new System.NotImplementedException();
         }

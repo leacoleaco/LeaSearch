@@ -81,7 +81,9 @@ namespace LeaSearch.Core.Plugin
             {
                 var plugin = LoadCSharpPlugin(p);
                 if (plugin != null)
+                {
                     csharpPlugins.Add(plugin);
+                }
             });
 
             //var pythonPlugins = PythonPlugins(metadatas, settings.PythonDirectory);
@@ -159,7 +161,7 @@ namespace LeaSearch.Core.Plugin
                 return null;
             }
 #endif
-            var csharpPlugin = new Plugin(pluginBase, pluginInstance);
+            var csharpPlugin = new Plugin(pluginBase, pluginInstance, type.FullName);
 
             return InitPlugin(csharpPlugin);
         }

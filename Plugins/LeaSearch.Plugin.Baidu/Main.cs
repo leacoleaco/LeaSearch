@@ -71,7 +71,7 @@ namespace LeaSearch.Plugin.Baidu
             return res;
         }
 
-        public QueryDetailResult QueryDetail(QueryParam queryParam)
+        public QueryDetailResult QueryDetail(ResultItem currentItem)
         {
             throw new NotImplementedException();
         }

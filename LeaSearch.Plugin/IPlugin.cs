@@ -51,11 +51,12 @@ namespace LeaSearch.Plugin
         QueryListResult Query(QueryParam queryParam);
 
         /// <summary>
-        /// query a detail info
+        /// query a detail info when input space in select item
+        /// 当在某个列表项目上，点击空格后展示的更多信息
         /// </summary>
-        /// <param name="queryParam"></param>
+        /// <param name="currentItem">需要预览的节点，可以用里面的 queryparam 属性获取之前的查询讯息</param>
         /// <returns></returns>
-        QueryDetailResult QueryDetail(QueryParam queryParam);
+        QueryDetailResult QueryDetail(ResultItem currentItem);
 
     }
 }

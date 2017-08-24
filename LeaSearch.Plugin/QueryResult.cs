@@ -19,7 +19,7 @@ namespace LeaSearch.Plugin
         /// <summary>
         /// info 区域需要展示的信息类型
         /// </summary>
-        public IInfo DefaultInfo;
+        public IInfo MoreInfo;
 
     }
 

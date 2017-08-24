@@ -29,17 +29,33 @@ namespace LeaSearch.Views
                 if (infoContent == null) return;
                 if (this.ListBox.ActualHeight <= 300)
                 {
+                    //上下模式
                     infoContent.SetValue(Grid.RowProperty, 1);
                     infoContent.SetValue(Grid.ColumnProperty, 0);
-                    //SecondRow.Height=new GridLength(1,GridUnitType.Star);
-                    //SecondCol.Width=new GridLength(1,GridUnitType.Auto);
+                    this.GridSplitter.SetValue(Grid.RowSpanProperty,1);
+                    this.GridSplitter.SetValue(Grid.ColumnSpanProperty,2);
+                    //this.GridSplitter.SetValue(Grid.RowProperty, 1);
+                    //this.GridSplitter.SetValue(Grid.ColumnProperty, 0);
+                    this.GridSplitter.Width = double.NaN;
+                    this.GridSplitter.Height = 2;
+
+                    InfoRow.Height = new GridLength(1, GridUnitType.Star);
+                    InfoCol.Width = new GridLength(1, GridUnitType.Auto);
                 }
                 else
                 {
+                    //左右模式
                     infoContent.SetValue(Grid.RowProperty, 0);
                     infoContent.SetValue(Grid.ColumnProperty, 1);
-                    //SecondRow.Height=new GridLength(1,GridUnitType.Auto);
-                    //SecondCol.Width=new GridLength(1,GridUnitType.Star);
+                    this.GridSplitter.SetValue(Grid.RowSpanProperty, 2);
+                    this.GridSplitter.SetValue(Grid.ColumnSpanProperty, 1);
+                    //this.GridSplitter.SetValue(Grid.RowProperty, 0);
+                    //this.GridSplitter.SetValue(Grid.ColumnProperty, 1);
+                    this.GridSplitter.Width = 2;
+                    this.GridSplitter.Height = double.NaN;
+
+                    InfoRow.Height = new GridLength(1, GridUnitType.Auto);
+                    InfoCol.Width = new GridLength(1, GridUnitType.Star);
                 }
             }
 

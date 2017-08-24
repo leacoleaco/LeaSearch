@@ -114,6 +114,25 @@ namespace LeaSearch.Core.QueryEngine
         }
 
         /// <summary>
+        /// 调用插件查询当前项目的详情
+        /// </summary>
+        /// <param name="currentItem"></param>
+        public void QueryDetail(ResultItem currentItem)
+        {
+            if (string.IsNullOrWhiteSpace(currentItem?.PluginId)) return;
+
+            var plugin = _pluginManager.GetPlugins().Find(p =>
+            {
+                if (p.PluginId == null) return false;
+                return p.PluginId == currentItem.PluginId;
+            });
+
+            var queryDetailResult = plugin?.PluginInstance.QueryDetail(currentItem);
+            OnGetDetailResult(queryDetailResult);
+
+        }
+
+        /// <summary>
         /// 执行插件查询，每次只能有一个插件被激活
         /// </summary>
         /// <param name="queryParam"></param>
@@ -157,6 +176,8 @@ namespace LeaSearch.Core.QueryEngine
                         //prepare some data for result display
                         queryListResult?.Results?.ForEach(x =>
                         {
+                            x.PluginId = currentSearchPlugin.PluginId;
+                            x.QueryParam = queryParam;
                             if (!string.IsNullOrWhiteSpace(x.IconPath))
                             {
                                 x.IconPath = Path.Combine(currentSearchPlugin.PluginRootPath, x.IconPath);
@@ -204,6 +225,8 @@ namespace LeaSearch.Core.QueryEngine
                     //prepare some data for result display
                     queryListResult?.Results?.ForEach(x =>
                     {
+                        x.PluginId = queryPlugin.PluginId;
+                        x.QueryParam = queryParam;
                         if (!string.IsNullOrWhiteSpace(x.IconPath))
                         {
                             x.IconPath = Path.Combine(queryPlugin.PluginRootPath, x.IconPath);
@@ -299,6 +322,8 @@ namespace LeaSearch.Core.QueryEngine
         /// </summary>
         public event Action<QueryListResult> GetResult;
 
+        public event Action<QueryDetailResult> GetDetailResult;
+
 
         /// <summary>
         /// 当激活插件查询，但是并未传入数据的时候 发生事件
@@ -329,6 +354,11 @@ namespace LeaSearch.Core.QueryEngine
             GetResult?.Invoke(result);
         }
 
+        protected virtual void OnGetDetailResult(QueryDetailResult result)
+        {
+            GetDetailResult?.Invoke(result);
+        }
+
         protected virtual void OnPluginCallActive(Plugin.Plugin calledPlugin, PluginCalledArg arg)
         {
             PluginCallActive?.Invoke(calledPlugin, arg);
@@ -348,5 +378,8 @@ namespace LeaSearch.Core.QueryEngine
         {
             EndQuery?.Invoke();
         }
+
+
+
     }
 }
