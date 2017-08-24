@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="Env\Constant.cs" />
     <Compile Include="Env\Settings.cs" />
+    <Compile Include="Messages\DetailLoaddingDisplayMessage.cs" />
     <Compile Include="Messages\FocusMessage.cs" />
     <Compile Include="Messages\ShellDisplayMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

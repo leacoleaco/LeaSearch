@@ -25,11 +25,11 @@ namespace LeaSearch.Plugin.HelloWorld
         public PluginCalledArg PluginCallActive(QueryParam queryParam)
         {
             return new PluginCalledArg()
-            {
+            { 
                 //插件模式激活后，在插件下发的提示信息
                 InfoMessage = _sharedContext.SharedMethod.GetTranslation(@"leasearch_plugin_helloWorld_pluginCallActive"),
                 //在程序进入插件模式后展示的信息
-                MoreInfo = new TextInfo() { Text = "this is a test more info when plugin call active" },
+                MoreInfo = new SimpleHtmlInfo() { Html = "this is a test <i>more info</i> when <b>plugin</b> call active" },
             };
         }
 
@@ -93,6 +93,9 @@ namespace LeaSearch.Plugin.HelloWorld
 
         public QueryDetailResult QueryDetail(ResultItem currentItem)
         {
+            //模拟查询详情的耗时情况
+            Thread.Sleep(3000);
+            //返回查询的详情显示
             return new QueryDetailResult() { MoreInfo = new TextInfo() { Text = $"this is a test info when preview {currentItem.Title}" } };
         }
 

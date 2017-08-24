@@ -15,6 +15,7 @@ using LeaSearch.Common.ViewModel;
 using LeaSearch.Core.Ioc;
 using LeaSearch.Core.QueryEngine;
 using LeaSearch.Plugin;
+using LeaSearch.UI.Controls.HtmlRichTextBox;
 using Microsoft.Expression.Interactivity.Core;
 
 namespace LeaSearch.ViewModels
@@ -27,11 +28,42 @@ namespace LeaSearch.ViewModels
         private QueryListResult _queryListResult;
         private object _moreInfoContent;
         private QueryEngine _queryEngine;
+        /// <summary>
+        /// 指示是否正在预览中
+        /// </summary>
+        private bool _isPreviewing;
 
         public SearchResultViewModel(Settings settings, SharedContext sharedContext, QueryEngine queryEngine) : base(settings)
         {
             _sharedContext = sharedContext;
             _queryEngine = queryEngine;
+
+
+            _queryEngine.PluginCallActive += queryEngine_PluginCallActive;
+            _queryEngine.GetDetailResult += queryEngine_GetDetailResult;
+        }
+
+        private void queryEngine_GetDetailResult(QueryDetailResult result)
+        {
+            var resultMoreInfo = result.MoreInfo;
+            if (resultMoreInfo != null)
+            {
+                ShowMoreInfo(resultMoreInfo);
+            }
+
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
+                Messenger.Default.Send(new DetailLoaddingDisplayMessage() { IsShow = false });
+            });
+        }
+
+        private void queryEngine_PluginCallActive(Core.Plugin.Plugin plugin, PluginCalledArg arg)
+        {
+            if (arg.MoreInfo != null)
+            {
+                ShowMoreInfo(arg.MoreInfo);
+            }
+            Clear();
         }
 
         public int CurrentIndex
@@ -72,6 +104,85 @@ namespace LeaSearch.ViewModels
             }
         }
 
+        #region Command
+
+        public ICommand SelectNextItemCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    SelectNext();
+                    if (_isPreviewing)
+                    {
+                        QueryDetail();
+                    }
+                });
+            }
+        }
+
+        public ICommand SelectPrevItemCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    SelectPrev();
+                    if (_isPreviewing)
+                    {
+                        QueryDetail();
+                    }
+                });
+            }
+        }
+
+        public ICommand OpenResultCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    OpenResult();
+                });
+            }
+        }
+
+        public ICommand EscCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    CurrentIndex = -1;
+                    Messenger.Default.Send(new FocusMessage() { FocusTarget = FocusTarget.QueryTextBox });
+                    Ioc.Reslove<ShellViewModel>().ShowNotice(null);
+                });
+            }
+        }
+
+
+        public ICommand PreviewCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    if (_isPreviewing)
+                    {
+                        ClearMoreInfo();
+                    }
+                    else
+                    {
+                        QueryDetail();
+                    }
+                });
+            }
+        }
+
+        #endregion
+
+
+
         /// <summary>
         /// 设置查询结果
         /// </summary>
@@ -85,7 +196,7 @@ namespace LeaSearch.ViewModels
             //如果有默认信息，则显示信息,否则清理信息
             if (queryListResult.MoreInfo != null)
             {
-                SetMoreInfo(queryListResult.MoreInfo);
+                ShowMoreInfo(queryListResult.MoreInfo);
             }
             else
             {
@@ -98,9 +209,7 @@ namespace LeaSearch.ViewModels
                 Results.Add(resultItem);
             }
 
-
         }
-
 
 
         public void Clear()
@@ -165,68 +274,6 @@ namespace LeaSearch.ViewModels
         }
 
 
-        #region Command
-
-        public ICommand SelectNextItemCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    SelectNext();
-                });
-            }
-        }
-
-        public ICommand SelectPrevItemCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    SelectPrev();
-                });
-            }
-        }
-
-        public ICommand OpenResultCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    OpenResult();
-                });
-            }
-        }
-
-        public ICommand EscCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    CurrentIndex = -1;
-                    Messenger.Default.Send(new FocusMessage() { FocusTarget = FocusTarget.QueryTextBox });
-                    Ioc.Reslove<ShellViewModel>().ShowNotice(null);
-                });
-            }
-        }
-
-
-        public ICommand PreviewCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    _queryEngine.QueryDetail(CurrentItem);
-                });
-            }
-        }
-
-        #endregion
-
         /// <summary>
         /// 用于给出一些提示和建议
         /// </summary>
@@ -240,20 +287,39 @@ namespace LeaSearch.ViewModels
             }
         }
 
+        /// <summary>
+        /// 调用对应插件查询详情
+        /// </summary>
+        private void QueryDetail()
+        {
+            DispatcherHelper.CheckBeginInvokeOnUI(new Action(() =>
+            {
+                Messenger.Default.Send(new DetailLoaddingDisplayMessage() { IsShow = true });
+            }));
+            _queryEngine.QueryDetail(CurrentItem);
+
+        }
 
         private void ClearMoreInfo()
         {
-            MoreInfoContent = null;
-
+            DispatcherHelper.CheckBeginInvokeOnUI(new Action(() =>
+            {
+                MoreInfoContent = null;
+                _isPreviewing = false;
+            }));
         }
 
         /// <summary>
         /// 自动根据不同的 内容设置不同信息
         /// </summary>
         /// <param name="contentInfo"></param>
-        private void SetMoreInfo(IInfo contentInfo)
+        private void ShowMoreInfo(IInfo contentInfo)
         {
-            if (contentInfo == null) return;
+            if (contentInfo == null)
+            {
+                ClearMoreInfo();
+                return;
+            }
 
 
             DispatcherHelper.CheckBeginInvokeOnUI(new Action(() =>
@@ -263,16 +329,22 @@ namespace LeaSearch.ViewModels
                 if (contentInfo is TextInfo)
                 {
                     var ct = contentInfo as TextInfo;
-                    MoreInfoContent = new TextBlock() { Text = ct.Text };
+                    MoreInfoContent = new TextBlock() { Text = ct.Text, TextWrapping = TextWrapping.WrapWithOverflow };
                 }
-                else if (contentInfo is FlowDocumentInfo)
+                else if (contentInfo is SimpleHtmlInfo)
                 {
-                    //MoreInfoContent=new FlowDocument(){Blocks = { blo}};
-                    MoreInfoContent = new FlowDocument();
+                    var ct = contentInfo as SimpleHtmlInfo;
+                    var htmlRickTextBox = new HtmlRichTextBox();
+                    htmlRickTextBox.IsReadOnly = true;
+                    htmlRickTextBox.Text = ct.Html;
+                    MoreInfoContent = htmlRickTextBox;
                 }
+
+                _isPreviewing = true;
             }));
 
         }
+
 
 
     }

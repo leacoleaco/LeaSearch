@@ -27,17 +27,18 @@ namespace LeaSearch.ViewModels
         private string _errorTextBlock;
         private string _infoTextBlock;
         private QueryState _queryState = QueryState.StartQuery;
+        private QueryEngine _queryEngine;
 
         #endregion
 
-        public ShellViewModel(Settings settings, SuggestionResultViewModel suggestionResultViewModel, SearchResultViewModel searchResultViewModel, DetailResultViewModel detailResultViewModel) : base(settings)
+        public ShellViewModel(Settings settings, SuggestionResultViewModel suggestionResultViewModel, SearchResultViewModel searchResultViewModel, DetailResultViewModel detailResultViewModel, QueryEngine queryEngine) : base(settings)
         {
             SuggestionResultViewModel = suggestionResultViewModel;
             SearchResultViewModel = searchResultViewModel;
             DetailResultViewModel = detailResultViewModel;
+            this._queryEngine = queryEngine;
 
 
-            var queryEngine = Ioc.Reslove<QueryEngine>();
 
             queryEngine.PluginCallActive += QueryEngine_PluginCallActive;
             queryEngine.PluginCallQuery += QueryEngine_PluginCallQuery;
@@ -270,7 +271,6 @@ namespace LeaSearch.ViewModels
 
             CurrentSearchPlugin = currentPlugin;
 
-            SearchResultViewModel.Clear();
 
         }
 

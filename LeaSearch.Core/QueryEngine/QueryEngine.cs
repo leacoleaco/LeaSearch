@@ -121,15 +121,24 @@ namespace LeaSearch.Core.QueryEngine
         {
             if (string.IsNullOrWhiteSpace(currentItem?.PluginId)) return;
 
-            var plugin = _pluginManager.GetPlugins().Find(p =>
+            //if a new search start, cancle the last one
+            _updateSource?.Cancel();
+            _updateSource = new CancellationTokenSource();
+
+            Task.Factory.StartNew(() =>
             {
-                if (p.PluginId == null) return false;
-                return p.PluginId == currentItem.PluginId;
-            });
 
-            var queryDetailResult = plugin?.PluginInstance.QueryDetail(currentItem);
-            OnGetDetailResult(queryDetailResult);
 
+                var plugin = _pluginManager.GetPlugins().Find(p =>
+                {
+                    if (p.PluginId == null) return false;
+                    return p.PluginId == currentItem.PluginId;
+                });
+
+                var queryDetailResult = plugin?.PluginInstance.QueryDetail(currentItem);
+                OnGetDetailResult(queryDetailResult);
+
+            }, _updateSource.Token);
         }
 
         /// <summary>

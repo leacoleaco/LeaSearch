@@ -114,12 +114,20 @@
 
         <GridSplitter x:Name="GridSplitter" />
 
-        <controls:InfoContent
-            x:Name="MoreInfo_InfoContent"
-            Grid.Row="1"
-            Grid.Column="0"
-            DisplayContent="{Binding MoreInfoContent, Mode=OneWay}"
-            DisplayContentChanged="MoreInfoContent_OnDisplayContentChanged" />
+        <Grid x:Name="MoreInfo_Panel">
+            <controls:InfoContent
+                x:Name="MoreInfo_InfoContent"
+                Grid.Row="1"
+                Grid.Column="0"
+                DisplayContent="{Binding MoreInfoContent, Mode=OneWay}"
+                DisplayContentChanged="MoreInfoContent_OnDisplayContentChanged" />
+            <controls:LoadingControl
+                x:Name="MoreInfo_Loadding"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FillColor="#00FF00"
+                Visibility="Collapsed" />
+        </Grid>
 
     </Grid>
 </UserControl>

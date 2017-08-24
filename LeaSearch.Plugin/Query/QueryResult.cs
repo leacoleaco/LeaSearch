@@ -22,23 +22,4 @@ namespace LeaSearch.Plugin
         public IInfo MoreInfo;
 
     }
-
-    public interface IInfo
-    {
-
-    }
-
-
-    /// <summary>
-    /// 流文档
-    /// </summary>
-    public class FlowDocumentInfo : IInfo
-    {
-        public FlowDocument FlowDocument { get; set; }
-    }
-
-    public class TextInfo : IInfo
-    {
-        public string Text { get; set; }
-    }
 }

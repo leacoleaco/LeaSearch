@@ -6,4 +6,10 @@
     <system:String x:Key="leaSearchWatermark">LeaSearch:Please input some word to start search</system:String>
     <system:String x:Key="registerHotkeyFailed">Failed to register hotkey: {0}</system:String>
     <system:String x:Key="couldnotStartCmd">Could not start {0}</system:String>
+
+    <!--  notice  -->
+    <system:String x:Key="notice_NoResult">Can not find any record</system:String>
+    <system:String x:Key="notice_EnterChooseMode">Enter to select mode</system:String>
+    <system:String x:Key="notice_SelectMode">Using↑/j/shift+tab move up， ↓/k /tab down，Enter doing default command，Space doing preview ，ESC back to input mode</system:String>
+
 </ResourceDictionary>
