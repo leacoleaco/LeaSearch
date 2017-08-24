@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Windows.Documents;
 
 namespace LeaSearch.Plugin.Calculator
 {
@@ -48,11 +49,15 @@ namespace LeaSearch.Plugin.Calculator
 
         public QueryListResult Query(QueryParam queryParam)
         {
-            return new QueryListResult(){Results = { new ResultItem()
+            return new QueryListResult()
+            {
+                Results = { new ResultItem()
             {
                 IconPath = "calculator.png",
                 Title = $"{queryParam.Keyword}"
-            }}};
+            }},
+                DefaultInfo = new TextInfo() { Text = "test" }
+            };
         }
 
         public QueryDetailResult QueryDetail(QueryParam queryParam)

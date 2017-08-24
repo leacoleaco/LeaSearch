@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Threading;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
+using GalaSoft.MvvmLight.Threading;
 using LeaSearch.Common.Env;
 using LeaSearch.Common.Messages;
 using LeaSearch.Common.ViewModel;
@@ -19,6 +24,7 @@ namespace LeaSearch.ViewModels
         private int _currentIndex;
         private readonly SharedContext _sharedContext;
         private QueryListResult _queryListResult;
+        private object _moreInfoContent;
 
         public SearchResultViewModel(Settings settings, SharedContext sharedContext) : base(settings)
         {
@@ -76,12 +82,26 @@ namespace LeaSearch.ViewModels
 
             if (queryListResult == null) return;
 
+            //如果有默认信息，则显示信息,否则清理信息
+            if (queryListResult.DefaultInfo != null)
+            {
+                SetMoreInfo(queryListResult.DefaultInfo);
+            }
+            else
+            {
+                ClearMoreInfo();
+            }
+
             Results.Clear();
             foreach (var resultItem in queryListResult.Results)
             {
                 Results.Add(resultItem);
             }
+
+
         }
+
+
 
         public void Clear()
         {
@@ -194,6 +214,53 @@ namespace LeaSearch.ViewModels
         }
 
         #endregion
+
+        /// <summary>
+        /// 用于给出一些提示和建议
+        /// </summary>
+        public object MoreInfoContent
+        {
+            get { return _moreInfoContent; }
+            set
+            {
+                _moreInfoContent = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private void ClearMoreInfo()
+        {
+            MoreInfoContent = null;
+
+        }
+
+        /// <summary>
+        /// 自动根据不同的 内容设置不同信息
+        /// </summary>
+        /// <param name="contentInfo"></param>
+        private void SetMoreInfo(IInfo contentInfo)
+        {
+            if (contentInfo == null) return;
+
+
+            DispatcherHelper.CheckBeginInvokeOnUI(new Action(() =>
+            ////TODO: check if is useful
+            //Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() =>
+            {
+                if (contentInfo is TextInfo)
+                {
+                    var ct = contentInfo as TextInfo;
+                    MoreInfoContent = new TextBlock() { Text = ct.Text };
+                }
+                else if (contentInfo is FlowDocumentInfo)
+                {
+                    //MoreInfoContent=new FlowDocument(){Blocks = { blo}};
+                    MoreInfoContent = new FlowDocument();
+                }
+            }));
+
+        }
+
 
     }
 

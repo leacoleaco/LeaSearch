@@ -29,7 +29,6 @@ namespace LeaSearch.Views
             InitializeComponent();
 
 
-            Messenger.Default.Register<ResultMode>(this, ShellView_ResultModeChanged);
             Messenger.Default.Register<QueryState>(this, ShellViewModel_QueryStateChanged);
             Messenger.Default.Register<FocusMessage>(this, o =>
             {
@@ -116,33 +115,7 @@ namespace LeaSearch.Views
         }
 
 
-        /// <summary>
-        /// change the result mode
-        /// </summary>
-        /// <param name="resultMode"></param>
-        private void ShellView_ResultModeChanged(ResultMode resultMode)
-        {
-            switch (resultMode)
-            {
-                case ResultMode.ListOnly:
-                    PluginCol.Width = GridLength.Auto;
-                    ResultCol.Width = new GridLength(1, GridUnitType.Star);
-                    DetailCol.Width = new GridLength(0, GridUnitType.Pixel); ;
-                    break;
-                case ResultMode.ListDetail:
-                    PluginCol.Width = new GridLength(0, GridUnitType.Pixel);
-                    ResultCol.Width = new GridLength(4, GridUnitType.Star);
-                    DetailCol.Width = new GridLength(6, GridUnitType.Star);
-                    break;
-                case ResultMode.DetailOnly:
-                    PluginCol.Width = new GridLength(0, GridUnitType.Pixel);
-                    ResultCol.Width = new GridLength(0, GridUnitType.Pixel);
-                    DetailCol.Width = new GridLength(1, GridUnitType.Star);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(resultMode), resultMode, null);
-            }
-        }
+      
 
 
         private void ShellViewModel_QueryStateChanged(QueryState queryState)

@@ -114,11 +114,9 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition x:Name="PluginCol" Width="Auto" />
                     <ColumnDefinition x:Name="ResultCol" Width="*" />
-                    <ColumnDefinition x:Name="DetailCol" Width="0" />
                 </Grid.ColumnDefinitions>
                 <views:SuggestionResultView x:Name="SuggestionResultsListView" Grid.Column="0" />
                 <views:SearchResultView x:Name="SearchResultListView" Grid.Column="1" />
-                <ContentControl x:Name="MoreInfoContent" Grid.Column="2" />
             </Grid>
         </StackPanel>
     </Border>

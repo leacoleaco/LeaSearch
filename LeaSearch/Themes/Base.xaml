@@ -7,6 +7,7 @@
         <ResourceDictionary Source="Controls/TextBlockTheme.xaml" />
         <ResourceDictionary Source="Controls/ProgressBar.xaml" />
         <ResourceDictionary Source="Controls/ListBoxTheme.xaml" />
+        <ResourceDictionary Source="Controls/InfoContentTheme.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <ControlTemplate x:Key="TextBoxExTemplate" TargetType="{x:Type controls:TextBoxEx}">

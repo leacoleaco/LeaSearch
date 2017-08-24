@@ -37,6 +37,7 @@ namespace LeaSearch.Plugin.HelloWorld
                         IconPath = "app.png",
                         Title = "Query Sample For C#  row1",
                         SubTitle = $"Query:{queryParam.Keyword}" ,
+                        //特定的命令执行，只对当前item生效
                         SelectedAction =shareContext =>
                         {
                             shareContext.SharedMethod.ShowMessage("test");
@@ -63,6 +64,8 @@ namespace LeaSearch.Plugin.HelloWorld
                     new ResultItem() { IconPath = "app.png", Title = "Query Sample For C#  row19", SubTitle = $"Query:{queryParam.Keyword}" },
                 },
 
+                //全局的执行命令
+                //这里是为了让每个子项都执行相同的内容
                 SelectedAction = (shareContext, resultItem) =>
                  {
                      shareContext.SharedMethod.ShowMessage(resultItem.Title);
@@ -71,8 +74,14 @@ namespace LeaSearch.Plugin.HelloWorld
                      return new StateAfterCommandInvoke() { ShowProgram = true };
                  },
 
+                //在程序进入插件模式后展示的信息
+                DefaultInfo = new TextInfo() { Text = "this is a test info"}
+
+
             };
-            Thread.Sleep(3000);
+            
+            //这句话是为了模拟搜索耗费时间的情况
+            Thread.Sleep(1500);
             return result;
         }
 

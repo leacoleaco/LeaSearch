@@ -23,7 +23,6 @@ namespace LeaSearch.ViewModels
 
         private string _queryText;
         private Visibility _resultVisibility = Visibility.Collapsed;
-        private ResultMode _resultMode = ResultMode.ListOnly;
         private Core.Plugin.Plugin _currentSearchPlugin;
         private string _errorTextBlock;
         private string _infoTextBlock;
@@ -107,18 +106,7 @@ namespace LeaSearch.ViewModels
             }
         }
 
-        /// <summary>
-        /// which way result shows
-        /// </summary>
-        public ResultMode ResultMode
-        {
-            get { return _resultMode; }
-            set
-            {
-                _resultMode = value;
-                OnResultModeChanged(value);
-            }
-        }
+
 
         /// <summary>
         /// Info we show
@@ -220,15 +208,7 @@ namespace LeaSearch.ViewModels
         #region Event
 
 
-        /// <summary>
-        /// notify the result mode has changed
-        /// </summary>
-        //public event Action<ResultMode> ResultModeChanged;
-        protected virtual void OnResultModeChanged(ResultMode resultMod)
-        {
-            Messenger.Default.Send<ResultMode>(resultMod);
-            //ResultModeChanged?.Invoke(resultMod);
-        }
+
 
         //public event Action<QueryState> QueryStateChanged;
         protected virtual void OnQueryStateChanged(QueryState queryState)
@@ -396,8 +376,5 @@ namespace LeaSearch.ViewModels
         QueryGotNoResult,
     }
 
-    public enum ResultMode
-    {
-        ListOnly, ListDetail, DetailOnly
-    }
+
 }

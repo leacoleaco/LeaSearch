@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using LeaSearch.Helper;
 using Autofac;
+using GalaSoft.MvvmLight.Threading;
 using LeaSearch.Common.Env;
 using LeaSearch.Core.HotKey;
 using LeaSearch.Core.I18N;
@@ -62,9 +63,6 @@ namespace LeaSearch
 
 
 
-
-
-
         }
 
         #region ISingleInstanceApp Members
@@ -83,6 +81,8 @@ namespace LeaSearch
         protected override void OnStartup(StartupEventArgs e)
         {
             Logger.Info("App.OnStartup-----------------------------");
+
+            DispatcherHelper.Initialize();
 
             //=====================================   Doing prepare things   =========================================================
             // regist unhandled exception that is UI Thread cause 
