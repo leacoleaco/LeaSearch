@@ -104,6 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converts\Path2ImageSourceConvert.cs" />
+    <Compile Include="TemplateSelector\InfoContentTemplateSelector.cs" />
     <Compile Include="ViewModels\DetailResultViewModel.cs" />
     <Compile Include="ViewModels\SearchResultViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
@@ -133,6 +134,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Converts\ImageConverts.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataTemplates\InfoContentDataTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Controls\ContainerTheme.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

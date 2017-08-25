@@ -326,20 +326,7 @@ namespace LeaSearch.ViewModels
             ////TODO: check if is useful
             //Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() =>
             {
-                if (contentInfo is TextInfo)
-                {
-                    var ct = contentInfo as TextInfo;
-                    MoreInfoContent = new TextBlock() { Text = ct.Text, TextWrapping = TextWrapping.WrapWithOverflow };
-                }
-                else if (contentInfo is SimpleHtmlInfo)
-                {
-                    var ct = contentInfo as SimpleHtmlInfo;
-                    var htmlRickTextBox = new HtmlRichTextBox();
-                    htmlRickTextBox.IsReadOnly = true;
-                    htmlRickTextBox.Text = ct.Html;
-                    MoreInfoContent = htmlRickTextBox;
-                }
-
+                MoreInfoContent = contentInfo;
                 _isPreviewing = true;
             }));
 

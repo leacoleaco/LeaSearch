@@ -7,7 +7,11 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:InfoContent}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <ContentPresenter x:Name="Content" Content="{TemplateBinding DisplayContent}" />
+                        <ContentPresenter
+                            x:Name="Content"
+                            Content="{TemplateBinding DisplayContent}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                            ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" />
                     </ScrollViewer>
                 </ControlTemplate>
             </Setter.Value>

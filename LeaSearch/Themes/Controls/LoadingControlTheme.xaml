@@ -5,6 +5,7 @@
     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
     <Style TargetType="{x:Type controls:LoadingControl}">
+        <Setter Property="FillColor" Value="#FF12A5EF" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:LoadingControl}">

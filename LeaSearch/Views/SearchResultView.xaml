@@ -4,7 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:LeaSearch.UI.Controls;assembly=LeaSearch.UI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:htmlRichTextBox="clr-namespace:LeaSearch.UI.Controls.HtmlRichTextBox;assembly=LeaSearch.UI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:plugin="clr-namespace:LeaSearch.Plugin;assembly=LeaSearch.Plugin"
+    xmlns:templateSelector="clr-namespace:LeaSearch.TemplateSelector"
     xmlns:viewModels="clr-namespace:LeaSearch.ViewModels"
     d:DataContext="{d:DesignInstance viewModels:SearchResultViewModel}"
     d:DesignHeight="300"
@@ -24,12 +27,12 @@
     </UserControl.InputBindings>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition x:Name="ListRow" Height="2*" />
-            <RowDefinition x:Name="InfoRow" Height="*" />
+            <RowDefinition x:Name="FirstRow" Height="*" />
+            <RowDefinition x:Name="SecondRow" Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition x:Name="ListCol" Width="2*" />
-            <ColumnDefinition x:Name="InfoCol" Width="*" />
+            <ColumnDefinition x:Name="FirstCol" Width="2*" />
+            <ColumnDefinition x:Name="SecondCol" Width="*" />
         </Grid.ColumnDefinitions>
         <ListBox
             x:Name="ListBox"
@@ -112,20 +115,47 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <GridSplitter x:Name="GridSplitter" />
+        <GridSplitter
+            x:Name="GridSplitter"
+            Grid.Row="0"
+            Grid.Column="0" />
 
-        <Grid x:Name="MoreInfo_Panel">
+        <Grid
+            x:Name="MoreInfoPanel"
+            Grid.Row="0"
+            Grid.Column="1">
+            <Grid.Resources>
+                <DataTemplate x:Key="TextInfoInfoContentDataTemplate">
+                    <TextBlock
+                        Margin="5"
+                        d:DataContext="{d:DesignInstance plugin:TextInfo}"
+                        Style="{DynamicResource Resource InfoContentTextBlockStyle}"
+                        Text="{Binding Text, Mode=OneWay}"
+                        TextWrapping="WrapWithOverflow" />
+                </DataTemplate>
+
+                <DataTemplate x:Key="SimpleHtmlInfoInfoContentDataTemplate">
+                    <TextBlock
+                        d:DataContext="{d:DesignInstance plugin:SimpleHtmlInfo}"
+                        Text="{Binding Html, Mode=OneWay}"
+                        TextWrapping="WrapWithOverflow" />
+                    <!--<htmlRichTextBox:HtmlRichTextBox IsReadOnly="True" Text="{Binding Html}" />-->
+                </DataTemplate>
+
+                <templateSelector:InfoContentTemplateSelector
+                    x:Key="InfoContentTemplateSelector"
+                    SimpleHtmlInfoDataTemplate="{StaticResource SimpleHtmlInfoInfoContentDataTemplate}"
+                    TextInfoDataTemplate="{StaticResource TextInfoInfoContentDataTemplate}" />
+            </Grid.Resources>
             <controls:InfoContent
-                x:Name="MoreInfo_InfoContent"
-                Grid.Row="1"
-                Grid.Column="0"
+                x:Name="MoreInfoInfoContent"
+                ContentTemplateSelector="{StaticResource InfoContentTemplateSelector}"
                 DisplayContent="{Binding MoreInfoContent, Mode=OneWay}"
                 DisplayContentChanged="MoreInfoContent_OnDisplayContentChanged" />
             <controls:LoadingControl
-                x:Name="MoreInfo_Loadding"
+                x:Name="MoreInfoLoadding"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                FillColor="#00FF00"
                 Visibility="Collapsed" />
         </Grid>
 

@@ -28,18 +28,18 @@ namespace LeaSearch.Views
 
                 if (m.IsShow)
                 {
-                    this.MoreInfo_Loadding.Visibility = Visibility.Visible;
+                    this.MoreInfoLoadding.Visibility = Visibility.Visible;
 
-                    if (this.MoreInfo_Panel != null)
+                    if (this.MoreInfoPanel != null)
                     {
-                        this.MoreInfo_Panel.Visibility = Visibility.Visible;
+                        this.MoreInfoPanel.Visibility = Visibility.Visible;
                         UpdateInfoPanelPosition();
                     }
                 }
                 else
                 {
 
-                    this.MoreInfo_Loadding.Visibility = Visibility.Collapsed;
+                    this.MoreInfoLoadding.Visibility = Visibility.Collapsed;
                 }
             });
         }
@@ -57,7 +57,7 @@ namespace LeaSearch.Views
         private void UpdateInfoPanelPosition()
         {
 
-            var infoPanel = this.MoreInfo_Panel;
+            var infoPanel = this.MoreInfoPanel;
 
             if (infoPanel == null) return;
             if (this.ListBox.ActualHeight <= 300)
@@ -72,15 +72,17 @@ namespace LeaSearch.Views
                 this.GridSplitter.Width = double.NaN;
                 this.GridSplitter.Height = 2;
 
+                FirstRow.Height = new GridLength(2, GridUnitType.Star);
                 if (infoPanel.IsVisible)
                 {
-                    InfoRow.Height = new GridLength(1, GridUnitType.Star);
+                    SecondRow.Height = new GridLength(1, GridUnitType.Star);
                 }
                 else
                 {
-                    InfoRow.Height = new GridLength(0);
+                    SecondRow.Height = new GridLength(0);
                 }
-                InfoCol.Width = new GridLength(1, GridUnitType.Auto);
+                FirstCol.Width = new GridLength(1, GridUnitType.Star);
+                SecondCol.Width = new GridLength(0);
             }
             else
             {
@@ -94,15 +96,17 @@ namespace LeaSearch.Views
                 this.GridSplitter.Width = 2;
                 this.GridSplitter.Height = double.NaN;
 
-                InfoRow.Height = new GridLength(1, GridUnitType.Auto);
+                FirstCol.Width = new GridLength(2, GridUnitType.Star);
                 if (infoPanel.IsVisible)
                 {
-                    InfoCol.Width = new GridLength(1, GridUnitType.Star);
+                    SecondCol.Width = new GridLength(1, GridUnitType.Star);
                 }
                 else
                 {
-                    InfoCol.Width = new GridLength(0);
+                    SecondCol.Width = new GridLength(0);
                 }
+                FirstRow.Height = new GridLength(1, GridUnitType.Star);
+                SecondRow.Height = new GridLength(0);
             }
         }
 
@@ -121,7 +125,7 @@ namespace LeaSearch.Views
 
         private void MoreInfoContent_OnDisplayContentChanged(object sender, DisplayContentChangedArgs args)
         {
-            var infoPanel = this.MoreInfo_Panel;
+            var infoPanel = this.MoreInfoPanel;
 
             if (infoPanel == null) return;
 
