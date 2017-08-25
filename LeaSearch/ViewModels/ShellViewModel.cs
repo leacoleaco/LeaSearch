@@ -224,6 +224,7 @@ namespace LeaSearch.ViewModels
         /// </summary>
         protected virtual void NotifyWakeUpProgram()
         {
+            ShowNotice(null);
             Messenger.Default.Send(new ShellDisplayMessage() { Display = Display.WakeUp });
         }
 

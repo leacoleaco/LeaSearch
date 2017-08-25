@@ -107,6 +107,7 @@ namespace LeaSearch.Views
             if (_settings.IgnoreHotkeysOnFullscreen && WindowsInteropHelper.IsWindowFullscreen())
                 return;
 
+
             this.Show();
             //we need to focus textbox when wake up
             //why use dispatcher:
