@@ -7,6 +7,10 @@
     <system:String x:Key="registerHotkeyFailed">注册热键：{0} 失败</system:String>
     <system:String x:Key="couldnotStartCmd">启动命令 {0} 失败</system:String>
 
+
+    <system:String x:Key="message_copyToClipboard">&quot;{0}&quot;已被复制到系统剪贴板</system:String>
+    <system:String x:Key="message_copyToClipboardFailure">&quot;{0}&quot;复制到剪贴板失败，原因：{1}</system:String>
+
     <!--  提示  -->
     <system:String x:Key="notice_NoResult">找不到任何记录</system:String>
     <system:String x:Key="notice_EnterChooseMode">点击回车进入选择模式</system:String>

@@ -23,23 +23,11 @@ namespace LeaSearch.UI.UserControls
             panel?.SetVisibilty(panel, panel.ErrorText, e.NewValue);
         }
 
-
-
-
-
-        public static readonly DependencyProperty IconSourceProperty = DependencyProperty.Register("IconSource", typeof(ImageSource), typeof(NoticePanel), new PropertyMetadata(default(ImageSource)));
-
         public NoticePanel()
         {
             InitializeComponent();
         }
 
-
-        //public ImageSource IconSource
-        //{
-        //    get { return PART_Icon.Source; }
-        //    set { PART_Icon.Source = value; }
-        //}
 
         public string ErrorText
         {
@@ -59,11 +47,7 @@ namespace LeaSearch.UI.UserControls
             }
         }
 
-        public ImageSource IconSource
-        {
-            get { return (ImageSource)GetValue(IconSourceProperty); }
-            set { SetValue(IconSourceProperty, value); }
-        }
+        
 
         private void SetVisibilty(NoticePanel panel, object errorText, object infoText)
         {
@@ -75,8 +59,8 @@ namespace LeaSearch.UI.UserControls
             }
             else
             {
-                panel.NoticeInfoTextBlock.Visibility = needInfoTextHide ? Visibility.Collapsed : Visibility.Visible;
-                panel.NoticeErrorTextBlock.Visibility = needErrorTextHide ? Visibility.Collapsed : Visibility.Visible;
+                panel.InfoPanel.Visibility = needInfoTextHide ? Visibility.Collapsed : Visibility.Visible;
+                panel.ErrorPanel.Visibility = needErrorTextHide ? Visibility.Collapsed : Visibility.Visible;
                 this.Visibility = Visibility.Visible;
             }
         }

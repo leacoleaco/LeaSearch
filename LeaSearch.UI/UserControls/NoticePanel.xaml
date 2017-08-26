@@ -5,31 +5,49 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="noticePanel"
-    d:DesignHeight="300"
-    d:DesignWidth="300"
-    Visibility="Collapsed"
+    d:DesignHeight="200"
+    d:DesignWidth="600"
     mc:Ignorable="d">
-    <DockPanel LastChildFill="True">
-        <Image
-            x:Name="PART_Icon"
-            Width="20"
-            Height="20"
-            Margin="4,0"
-            DockPanel.Dock="Left"
-            RenderOptions.BitmapScalingMode="HighQuality"
-            Source="{Binding IconSource, ElementName=noticePanel}"
-            UseLayoutRounding="True" />
-        <StackPanel>
-            <TextBlock
-                x:Name="NoticeInfoTextBlock"
-                Style="{DynamicResource NoticeInfoTextBlockStyle}"
-                Text="{Binding InfoText, ElementName=noticePanel}"
-                Visibility="Collapsed" />
+    <StackPanel>
+
+        <DockPanel
+            x:Name="ErrorPanel"
+            LastChildFill="True"
+            Visibility="Collapsed">
+            <Image
+                Width="20"
+                Height="20"
+                Margin="2,0"
+                VerticalAlignment="Center"
+                DockPanel.Dock="Left"
+                RenderOptions.BitmapScalingMode="HighQuality"
+                Source="/LeaSearch.UI;component/images/error.png"
+                UseLayoutRounding="True" />
             <TextBlock
                 x:Name="NoticeErrorTextBlock"
+                VerticalAlignment="Center"
                 Style="{DynamicResource NoticeErrorTextBlockStyle}"
-                Text="{Binding ErrorText, ElementName=noticePanel}"
-                Visibility="Collapsed" />
-        </StackPanel>
-    </DockPanel>
+                Text="{Binding ErrorText, ElementName=noticePanel}" />
+        </DockPanel>
+        <DockPanel
+            x:Name="InfoPanel"
+            LastChildFill="True"
+            Visibility="Collapsed">
+            <Image
+                Width="20"
+                Height="20"
+                Margin="2,0"
+                VerticalAlignment="Center"
+                DockPanel.Dock="Left"
+                RenderOptions.BitmapScalingMode="HighQuality"
+                Source="/LeaSearch.UI;component/Images/info.png"
+                UseLayoutRounding="True" />
+            <TextBlock
+                x:Name="NoticeInfoTextBlock"
+                VerticalAlignment="Center"
+                Style="{DynamicResource NoticeInfoTextBlockStyle}"
+                Text="{Binding InfoText, ElementName=noticePanel}" />
+
+        </DockPanel>
+    </StackPanel>
 </UserControl>

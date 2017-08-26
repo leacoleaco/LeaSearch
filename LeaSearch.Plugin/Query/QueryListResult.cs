@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
 
-namespace LeaSearch.Plugin
+namespace LeaSearch.Plugin.Query
 {
     public class QueryListResult : QueryResult
     {
@@ -18,7 +15,11 @@ namespace LeaSearch.Plugin
         /// </summary>
         public Func<SharedContext, ResultItem, StateAfterCommandInvoke> SelectedAction { get; set; }
 
-       
+        /// <summary>
+        /// 主界面的错误提示
+        /// </summary>
+        public string ErrorMessage { get; set; }
+
 
         public void AddResultItem(ResultItem item)
         {

@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows.Documents;
+using LeaSearch.Plugin.Query;
+using org.mariuszgromada.math.mxparser;
 
 namespace LeaSearch.Plugin.Calculator
 {
@@ -49,12 +52,31 @@ namespace LeaSearch.Plugin.Calculator
 
         public QueryListResult Query(QueryParam queryParam)
         {
+            var expression = new Expression(queryParam.Keyword);
+
+            if (!expression.checkSyntax())
+            {
+                //如果表达式有误                
+                var translation = _sharedContext.SharedMethod.GetTranslation(@"leasearch_plugin_calculator_express_err");
+                return new QueryListResult()
+                {
+                    ErrorMessage= translation
+                };
+            }
+
+            var result = expression.calculate().ToString();
             return new QueryListResult()
             {
                 Results = { new ResultItem()
             {
                 IconPath = "calculator.png",
-                Title = $"{queryParam.Keyword}"
+                Title = result,
+                SubTitle = _sharedContext.SharedMethod.GetTranslation(@"leasearch_plugin_calculator_copy"),
+                SelectedAction =(SharedContext) =>
+                {
+                    SharedContext.SharedMethod.CopyToClipboard(result);
+                    return new StateAfterCommandInvoke(){ShowProgram = false};
+                }
             }},
                 MoreInfo = new TextInfo() { Text = "test" }
             };

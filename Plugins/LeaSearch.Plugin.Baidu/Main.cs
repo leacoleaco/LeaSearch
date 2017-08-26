@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using HtmlAgilityPack;
+using LeaSearch.Plugin.Query;
 
 namespace LeaSearch.Plugin.Baidu
 {

@@ -55,6 +55,25 @@ namespace LeaSearch.Views
                 }
             });
 
+            Messenger.Default.Register<NoticeMessage>(this, m =>
+            {
+                if (m == null)
+                {
+                    NoticePanel.ErrorText = null;
+                    NoticePanel.InfoText = null;
+                    return;
+                }
+                switch (m.NoticeType)
+                {
+                    case NoticeType.Info:
+                        NoticePanel.InfoText = m.Message;
+                        break;
+                    case NoticeType.Error:
+                        NoticePanel.ErrorText = m.Message;
+                        break;
+                }
+            });
+
             this.Unloaded += (sender, e) => Messenger.Default.Unregister(this);
         }
 
@@ -116,7 +135,7 @@ namespace LeaSearch.Views
         }
 
 
-      
+
 
 
         private void ShellViewModel_QueryStateChanged(QueryState queryState)

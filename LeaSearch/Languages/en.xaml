@@ -7,6 +7,10 @@
     <system:String x:Key="registerHotkeyFailed">Failed to register hotkey: {0}</system:String>
     <system:String x:Key="couldnotStartCmd">Could not start {0}</system:String>
 
+
+    <system:String x:Key="message_copyToClipboard">&quot;{0}&quot;has copied to clipboard</system:String>
+    <system:String x:Key="message_copyToClipboardFailure">&quot;{0}&quot;copy to clipboard failure. Reason:{1}</system:String>
+
     <!--  notice  -->
     <system:String x:Key="notice_NoResult">Can not find any record</system:String>
     <system:String x:Key="notice_EnterChooseMode">Enter to select mode</system:String>

@@ -4,6 +4,7 @@
     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
     <system:String x:Key="leasearch_plugin_calculator_pluginCallActive">请输入数学表达式进行计算</system:String>
+    <system:String x:Key="leasearch_plugin_calculator_copy">点击回车复制到剪贴板</system:String>
 
-
+    <system:String x:Key="leasearch_plugin_calculator_express_err">表达式有误</system:String>
 </ResourceDictionary>

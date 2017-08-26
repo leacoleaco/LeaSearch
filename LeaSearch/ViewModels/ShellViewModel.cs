@@ -11,8 +11,10 @@ using LeaSearch.Common.Messages;
 using LeaSearch.Common.ViewModel;
 using LeaSearch.Core.I18N;
 using LeaSearch.Core.Ioc;
+using LeaSearch.Core.Notice;
 using LeaSearch.Core.QueryEngine;
 using LeaSearch.Plugin;
+using LeaSearch.Plugin.Query;
 using Microsoft.Expression.Interactivity.Core;
 
 namespace LeaSearch.ViewModels
@@ -109,34 +111,6 @@ namespace LeaSearch.ViewModels
 
 
 
-        /// <summary>
-        /// Info we show
-        /// </summary>
-        public string InfoTextBlock
-        {
-            get { return _infoTextBlock; }
-            set
-            {
-                _infoTextBlock = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        /// <summary>
-        /// error we show
-        /// </summary>
-        public string ErrorTextBlock
-        {
-            get { return _errorTextBlock; }
-            set
-            {
-                _errorTextBlock = value;
-                RaisePropertyChanged();
-            }
-        }
-
-
-
         #endregion
 
         #region Command
@@ -211,8 +185,11 @@ namespace LeaSearch.ViewModels
 
 
 
-        //public event Action<QueryState> QueryStateChanged;
-        protected virtual void OnQueryStateChanged(QueryState queryState)
+        /// <summary>
+        /// 通知前端查询状态发生了改变
+        /// </summary>
+        /// <param name="queryState"></param>
+        protected  void NotifyQueryStateChanged(QueryState queryState)
         {
             _queryState = queryState;
             Messenger.Default.Send<QueryState>(queryState);
@@ -220,16 +197,16 @@ namespace LeaSearch.ViewModels
         }
 
         /// <summary>
-        /// 通知唤醒界面
+        /// 通知前端唤醒界面
         /// </summary>
-        protected virtual void NotifyWakeUpProgram()
+        protected  void NotifyWakeUpProgram()
         {
             ShowNotice(null);
             Messenger.Default.Send(new ShellDisplayMessage() { Display = Display.WakeUp });
         }
 
         /// <summary>
-        /// 通知隐藏界面
+        /// 通知前端隐藏界面
         /// </summary>
         protected virtual void NotifyHideProgram()
         {
@@ -242,12 +219,12 @@ namespace LeaSearch.ViewModels
 
 
         /// <summary>
-        /// do the query
+        /// 执行查询
         /// </summary>
         private void Query()
         {
 
-            OnQueryStateChanged(QueryState.StartQuery);
+            NotifyQueryStateChanged(QueryState.StartQuery);
 
             if (!string.IsNullOrEmpty(QueryText))
             {
@@ -256,9 +233,10 @@ namespace LeaSearch.ViewModels
             else
             {
                 //if no result ,then close search
-                OnQueryStateChanged(QueryState.QueryGotNoResult);
+                NotifyQueryStateChanged(QueryState.QueryGotNoResult);
                 SuggestionResultViewModel.Clear();
                 SearchResultViewModel.Clear();
+                CurrentSearchPlugin = null;
             }
 
 
@@ -268,7 +246,7 @@ namespace LeaSearch.ViewModels
         private void QueryEngine_PluginCallActive(Core.Plugin.Plugin currentPlugin, PluginCalledArg pluginCalledArg)
         {
             //插件模式如果激活了，则产生指示
-            InfoTextBlock = pluginCalledArg.InfoMessage;
+            ShowNotice(pluginCalledArg.InfoMessage);
 
             CurrentSearchPlugin = currentPlugin;
 
@@ -280,57 +258,46 @@ namespace LeaSearch.ViewModels
             CurrentSearchPlugin = currentPlugin;
             //清理指示
             ShowNotice(null);
-            OnQueryStateChanged(QueryState.BeginPluginSearch);
+            NotifyQueryStateChanged(QueryState.BeginPluginSearch);
         }
 
         private void QueryEngine_SuggectionQuery(Core.Plugin.Plugin currentPlugin)
         {
             //建议模式激活了，清理指示
             ShowNotice(null);
+            CurrentSearchPlugin = null;
         }
 
         private void QueryEngine_EndQuery()
         {
             //如果查询终止，无法继续查询，则清理指示
             ShowNotice(null);
+            CurrentSearchPlugin = null;
         }
 
 
-        private void QueryEngine_GetResult(Plugin.QueryListResult result)
+        private void QueryEngine_GetResult(QueryListResult result)
         {
             if (result == null || !result.Results.Any())
             {
                 //如果没有返回结果
-                OnQueryStateChanged(QueryState.QueryGotNoResult);
-
+                NotifyQueryStateChanged(QueryState.QueryGotNoResult);
                 ShowNotice(@"notice_NoResult".GetTranslation());
-
-                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
-                {
-                    SearchResultViewModel.Clear();
-                }));
             }
             else
             {
                 //如果返回了结果
-
-
                 if (result.Results.Count > 1)
                 {
                     //大于1条记录，则需要进行选择模式
                     ShowNotice(@"notice_EnterChooseMode".GetTranslation());
-                    OnQueryStateChanged(QueryState.QueryGotManyResult);
+                    NotifyQueryStateChanged(QueryState.QueryGotManyResult);
                 }
                 else
                 {
                     //只返回了一条记录
-                    OnQueryStateChanged(QueryState.QueryGotOneResult);
+                    NotifyQueryStateChanged(QueryState.QueryGotOneResult);
                 }
-
-                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
-                {
-                    SearchResultViewModel.SetResults(result);
-                }));
             }
 
         }
@@ -339,31 +306,16 @@ namespace LeaSearch.ViewModels
         /// <summary>
         /// 显示提示
         /// </summary>
-        /// <param name="noticeInfo"></param>
-        public void ShowNotice(string noticeInfo)
+        /// <param name="message"></param>
+        public void ShowNotice(string message)
         {
-            InfoTextBlock = noticeInfo;
+            UiNoticeHelper.ShowInfoNotice(message);
         }
 
         #endregion
 
     }
 
-    /// <summary>
-    /// 目前点击按键用作什么模式
-    /// </summary>
-    public enum KeyInputMode
-    {
-        /// <summary>
-        /// 输入模式
-        /// </summary>
-        Input,
-        /// <summary>
-        /// 选择模式
-        /// </summary>
-        Select
-
-    }
 
     public enum QueryState
     {

@@ -8,6 +8,7 @@ using System.Windows;
 using LeaSearch.Core.Plugin;
 using LeaSearch.Infrastructure.Logger;
 using LeaSearch.Plugin;
+using LeaSearch.Plugin.Query;
 
 namespace LeaSearch.Core.QueryEngine
 {

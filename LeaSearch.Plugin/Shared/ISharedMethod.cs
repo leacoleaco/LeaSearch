@@ -37,10 +37,17 @@
         /// <returns></returns>
         bool ShowMessageWithTranslation(string i18NKey, params object[] paramObjects);
 
+
         /// <summary>
         /// 记录消息
         /// </summary>
         /// <param name="message"></param>
         void LogInfo(string message);
+
+        /// <summary>
+        /// 复制到剪贴板, 并弹出提示框
+        /// </summary>
+        /// <param name="copyObj"></param>
+        void CopyToClipboard(object copyObj);
     }
 }

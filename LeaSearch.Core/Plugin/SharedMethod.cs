@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using LeaSearch.Core.I18N;
 using LeaSearch.Core.Notice;
 using LeaSearch.Infrastructure.Logger;
@@ -26,24 +27,41 @@ namespace LeaSearch.Core.Plugin
 
         public bool ShowMessage(string message)
         {
-            return MessageUiHelper.ShowMessage(message);
+            return UiNoticeHelper.ShowMessage(message);
         }
 
         public bool ShowMessageWithFormat(string format, params object[] paramObjects)
         {
-            return MessageUiHelper.ShowMessage(string.Format(format, paramObjects));
+            return UiNoticeHelper.ShowMessage(string.Format(format, paramObjects));
         }
 
         public bool ShowMessageWithTranslation(string i18NKey, params object[] paramObjects)
         {
-            return MessageUiHelper.ShowMessageWithInternation(i18NKey, paramObjects);
+            return UiNoticeHelper.ShowMessageWithInternation(i18NKey, paramObjects);
         }
 
-      
 
         public void LogInfo(string message)
         {
             Logger.Info(message);
+        }
+
+        public void CopyToClipboard(object copyObj)
+        {
+            if (copyObj != null)
+            {
+                try
+                {
+                    Clipboard.SetDataObject(copyObj);
+                    ShowMessageWithFormat(@"message_copyToClipboard", copyObj.ToString());
+                }
+                catch (Exception e)
+                {
+                    ShowMessageWithTranslation(@"message_copyToClipboardFailure", copyObj.ToString(), e.Message);
+                    throw;
+                }
+
+            }
         }
     }
 }

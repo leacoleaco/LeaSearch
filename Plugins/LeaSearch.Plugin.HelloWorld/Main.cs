@@ -1,5 +1,5 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
+using LeaSearch.Plugin.Query;
 
 namespace LeaSearch.Plugin.HelloWorld
 {

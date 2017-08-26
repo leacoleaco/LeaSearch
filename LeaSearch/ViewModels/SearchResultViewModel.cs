@@ -13,8 +13,10 @@ using LeaSearch.Common.Env;
 using LeaSearch.Common.Messages;
 using LeaSearch.Common.ViewModel;
 using LeaSearch.Core.Ioc;
+using LeaSearch.Core.Notice;
 using LeaSearch.Core.QueryEngine;
 using LeaSearch.Plugin;
+using LeaSearch.Plugin.Query;
 using LeaSearch.UI.Controls.HtmlRichTextBox;
 using Microsoft.Expression.Interactivity.Core;
 
@@ -40,7 +42,63 @@ namespace LeaSearch.ViewModels
 
 
             _queryEngine.PluginCallActive += queryEngine_PluginCallActive;
+            _queryEngine.GetResult += _queryEngine_GetResult;
             _queryEngine.GetDetailResult += queryEngine_GetDetailResult;
+            _queryEngine.EndQuery += _queryEngine_EndQuery;
+        }
+
+        private void _queryEngine_EndQuery()
+        {
+            ClearMoreInfo();
+        }
+
+        private void queryEngine_PluginCallActive(Core.Plugin.Plugin plugin, PluginCalledArg arg)
+        {
+            if (arg.MoreInfo != null)
+            {
+                ShowMoreInfo(arg.MoreInfo);
+            }
+            else
+            {
+                ClearMoreInfo();
+            }
+
+            Clear();
+        }
+
+        private void _queryEngine_GetResult(QueryListResult result)
+        {
+            if (result == null)
+            {
+                //如果没有返回结果,则清除列表
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(Clear));
+                return;
+            }
+
+            //如果有更多信息，则替换或者弹出，但是不清理，因为在激活的插件模式的时候可能有信息已经返回
+            if (result.MoreInfo != null)
+            {
+                ShowMoreInfo(result.MoreInfo);
+            }
+
+
+            //如果有错误信息，则弹出
+            if (!string.IsNullOrWhiteSpace(result?.ErrorMessage))
+            {
+                UiNoticeHelper.ShowErrorNotice(result.ErrorMessage);
+            }
+            else
+            {
+                UiNoticeHelper.ClearErrorNotice();
+            }
+
+            //如果返回了结果，则添加列表
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            {
+                SetResults(result);
+            }));
+
+
         }
 
         private void queryEngine_GetDetailResult(QueryDetailResult result)
@@ -55,15 +113,6 @@ namespace LeaSearch.ViewModels
             {
                 Messenger.Default.Send(new DetailLoaddingDisplayMessage() { IsShow = false });
             });
-        }
-
-        private void queryEngine_PluginCallActive(Core.Plugin.Plugin plugin, PluginCalledArg arg)
-        {
-            if (arg.MoreInfo != null)
-            {
-                ShowMoreInfo(arg.MoreInfo);
-            }
-            Clear();
         }
 
         public int CurrentIndex
@@ -212,21 +261,35 @@ namespace LeaSearch.ViewModels
         }
 
 
+        /// <summary>
+        /// 清理列表
+        /// </summary>
         public void Clear()
         {
             Results.Clear();
         }
 
+        /// <summary>
+        /// 选中第一个
+        /// </summary>
         public void SelectFirst()
         {
             CurrentIndex = 0;
         }
 
+        /// <summary>
+        /// 选择下一个
+        /// </summary>
+        /// <param name="stepSize"></param>
         public void SelectNext(int stepSize = 1)
         {
             CurrentIndex = NewIndex(CurrentIndex + stepSize);
         }
 
+        /// <summary>
+        /// 选择上一个
+        /// </summary>
+        /// <param name="stepSize"></param>
         public void SelectPrev(int stepSize = 1)
         {
             CurrentIndex = NewIndex(CurrentIndex - stepSize);
