@@ -139,6 +139,7 @@ namespace LeaSearch.Core.QueryEngine
                 var suitableQueryPlugins = SearchSuitablePlugins(queryParam, QueryMode.Suggestion);
                 if (suitableQueryPlugins == null || !suitableQueryPlugins.Any())
                 {
+                    //没有合适的可以执行的查询
                     OnEndQuery();
                     return;
                 }

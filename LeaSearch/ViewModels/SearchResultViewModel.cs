@@ -13,6 +13,7 @@ using LeaSearch.Common.Env;
 using LeaSearch.Common.Messages;
 using LeaSearch.Common.ViewModel;
 using LeaSearch.Core.Ioc;
+using LeaSearch.Core.MessageModels;
 using LeaSearch.Core.Notice;
 using LeaSearch.Core.QueryEngine;
 using LeaSearch.Plugin;
@@ -50,7 +51,6 @@ namespace LeaSearch.ViewModels
 
         private void _queryEngine_EndQuery()
         {
-            ClearMoreInfo();
         }
 
         private void queryEngine_PluginCallActive(Core.Plugin.Plugin plugin, PluginCalledArg arg)
@@ -335,19 +335,6 @@ namespace LeaSearch.ViewModels
 
 
         /// <summary>
-        /// 用于给出一些提示和建议
-        /// </summary>
-        public object MoreInfoContent
-        {
-            get { return _moreInfoContent; }
-            set
-            {
-                _moreInfoContent = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        /// <summary>
         /// 调用对应插件查询详情
         /// </summary>
         private void QueryDetail()
@@ -364,7 +351,8 @@ namespace LeaSearch.ViewModels
         {
             DispatcherHelper.CheckBeginInvokeOnUI(new Action(() =>
             {
-                MoreInfoContent = null;
+                Messenger.Default.Send(new SetMoreInfoContentMessage() { MoreInfoContent = null });
+
                 _isPreviewing = false;
             }));
         }
@@ -381,12 +369,9 @@ namespace LeaSearch.ViewModels
                 return;
             }
 
-
             DispatcherHelper.CheckBeginInvokeOnUI(new Action(() =>
-            ////TODO: check if is useful
-            //Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() =>
             {
-                MoreInfoContent = contentInfo;
+                Messenger.Default.Send(new SetMoreInfoContentMessage() { MoreInfoContent = contentInfo });
                 _isPreviewing = true;
             }));
 

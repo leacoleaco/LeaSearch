@@ -226,7 +226,7 @@ namespace LeaSearch.ViewModels
 
             if (!string.IsNullOrEmpty(QueryText))
             {
-                Ioc.Reslove<QueryEngine>().Query(QueryText);
+                _queryEngine.Query(QueryText);
             }
             else
             {

@@ -16,14 +16,7 @@ namespace LeaSearch.UI.Controls
             FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(InfoContent), (PropertyMetadata)new FrameworkPropertyMetadata((object)typeof(InfoContent)));
         }
 
-        public static readonly DependencyProperty DisplayContentProperty = DependencyProperty.Register("DisplayContent", typeof(object), typeof(InfoContent), new PropertyMetadata(default(ContentPresenter), OnDisplayPropertyChanged));
-
-        private static void OnDisplayPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var control = d as InfoContent;
-            control?.OnDisplayContentChanged(new DisplayContentChangedArgs() { NewValue = e.NewValue, OldValue = e.OldValue });
-        }
-
+        public static readonly DependencyProperty DisplayContentProperty = DependencyProperty.Register("DisplayContent", typeof(object), typeof(InfoContent), new PropertyMetadata(default(ContentPresenter)));
 
 
         /// <summary>
@@ -35,15 +28,7 @@ namespace LeaSearch.UI.Controls
             set { SetValue(DisplayContentProperty, value); }
         }
 
-        /// <summary>
-        /// 当显示内容设置发生改变的时候触发
-        /// </summary>
-        public event DisplayContentChanged DisplayContentChanged;
 
-        protected virtual void OnDisplayContentChanged(DisplayContentChangedArgs args)
-        {
-            DisplayContentChanged?.Invoke(this, args);
-        }
     }
 
     public delegate void DisplayContentChanged(object sender, DisplayContentChangedArgs args);

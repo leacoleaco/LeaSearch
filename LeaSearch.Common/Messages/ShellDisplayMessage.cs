@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LeaSearch.Common.Messages
+﻿namespace LeaSearch.Common.Messages
 {
     /// <summary>
     /// 指示主程序隐藏还是显示的消息

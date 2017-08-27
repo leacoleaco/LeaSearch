@@ -83,6 +83,7 @@
     <Compile Include="Image\ImageCache.cs" />
     <Compile Include="Image\ImageManager.cs" />
     <Compile Include="Ioc\Ioc.cs" />
+    <Compile Include="MessageModels\SetMoreInfoContentMessage.cs" />
     <Compile Include="Notice\UiNoticeHelper.cs" />
     <Compile Include="Plugin\Plugin.cs" />
     <Compile Include="Plugin\PluginManager.cs" />

@@ -1,11 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using GalaSoft.MvvmLight.Messaging;
-using GalaSoft.MvvmLight.Threading;
 using LeaSearch.Common.Messages;
-using LeaSearch.UI.Controls;
-using LeaSearch.UI.UserControls;
+using LeaSearch.Core.MessageModels;
 
 namespace LeaSearch.Views
 {
@@ -19,8 +16,6 @@ namespace LeaSearch.Views
         {
             InitializeComponent();
 
-            this.ListBox.SizeChanged += ListBox_SizeChanged
-                ;
 
             //如果指示显示loading，则显示，否则取消
             Messenger.Default.Register<DetailLoaddingDisplayMessage>(this, (m) =>
@@ -32,8 +27,7 @@ namespace LeaSearch.Views
 
                     if (this.MoreInfoPanel != null)
                     {
-                        this.MoreInfoPanel.Visibility = Visibility.Visible;
-                        UpdateInfoPanelPosition();
+                        UpdateInfoPanelPosition(true);
                     }
                 }
                 else
@@ -42,25 +36,34 @@ namespace LeaSearch.Views
                     this.MoreInfoLoadding.Visibility = Visibility.Collapsed;
                 }
             });
-        }
 
-        private void ListBox_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if (e.HeightChanged)
+
+            //设置更多信息
+            Messenger.Default.Register<SetMoreInfoContentMessage>(this, m =>
             {
-                UpdateInfoPanelPosition();
+                this.MoreInfoInfoContent.Content = m.MoreInfoContent;
 
-            }
-
+                //如果更多信息不为空，则显示，否则隐藏
+                UpdateInfoPanelPosition(m.MoreInfoContent != null);
+            });
         }
 
-        private void UpdateInfoPanelPosition()
+    
+
+        /// <summary>
+        /// 调整 moreinfo 的显示位置，已经显示状态
+        /// </summary>
+        /// <param name="isShowMoreInfoPanel">true显示   false 不显示 </param>
+        private void UpdateInfoPanelPosition(bool isShowMoreInfoPanel)
         {
 
             var infoPanel = this.MoreInfoPanel;
 
             if (infoPanel == null) return;
-            if (this.ListBox.ActualHeight <= 300)
+
+
+
+            if (this.ListBox.Items.Count <= 4)
             {
                 //上下模式
                 infoPanel.SetValue(Grid.RowProperty, 1);
@@ -72,15 +75,22 @@ namespace LeaSearch.Views
                 this.GridSplitter.Width = double.NaN;
                 this.GridSplitter.Height = 2;
 
-                FirstRow.Height = new GridLength(2, GridUnitType.Star);
-                if (infoPanel.IsVisible)
+
+                FirstRow.Height = new GridLength(1, GridUnitType.Star);
+
+
+                if (isShowMoreInfoPanel)
                 {
                     SecondRow.Height = new GridLength(1, GridUnitType.Auto);
+                    infoPanel.Visibility = Visibility.Visible;
                 }
                 else
                 {
-                    SecondRow.Height = new GridLength(0);
+                    SecondRow.Height = new GridLength(100);
+                    infoPanel.Visibility = Visibility.Collapsed;
                 }
+
+
                 FirstCol.Width = new GridLength(1, GridUnitType.Star);
                 SecondCol.Width = new GridLength(0);
             }
@@ -96,15 +106,19 @@ namespace LeaSearch.Views
                 this.GridSplitter.Width = 2;
                 this.GridSplitter.Height = double.NaN;
 
-                FirstCol.Width = new GridLength(2, GridUnitType.Star);
-                if (infoPanel.IsVisible)
+                FirstCol.Width = new GridLength(1, GridUnitType.Star);
+
+                if (isShowMoreInfoPanel)
                 {
-                    SecondCol.Width = new GridLength(1, GridUnitType.Star);
+                    SecondCol.Width = new GridLength(1, GridUnitType.Auto);
+                    infoPanel.Visibility = Visibility.Visible;
                 }
                 else
                 {
                     SecondCol.Width = new GridLength(0);
+                    infoPanel.Visibility = Visibility.Collapsed;
                 }
+
                 FirstRow.Height = new GridLength(1, GridUnitType.Star);
                 SecondRow.Height = new GridLength(0);
             }
@@ -123,21 +137,6 @@ namespace LeaSearch.Views
             this.ListBox.Focus();
         }
 
-        private void MoreInfoContent_OnDisplayContentChanged(object sender, DisplayContentChangedArgs args)
-        {
-            var infoPanel = this.MoreInfoPanel;
 
-            if (infoPanel == null) return;
-
-            if (args.NewValue == null)
-            {
-                infoPanel.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                infoPanel.Visibility = Visibility.Visible;
-            }
-            UpdateInfoPanelPosition();
-        }
     }
 }

@@ -161,11 +161,10 @@
                     TextInfoDataTemplate="{StaticResource TextInfoInfoContentDataTemplate}" />
 
             </Grid.Resources>
-            <controls:InfoContent
+            <ContentControl
                 x:Name="MoreInfoInfoContent"
-                ContentTemplateSelector="{StaticResource InfoContentTemplateSelector}"
-                DisplayContent="{Binding MoreInfoContent, Mode=OneWay}"
-                DisplayContentChanged="MoreInfoContent_OnDisplayContentChanged" />
+                MaxHeight="600"
+                ContentTemplateSelector="{StaticResource InfoContentTemplateSelector}" />
             <controls:LoadingControl
                 x:Name="MoreInfoLoadding"
                 HorizontalAlignment="Center"
