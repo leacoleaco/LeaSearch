@@ -1,4 +1,4 @@
-﻿namespace LeaSearch.Plugin
+﻿namespace LeaSearch.Plugin.Query
 {
     public class QueryDetailResult : QueryResult
     {

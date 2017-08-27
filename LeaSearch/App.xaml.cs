@@ -5,6 +5,7 @@ using LeaSearch.Helper;
 using Autofac;
 using GalaSoft.MvvmLight.Threading;
 using LeaSearch.Common.Env;
+using LeaSearch.Core.Command;
 using LeaSearch.Core.HotKey;
 using LeaSearch.Core.I18N;
 using LeaSearch.Core.Image;
@@ -109,6 +110,7 @@ namespace LeaSearch
             _builder.RegisterType<SharedMethod>().As<ISharedMethod>().SingleInstance();
             _builder.RegisterType<SharedContext>().SingleInstance();
             _builder.RegisterType<PluginManager>().SingleInstance();
+            _builder.RegisterType<LeaSearchCommandManager>().SingleInstance();
 
             _builder.RegisterType<QueryEngine>().SingleInstance();
 

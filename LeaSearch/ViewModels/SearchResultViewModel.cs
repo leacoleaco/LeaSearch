@@ -72,7 +72,7 @@ namespace LeaSearch.ViewModels
             if (result == null)
             {
                 //如果没有返回结果,则清除列表
-                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(Clear));
+                Clear();
                 return;
             }
 
@@ -93,11 +93,9 @@ namespace LeaSearch.ViewModels
                 UiNoticeHelper.ClearErrorNotice();
             }
 
-            //如果返回了结果，则添加列表
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
-            {
-                SetResults(result);
-            }));
+
+            SetResults(result);
+
 
 
         }
@@ -110,10 +108,8 @@ namespace LeaSearch.ViewModels
                 ShowMoreInfo(resultMoreInfo);
             }
 
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
-            {
-                Messenger.Default.Send(new DetailLoaddingDisplayMessage() { IsShow = false });
-            });
+
+            Messenger.Default.Send(new DetailLoaddingDisplayMessage() { IsShow = false });
         }
 
         public int CurrentIndex

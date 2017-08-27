@@ -25,6 +25,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeaSearch.Plugin.OpenUrl", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeaSearch.Plugin.Baidu", "Plugins\LeaSearch.Plugin.Baidu\LeaSearch.Plugin.Baidu.csproj", "{FF36D7A3-E618-4EC3-8890-AE9AFC9471DE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libs", "Libs", "{E0391F05-D919-4782-9EE0-AE81B3337136}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmithHtmlEditor", "libs\SmithHtmlEditor\SmithHtmlEditor.csproj", "{84BADDA1-AB3A-4064-B87E-178D7446901D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +75,10 @@ Global
 		{FF36D7A3-E618-4EC3-8890-AE9AFC9471DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF36D7A3-E618-4EC3-8890-AE9AFC9471DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF36D7A3-E618-4EC3-8890-AE9AFC9471DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84BADDA1-AB3A-4064-B87E-178D7446901D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84BADDA1-AB3A-4064-B87E-178D7446901D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84BADDA1-AB3A-4064-B87E-178D7446901D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84BADDA1-AB3A-4064-B87E-178D7446901D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -80,5 +88,6 @@ Global
 		{58F81905-C37A-49F9-A57B-2777E8C28EE1} = {F07A2119-9E0A-4655-A86D-BDCFBB158018}
 		{B890D699-F0EE-4A10-91BB-175EEEB2AC3D} = {F07A2119-9E0A-4655-A86D-BDCFBB158018}
 		{FF36D7A3-E618-4EC3-8890-AE9AFC9471DE} = {F07A2119-9E0A-4655-A86D-BDCFBB158018}
+		{84BADDA1-AB3A-4064-B87E-178D7446901D} = {E0391F05-D919-4782-9EE0-AE81B3337136}
 	EndGlobalSection
 EndGlobal

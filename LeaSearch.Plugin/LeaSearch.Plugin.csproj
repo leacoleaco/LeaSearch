@@ -48,6 +48,7 @@
     <Compile Include="DetailInfos\MarkDownInfo.cs" />
     <Compile Include="DetailInfos\SimpleHtmlInfo.cs" />
     <Compile Include="DetailInfos\FlowDocumentInfo.cs" />
+    <Compile Include="Query\QueryMode.cs" />
     <Compile Include="Query\StateAfterCommandInvoke.cs" />
     <Compile Include="IPlugin.cs" />
     <Compile Include="Query\PluginCalledArg.cs" />

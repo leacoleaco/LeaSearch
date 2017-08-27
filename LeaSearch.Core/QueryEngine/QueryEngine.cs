@@ -5,10 +5,15 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
+using FuzzyString;
+using LeaSearch.Common.Env;
+using LeaSearch.Core.Command;
 using LeaSearch.Core.Plugin;
 using LeaSearch.Infrastructure.Logger;
 using LeaSearch.Plugin;
 using LeaSearch.Plugin.Query;
+using QueryMode = LeaSearch.Plugin.Query.QueryMode;
 
 namespace LeaSearch.Core.QueryEngine
 {
@@ -26,7 +31,7 @@ namespace LeaSearch.Core.QueryEngine
         /// <summary>
         /// this is to judge if this query is a command
         /// </summary>
-        private const char QueryCommandChar = ':';
+        private readonly string[] _queryCommandChars = new string[] { ":", "：" };
 
         /// <summary>
         /// this is the split word that use to indicate action word   
@@ -39,9 +44,25 @@ namespace LeaSearch.Core.QueryEngine
 
         private readonly PluginManager _pluginManager;
 
-        public QueryEngine(PluginManager pluginManager)
+        private readonly LeaSearchCommandManager _commandManager;
+
+        /// <summary>
+        /// 模糊查询配置
+        /// </summary>
+        private readonly List<FuzzyStringComparisonOptions> _options = new List<FuzzyStringComparisonOptions>()
+            {
+                FuzzyStringComparisonOptions.UseJaccardDistance,
+                FuzzyStringComparisonOptions.UseNormalizedLevenshteinDistance,
+                FuzzyStringComparisonOptions.UseJaccardDistance,
+                FuzzyStringComparisonOptions.UseOverlapCoefficient,
+                FuzzyStringComparisonOptions.UseLongestCommonSubsequence,
+                FuzzyStringComparisonOptions.CaseSensitive,
+            };
+
+        public QueryEngine(PluginManager pluginManager, LeaSearchCommandManager commandManager)
         {
             this._pluginManager = pluginManager;
+            _commandManager = commandManager;
         }
 
         public void Init()
@@ -73,46 +94,62 @@ namespace LeaSearch.Core.QueryEngine
             };
 
 
-            if (queryText.Contains(PluginActiveKeyword))
+            //启用新线程查询
+            Task.Factory.StartNew(() =>
             {
 
-                //do the plugin call mode search
-                //如果包含有插件关键字分隔符 判断是否有符合要求的插件
-                var actionCharIndex = queryText.IndexOf(PluginActiveKeyword);
-                string part1 = queryText.Substring(0, actionCharIndex);
-                string part2 = queryText.Substring(actionCharIndex + 1);
-                queryParam.PrefixKeyword = part1;
-                queryParam.Keyword = part2;
+                //如果输入的是系统命令
+                var startWithCommand = _queryCommandChars.Any(c => c != null && queryText.StartsWith(c));
 
-                var pluginCallSuitablePlugins = SearchSuitablePlugins(queryParam, QueryMode.PluginCall);
-                if (pluginCallSuitablePlugins.Any())
+                if (startWithCommand)
                 {
-                    //进入 plugin call模式 
-                    DoPluginCallQuery(queryParam, pluginCallSuitablePlugins.First());
+                    queryParam.Keyword = queryText;
+                    queryParam.PrefixKeyword = "*";
+                    //进入 comand 模式
+                    DoCommandCallQuery(queryParam);
                     return;
                 }
 
-                //否则继续建议模式
-            }
+                if (queryText.Contains(PluginActiveKeyword))
+                {
+                    //do the plugin call mode search
+                    //如果包含有插件关键字分隔符 判断是否有符合要求的插件
+                    var actionCharIndex = queryText.IndexOf(PluginActiveKeyword);
+                    string part1 = queryText.Substring(0, actionCharIndex);
+                    string part2 = queryText.Substring(actionCharIndex + 1);
+                    queryParam.PrefixKeyword = part1;
+                    queryParam.Keyword = part2;
+                    //查找插件并执行
+                    var pluginCallSuitablePlugins = SearchSuitablePlugins(queryParam, QueryMode.PluginCall);
+                    if (pluginCallSuitablePlugins.Any())
+                    {
+                        //进入 plugin call模式 
+                        DoPluginCallQuery(queryParam, pluginCallSuitablePlugins.First());
+                        return;
+                    }
 
-            //如果不包含插件关键词分割符，则进入  建议模式
-            // do the normal search
-            queryParam.Keyword = queryText;
-            queryParam.PrefixKeyword = "*";
+                    //否则继续建议模式
+                }
 
-            var suitableQueryPlugins = SearchSuitablePlugins(queryParam, QueryMode.Suggection);
+                //如果不包含插件关键词分割符，则进入  建议模式
+                // do the normal search
+                queryParam.Keyword = queryText;
+                queryParam.PrefixKeyword = "*";
+                //查找合适的插件批量执行
+                var suitableQueryPlugins = SearchSuitablePlugins(queryParam, QueryMode.Suggestion);
+                if (suitableQueryPlugins == null || !suitableQueryPlugins.Any())
+                {
+                    OnEndQuery();
+                    return;
+                }
+                //进入 suggect 模式
+                DoSuggestionQuery(queryParam, suitableQueryPlugins);
 
-            if (suitableQueryPlugins == null || !suitableQueryPlugins.Any())
-            {
-                OnEndQuery();
-                return;
-            }
-
-            //进入 suggect 模式
-            DoSuggestionQuery(queryParam, suitableQueryPlugins);
-
+            }, _updateSource.Token);
 
         }
+
+
 
         /// <summary>
         /// 调用插件查询当前项目的详情
@@ -128,8 +165,6 @@ namespace LeaSearch.Core.QueryEngine
 
             Task.Factory.StartNew(() =>
             {
-
-
                 var plugin = _pluginManager.GetPlugins().Find(p =>
                 {
                     if (p.PluginId == null) return false;
@@ -140,6 +175,54 @@ namespace LeaSearch.Core.QueryEngine
                 OnGetDetailResult(queryDetailResult);
 
             }, _updateSource.Token);
+        }
+
+        /// <summary>
+        /// 执行程序内置命令模式
+        /// </summary>
+        /// <param name="queryParam"></param>
+        private void DoCommandCallQuery(QueryParam queryParam)
+        {
+
+            //查询是否有合适的系统插件
+            if (_commandManager == null) return;
+            var keywords = _commandManager.GetKeywords();
+
+
+            //模糊检索程序内置命令
+            var queryResults = keywords?.Where(s => s.ApproximatelyEquals(queryParam.Keyword, _options, FuzzyStringComparisonTolerance.Weak)).ToArray();
+
+            //var queryListResult = _commandManager.
+            var queryListResult = new QueryListResult();
+
+            //返回查找的信息
+            _commandManager.GetCommandInfo(queryResults).ForEach(x =>
+            {
+                queryListResult.AddResultItem(new ResultItem()
+                {
+                    QueryParam = queryParam,
+                    Title = x.Name,
+                    SubTitle = x.Introduce,
+                    IconPath = Constant.DefaultIcon,
+                    SelectedAction = (s) =>
+                    {
+                        x.Action.Invoke(queryParam);
+
+                        return new StateAfterCommandInvoke()
+                        {
+                            ShowProgram = false
+                        };
+                    }
+                });
+            });
+
+            queryListResult.QueryMode = QueryMode.Command;
+
+
+            //return the result
+            OnGetResult(queryListResult);
+
+            _commandManager.InvokeCommand(queryParam);
         }
 
         /// <summary>
@@ -170,21 +253,21 @@ namespace LeaSearch.Core.QueryEngine
                 //如果激活了 plugin call 查询模式并已经传入数据
 
 
-                //使用 提供的 plugin ，进行查询
-                Task.Factory.StartNew(() =>
+
+
+                var currentSearchPlugin = queryPlugin;
+
+                OnPluginCallQuery(currentSearchPlugin);
+
+                try
                 {
+                    var queryListResult = currentSearchPlugin.PluginInstance.Query(queryParam);
 
-                    var currentSearchPlugin = queryPlugin;
-
-                    OnPluginCallQuery(currentSearchPlugin);
-
-                    try
+                    //预处理一些需要展示的数据
+                    //prepare some data for result display
+                    if (queryListResult != null)
                     {
-                        var queryListResult = currentSearchPlugin.PluginInstance.Query(queryParam);
-
-                        //预处理一些需要展示的数据
-                        //prepare some data for result display
-                        queryListResult?.Results?.ForEach(x =>
+                        queryListResult.Results?.ForEach(x =>
                         {
                             x.PluginId = currentSearchPlugin.PluginId;
                             x.QueryParam = queryParam;
@@ -194,54 +277,9 @@ namespace LeaSearch.Core.QueryEngine
                             }
                         });
 
-                        //return the result
-                        OnGetResult(queryListResult);
+
+                        queryListResult.QueryMode = QueryMode.PluginCall;
                     }
-                    catch (Exception e)
-                    {
-                        Logger.Exception($"plugin <{queryPlugin}> call query error: {e.Message}", e);
-#if DEBUG
-                        MessageBox.Show($"plugin <{queryPlugin}> call query error: {e.Message}");
-#endif
-                        OnGetResult(null);
-                    }
-
-
-
-                }, _updateSource.Token);
-
-
-
-            }
-        }
-
-        private void DoSuggestionQuery(QueryParam queryParam, Plugin.Plugin[] queryPlugins)
-        {
-
-            //使用 提供的所有 plugin ，按照关联度进行查询
-            //TODO : 按照关联度执行多个查询
-            Task.Factory.StartNew(() =>
-            {
-
-                var queryPlugin = queryPlugins[0];
-
-
-                try
-                {
-                    OnSuggectionQuery(queryPlugin);
-
-                    var queryListResult = queryPlugin.PluginInstance.Query(queryParam);
-
-                    //prepare some data for result display
-                    queryListResult?.Results?.ForEach(x =>
-                    {
-                        x.PluginId = queryPlugin.PluginId;
-                        x.QueryParam = queryParam;
-                        if (!string.IsNullOrWhiteSpace(x.IconPath))
-                        {
-                            x.IconPath = Path.Combine(queryPlugin.PluginRootPath, x.IconPath);
-                        }
-                    });
 
                     //return the result
                     OnGetResult(queryListResult);
@@ -258,7 +296,57 @@ namespace LeaSearch.Core.QueryEngine
 
 
 
-            }, _updateSource.Token);
+
+
+            }
+        }
+
+        private void DoSuggestionQuery(QueryParam queryParam, Plugin.Plugin[] queryPlugins)
+        {
+
+            //使用 提供的所有 plugin ，按照关联度进行查询
+            //TODO : 按照关联度执行多个查询
+
+
+            var queryPlugin = queryPlugins[0];
+
+
+            try
+            {
+                OnSuggectionQuery(queryPlugin);
+
+                var queryListResult = queryPlugin.PluginInstance.Query(queryParam);
+
+                //prepare some data for result display
+                if (queryListResult != null)
+                {
+                    queryListResult?.Results?.ForEach(x =>
+                    {
+                        x.PluginId = queryPlugin.PluginId;
+                        x.QueryParam = queryParam;
+                        if (!string.IsNullOrWhiteSpace(x.IconPath))
+                        {
+                            x.IconPath = Path.Combine(queryPlugin.PluginRootPath, x.IconPath);
+                        }
+                    });
+                    queryListResult.QueryMode = QueryMode.Suggestion;
+                }
+                //return the result
+                OnGetResult(queryListResult);
+
+            }
+            catch (Exception e)
+            {
+                Logger.Exception($"plugin <{queryPlugin}> call query error: {e.Message}", e);
+#if DEBUG
+                MessageBox.Show($"plugin <{queryPlugin}> call query error: {e.Message}");
+#endif
+                OnGetResult(null);
+            }
+
+
+
+
 
         }
 
@@ -293,7 +381,7 @@ namespace LeaSearch.Core.QueryEngine
                         result.Add(plugin);
                     }
                 }
-                else if (queryMode == QueryMode.Suggection)
+                else if (queryMode == QueryMode.Suggestion)
                 {
 
                     //suggection mode
@@ -361,34 +449,52 @@ namespace LeaSearch.Core.QueryEngine
 
         protected virtual void OnGetResult(QueryListResult result)
         {
-            GetResult?.Invoke(result);
+            //如果返回了结果，则添加列表
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            {
+                GetResult?.Invoke(result);
+            }));
         }
 
         protected virtual void OnGetDetailResult(QueryDetailResult result)
         {
-            GetDetailResult?.Invoke(result);
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            {
+                GetDetailResult?.Invoke(result);
+            }));
         }
 
         protected virtual void OnPluginCallActive(Plugin.Plugin calledPlugin, PluginCalledArg arg)
         {
-            PluginCallActive?.Invoke(calledPlugin, arg);
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            {
+                PluginCallActive?.Invoke(calledPlugin, arg);
+            }));
         }
 
         protected virtual void OnPluginCallQuery(Plugin.Plugin plugin)
         {
-            PluginCallQuery?.Invoke(plugin);
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            {
+                PluginCallQuery?.Invoke(plugin);
+            }));
         }
 
         protected virtual void OnSuggectionQuery(Plugin.Plugin plugin)
         {
-            SuggectionQuery?.Invoke(plugin);
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+           {
+               SuggectionQuery?.Invoke(plugin);
+           }));
         }
 
         protected virtual void OnEndQuery()
         {
-            EndQuery?.Invoke();
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            {
+                EndQuery?.Invoke();
+            }));
         }
-
 
 
     }
