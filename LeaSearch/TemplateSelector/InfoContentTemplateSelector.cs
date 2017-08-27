@@ -13,7 +13,7 @@ namespace LeaSearch.TemplateSelector
 
         public DataTemplate MarkDownDataTemplate { get; set; }
 
-        public DataTemplate WebBrowserInfoDataTemplate { get; set; }
+        public DataTemplate FlowDocumentInfoDataTemplate { get; set; }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
@@ -22,13 +22,13 @@ namespace LeaSearch.TemplateSelector
             {
                 return TextInfoDataTemplate;
             }
+            if (item is FlowDocumentInfo)
+            {
+                return FlowDocumentInfoDataTemplate;
+            }
             if (item is MarkDownInfo)
             {
                 return MarkDownDataTemplate;
-            }
-            if (item is WebBrowserInfo)
-            {
-                return WebBrowserInfoDataTemplate;
             }
             if (item is SimpleHtmlInfo)
             {

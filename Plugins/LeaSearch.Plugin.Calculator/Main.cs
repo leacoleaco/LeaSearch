@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
 using LeaSearch.Plugin.DetailInfos;
 using LeaSearch.Plugin.Query;
 using org.mariuszgromada.math.mxparser;
@@ -56,6 +59,8 @@ namespace LeaSearch.Plugin.Calculator
 "|Number|Unary Number|Unary number - number literal| b1.111 , B1.111|4.1|\r\n" +
 "|Number|Base 1-36|Base 1-36 number - number literal| bN.xxxx , BN.xxxx|4.1|";
 
+        private FlowDocument _HelpDocument;
+
         private static readonly Regex RegBrackets = new Regex(@"[\(\)\[\]]", RegexOptions.Compiled);
 
         private SharedContext _sharedContext;
@@ -63,6 +68,11 @@ namespace LeaSearch.Plugin.Calculator
         public void InitPlugin(SharedContext sharedContext)
         {
             _sharedContext = sharedContext;
+
+            var executingAssembly = Assembly.GetExecutingAssembly();
+            var helpInfoStream = executingAssembly?.GetManifestResourceStream("LeaSearch.Plugin.Calculator.Resources.HelpInfo.xaml");
+            if (helpInfoStream != null) _HelpDocument = XamlReader.Load(helpInfoStream) as FlowDocument;
+
         }
 
         public bool SuitableForSuggectionQuery(QueryParam queryParam)
@@ -82,7 +92,7 @@ namespace LeaSearch.Plugin.Calculator
             return new PluginCalledArg()
             {
                 InfoMessage = _sharedContext.SharedMethod.GetTranslation("leasearch_plugin_calculator_pluginCallActive"),
-                MoreInfo = new MarkDownInfo() { Text = _helpStr }
+                MoreInfo = new FlowDocumentInfo() { Document = _HelpDocument }
             };
         }
 

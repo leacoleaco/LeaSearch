@@ -1,4 +1,7 @@
-﻿using System.Threading;
+﻿using System.Reflection;
+using System.Threading;
+using System.Windows.Documents;
+using System.Windows.Markup;
 using LeaSearch.Plugin.DetailInfos;
 using LeaSearch.Plugin.Query;
 
@@ -7,10 +10,17 @@ namespace LeaSearch.Plugin.HelloWorld
     public class Main : IPlugin
     {
         private SharedContext _sharedContext;
+        private FlowDocument _HelpDocument;
 
         public void InitPlugin(SharedContext sharedContext)
         {
             _sharedContext = sharedContext;
+
+
+            //读取 dll 内文件，可以吧文件设置为 “嵌入的资源”，然后通过以下代码方式读取
+            var executingAssembly = Assembly.GetExecutingAssembly();
+            var helpInfoStream = executingAssembly?.GetManifestResourceStream("LeaSearch.Plugin.HelloWorld.Resources.HelpInfo.xaml");
+            if (helpInfoStream != null) _HelpDocument = XamlReader.Load(helpInfoStream) as FlowDocument;
         }
 
         public bool SuitableForSuggectionQuery(QueryParam queryParam)
@@ -26,11 +36,12 @@ namespace LeaSearch.Plugin.HelloWorld
         public PluginCalledArg PluginCallActive(QueryParam queryParam)
         {
             return new PluginCalledArg()
-            { 
+            {
                 //插件模式激活后，在插件下发的提示信息
                 InfoMessage = _sharedContext.SharedMethod.GetTranslation(@"leasearch_plugin_helloWorld_pluginCallActive"),
                 //在程序进入插件模式后展示的信息
-                MoreInfo = new WebBrowserInfo() { Html = "",Url="http://www.baidu.com" },
+                //可以可以返回的信息： FlowDocumentInfo （流文档 形式）
+                MoreInfo = new FlowDocumentInfo() { Document = _HelpDocument },
             };
         }
 

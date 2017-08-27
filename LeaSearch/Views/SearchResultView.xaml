@@ -146,19 +146,19 @@
                     <userControls:MarkDownControl d:DataContext="{d:DesignInstance detailInfos:MarkDownInfo}" Text="{Binding Text, Mode=OneWay}" />
                 </DataTemplate>
 
-                <DataTemplate x:Key="WebBrowserInfoContentDataTemplate">
-                    <TextBlock
-                        d:DataContext="{d:DesignInstance detailInfos:WebBrowserInfo}"
-                        Text="{Binding Html, Mode=OneWay}"
-                        TextWrapping="WrapWithOverflow" />
+                <DataTemplate x:Key="FlowDocumentInfoContentDataTemplate">
+                    <FlowDocumentReader
+                        d:DataContext="{d:DesignInstance detailInfos:FlowDocumentInfo}"
+                        Document="{Binding Document, Mode=OneWay}"
+                        ViewingMode="Scroll" />
                 </DataTemplate>
 
                 <templateSelector:InfoContentTemplateSelector
                     x:Key="InfoContentTemplateSelector"
+                    FlowDocumentInfoDataTemplate="{StaticResource FlowDocumentInfoContentDataTemplate}"
                     MarkDownDataTemplate="{StaticResource MarkDownInfoContentDataTemplate}"
                     SimpleHtmlInfoDataTemplate="{StaticResource SimpleHtmlInfoInfoContentDataTemplate}"
-                    TextInfoDataTemplate="{StaticResource TextInfoInfoContentDataTemplate}"
-                    WebBrowserInfoDataTemplate="{StaticResource WebBrowserInfoContentDataTemplate}" />
+                    TextInfoDataTemplate="{StaticResource TextInfoInfoContentDataTemplate}" />
 
             </Grid.Resources>
             <controls:InfoContent
