@@ -32,6 +32,7 @@
         <KeyBinding Command="{StaticResource LoadHistoryCommand}" Gesture="Ctrl+H" />
         <KeyBinding Command="{StaticResource LoadContextMenuCommand}" Gesture="Shift+Enter" />-->
         <KeyBinding Key="Enter" Command="{Binding EnterCommand}" />
+        <KeyBinding Key="Tab" Command="{Binding TabCommand}" />
         <KeyBinding Command="{Binding OpenResultCommand}" Gesture="Ctrl+G" />
         <KeyBinding
             Command="{Binding OpenResultCommand}"

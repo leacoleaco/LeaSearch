@@ -86,7 +86,7 @@ namespace LeaSearch.Views
                 }
                 else
                 {
-                    SecondRow.Height = new GridLength(100);
+                    SecondRow.Height = new GridLength(0);
                     infoPanel.Visibility = Visibility.Collapsed;
                 }
 

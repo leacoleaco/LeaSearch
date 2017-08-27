@@ -72,6 +72,88 @@
 
     <Paragraph FontSize="15">Subscript, Superscript</Paragraph>
 
+    <Table CellSpacing="5">
+        <Table.Columns>
+            <TableColumn />
+            <TableColumn />
+            <TableColumn />
+            <TableColumn />
+        </Table.Columns>
+        <TableRowGroup>
+            <!--  Title row for the table.  -->
+            <TableRow Background="SkyBlue">
+                <TableCell
+                    BorderBrush="Black"
+                    BorderThickness="1"
+                    ColumnSpan="4"
+                    TextAlignment="Center">
+                    <Paragraph FontSize="24pt" FontWeight="Bold">Planetary Information</Paragraph>
+                </TableCell>
+            </TableRow>
+            <!--  Header row for the table.  -->
+            <TableRow Background="LightGoldenrodYellow">
+                <TableCell BorderBrush="Black" BorderThickness="1">
+                    <Paragraph FontSize="14pt" FontWeight="Bold">Planet</Paragraph>
+                </TableCell>
+                <TableCell BorderBrush="Black" BorderThickness="1">
+
+                    <Paragraph FontSize="14pt" FontWeight="Bold">Mean Distance from Sun</Paragraph>
+                </TableCell>
+                <TableCell BorderBrush="Black" BorderThickness="1">
+                    <Paragraph FontSize="14pt" FontWeight="Bold">Mean Diameter</Paragraph>
+                </TableCell>
+                <TableCell BorderBrush="Black" BorderThickness="1">
+                    <BlockUIContainer>
+                        <TextBlock
+                            VerticalAlignment="Bottom"
+                            FontSize="14pt"
+                            FontWeight="Bold"
+                            Text="Approximate MassSSSSSSSSSSSSSSSSSS" />
+                    </BlockUIContainer>
+                    <Paragraph FontSize="14pt" FontWeight="Bold" />
+                </TableCell>
+            </TableRow>
+            <!--  Sub-title row for the inner planets.  -->
+            <TableRow>
+                <TableCell
+                    BorderBrush="Black"
+                    BorderThickness="1"
+                    ColumnSpan="4">
+                    <Paragraph FontSize="14pt" FontWeight="Bold">The Inner Planets</Paragraph>
+                </TableCell>
+            </TableRow>
+            <!--  Four data rows for the inner planets.  -->
+            <TableRow>
+                <TableCell BorderBrush="Black" BorderThickness="1">
+                    <Paragraph>Mercury</Paragraph>
+                </TableCell>
+                <TableCell BorderBrush="Black" BorderThickness="1">
+                    <Paragraph>57,910,000 km</Paragraph>
+                </TableCell>
+                <TableCell BorderBrush="Black" BorderThickness="1">
+                    <Paragraph>4,880 km</Paragraph>
+                </TableCell>
+                <TableCell BorderBrush="Black" BorderThickness="1">
+                    <Paragraph>3.30e23 kg</Paragraph>
+                </TableCell>
+            </TableRow>
+            <TableRow Background="lightgray">
+                <TableCell BorderBrush="Black" BorderThickness="1">
+                    <Paragraph>Venus</Paragraph>
+                </TableCell>
+                <TableCell BorderBrush="Black" BorderThickness="1">
+                    <Paragraph>108,200,000 km</Paragraph>
+                </TableCell>
+                <TableCell BorderBrush="Black" BorderThickness="1">
+                    <Paragraph>12,103.6 km</Paragraph>
+                </TableCell>
+                <TableCell BorderBrush="Black" BorderThickness="1">
+                    <Paragraph>4.869e24 kg</Paragraph>
+                </TableCell>
+            </TableRow>
+        </TableRowGroup>
+    </Table>
+
     <Paragraph>
 
         <Run Typography.Variants="Superscript">This text is Superscripted.</Run>
