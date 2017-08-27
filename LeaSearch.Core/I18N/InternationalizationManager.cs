@@ -44,6 +44,7 @@ namespace LeaSearch.Core.I18N
 
         private void AddPluginLanguageDirectories()
         {
+            if (_pluginManager.GetPlugins() == null) return;
             foreach (var plugin in _pluginManager.GetPlugins())
             {
                 if (!string.IsNullOrWhiteSpace(plugin.PluginRootPath))

@@ -83,7 +83,7 @@ namespace LeaSearch.Plugin.OpenUrl
                             Process.Start(keyword);
                             return new StateAfterCommandInvoke();
                         }
-                        catch (Exception ex)
+                        catch (Exception )
                         {
                             x.SharedMethod.ShowMessageWithTranslation("leasearch_plugin_openurl_canot_open_url", keyword);
                             return new StateAfterCommandInvoke();

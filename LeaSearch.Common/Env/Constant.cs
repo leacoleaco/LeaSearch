@@ -17,7 +17,7 @@ namespace LeaSearch.Common.Env
         /// <summary>
         /// get the program directory
         /// </summary>
-        public static readonly string ProgramDirectory = Directory.GetParent(Assembly.Location).ToString();
+        public static readonly string ProgramDirectory = Environment.CurrentDirectory;
         public static readonly string ExecutablePath = Path.Combine(ProgramDirectory, LeaSearch + ".exe");
 
         /// <summary>

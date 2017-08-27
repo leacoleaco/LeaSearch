@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using LeaSearch.Plugin.DetailInfos;
 using LeaSearch.Plugin.Query;
 
 namespace LeaSearch.Plugin.HelloWorld
@@ -29,7 +30,7 @@ namespace LeaSearch.Plugin.HelloWorld
                 //插件模式激活后，在插件下发的提示信息
                 InfoMessage = _sharedContext.SharedMethod.GetTranslation(@"leasearch_plugin_helloWorld_pluginCallActive"),
                 //在程序进入插件模式后展示的信息
-                MoreInfo = new SimpleHtmlInfo() { Html = "this is a test <i>more info</i> when <b>plugin</b> call active" },
+                MoreInfo = new WebBrowserInfo() { Html = "",Url="http://www.baidu.com" },
             };
         }
 
@@ -48,7 +49,7 @@ namespace LeaSearch.Plugin.HelloWorld
                         {
                             shareContext.SharedMethod.ShowMessage("test");
                             return new StateAfterCommandInvoke();
-                        }
+                        },
                     },
                     new ResultItem() { IconPath = "app.png", Title = "Query Sample For C#  row2", SubTitle = $"Query:{queryParam.Keyword}" },
                     new ResultItem() { IconPath = "app.png", Title = "Query Sample For C#  row3", SubTitle = $"Query:{queryParam.Keyword}" },

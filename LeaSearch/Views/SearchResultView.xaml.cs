@@ -75,7 +75,7 @@ namespace LeaSearch.Views
                 FirstRow.Height = new GridLength(2, GridUnitType.Star);
                 if (infoPanel.IsVisible)
                 {
-                    SecondRow.Height = new GridLength(1, GridUnitType.Star);
+                    SecondRow.Height = new GridLength(1, GridUnitType.Auto);
                 }
                 else
                 {

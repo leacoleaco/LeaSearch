@@ -16,6 +16,7 @@ using LeaSearch.Core.Ioc;
 using LeaSearch.Core.Notice;
 using LeaSearch.Core.QueryEngine;
 using LeaSearch.Plugin;
+using LeaSearch.Plugin.DetailInfos;
 using LeaSearch.Plugin.Query;
 using LeaSearch.UI.Controls.HtmlRichTextBox;
 using Microsoft.Expression.Interactivity.Core;

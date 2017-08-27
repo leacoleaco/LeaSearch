@@ -26,8 +26,6 @@ namespace LeaSearch.ViewModels
         private string _queryText;
         private Visibility _resultVisibility = Visibility.Collapsed;
         private Core.Plugin.Plugin _currentSearchPlugin;
-        private string _errorTextBlock;
-        private string _infoTextBlock;
         private QueryState _queryState = QueryState.StartQuery;
         private QueryEngine _queryEngine;
 

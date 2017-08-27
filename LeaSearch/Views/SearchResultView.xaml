@@ -4,10 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:LeaSearch.UI.Controls;assembly=LeaSearch.UI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:htmlRichTextBox="clr-namespace:LeaSearch.UI.Controls.HtmlRichTextBox;assembly=LeaSearch.UI"
+    xmlns:detailInfos="clr-namespace:LeaSearch.Plugin.DetailInfos;assembly=LeaSearch.Plugin"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:plugin="clr-namespace:LeaSearch.Plugin;assembly=LeaSearch.Plugin"
     xmlns:templateSelector="clr-namespace:LeaSearch.TemplateSelector"
+    xmlns:userControls="clr-namespace:LeaSearch.UI.UserControls;assembly=LeaSearch.UI"
     xmlns:viewModels="clr-namespace:LeaSearch.ViewModels"
     d:DataContext="{d:DesignInstance viewModels:SearchResultViewModel}"
     d:DesignHeight="300"
@@ -128,7 +128,7 @@
                 <DataTemplate x:Key="TextInfoInfoContentDataTemplate">
                     <TextBlock
                         Margin="5"
-                        d:DataContext="{d:DesignInstance plugin:TextInfo}"
+                        d:DataContext="{d:DesignInstance detailInfos:TextInfo}"
                         Style="{DynamicResource Resource InfoContentTextBlockStyle}"
                         Text="{Binding Text, Mode=OneWay}"
                         TextWrapping="WrapWithOverflow" />
@@ -136,16 +136,30 @@
 
                 <DataTemplate x:Key="SimpleHtmlInfoInfoContentDataTemplate">
                     <TextBlock
-                        d:DataContext="{d:DesignInstance plugin:SimpleHtmlInfo}"
+                        d:DataContext="{d:DesignInstance detailInfos:SimpleHtmlInfo}"
                         Text="{Binding Html, Mode=OneWay}"
                         TextWrapping="WrapWithOverflow" />
                     <!--<htmlRichTextBox:HtmlRichTextBox IsReadOnly="True" Text="{Binding Html}" />-->
                 </DataTemplate>
 
+                <DataTemplate x:Key="MarkDownInfoContentDataTemplate">
+                    <userControls:MarkDownControl d:DataContext="{d:DesignInstance detailInfos:MarkDownInfo}" Text="{Binding Text, Mode=OneWay}" />
+                </DataTemplate>
+
+                <DataTemplate x:Key="WebBrowserInfoContentDataTemplate">
+                    <TextBlock
+                        d:DataContext="{d:DesignInstance detailInfos:WebBrowserInfo}"
+                        Text="{Binding Html, Mode=OneWay}"
+                        TextWrapping="WrapWithOverflow" />
+                </DataTemplate>
+
                 <templateSelector:InfoContentTemplateSelector
                     x:Key="InfoContentTemplateSelector"
+                    MarkDownDataTemplate="{StaticResource MarkDownInfoContentDataTemplate}"
                     SimpleHtmlInfoDataTemplate="{StaticResource SimpleHtmlInfoInfoContentDataTemplate}"
-                    TextInfoDataTemplate="{StaticResource TextInfoInfoContentDataTemplate}" />
+                    TextInfoDataTemplate="{StaticResource TextInfoInfoContentDataTemplate}"
+                    WebBrowserInfoDataTemplate="{StaticResource WebBrowserInfoContentDataTemplate}" />
+
             </Grid.Resources>
             <controls:InfoContent
                 x:Name="MoreInfoInfoContent"

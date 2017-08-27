@@ -11,12 +11,13 @@ namespace LeaSearch.Infrastructure.ErrorReport
         private static void Report(Exception e, string name)
         {
             var logger = LogManager.GetLogger(name);
-            logger.Fatal(ExceptionFormatter.FormatExcpetion(e));
-
-
+            logger.Error($"program crash \r\n {name}\r\nreasom:\r\n{e.Message}");
+            logger.Error(ExceptionFormatter.FormatExcpetion(e));
             //TODO: modify error report window
 
             MessageBox.Show("程序遇到一些问题而崩溃。\r\n原因：" + e.Message);
+
+            Application.Current.Shutdown();
         }
 
 

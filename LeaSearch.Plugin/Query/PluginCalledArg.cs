@@ -1,4 +1,6 @@
-﻿namespace LeaSearch.Plugin
+﻿using LeaSearch.Plugin.DetailInfos;
+
+namespace LeaSearch.Plugin
 {
     public class PluginCalledArg
     {

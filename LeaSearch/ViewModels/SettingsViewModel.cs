@@ -19,7 +19,6 @@ namespace LeaSearch.ViewModels
 
         public SettingsViewModel()
         {
-           
         }
 
 

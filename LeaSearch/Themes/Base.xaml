@@ -10,6 +10,7 @@
         <ResourceDictionary Source="Controls/ListBoxTheme.xaml" />
         <ResourceDictionary Source="Controls/InfoContentTheme.xaml" />
         <ResourceDictionary Source="Controls/LoadingControlTheme.xaml" />
+        <ResourceDictionary Source="Controls/MarkDownTheme.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <ControlTemplate x:Key="TextBoxExTemplate" TargetType="{x:Type controls:TextBoxEx}">

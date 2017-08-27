@@ -93,7 +93,6 @@
                 Cursor="Arrow"
                 Maximum="{TemplateBinding ScrollableHeight}"
                 Minimum="0"
-                Style="{DynamicResource ScrollBarStyle}"
                 ViewportSize="{TemplateBinding ViewportHeight}"
                 Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
                 Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
@@ -136,7 +135,7 @@
                             DockPanel.Dock="Right"
                             IsDirectionReversed="true">
                             <Track.Thumb>
-                                <Thumb Style="{DynamicResource ThumbStyle}" />
+                                <Thumb />
                             </Track.Thumb>
                         </Track>
                     </DockPanel>
