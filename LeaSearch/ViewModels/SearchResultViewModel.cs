@@ -46,10 +46,10 @@ namespace LeaSearch.ViewModels
             _queryEngine.PluginCallActive += queryEngine_PluginCallActive;
             _queryEngine.GetResult += _queryEngine_GetResult;
             _queryEngine.GetDetailResult += queryEngine_GetDetailResult;
-            _queryEngine.EndQuery += _queryEngine_EndQuery;
+            _queryEngine.QueryEnd += EngineQueryEnd;
         }
 
-        private void _queryEngine_EndQuery()
+        private void EngineQueryEnd()
         {
         }
 
@@ -266,6 +266,8 @@ namespace LeaSearch.ViewModels
             Results.Clear();
         }
 
+
+
         /// <summary>
         /// 选中第一个
         /// </summary>
@@ -347,7 +349,7 @@ namespace LeaSearch.ViewModels
 
         }
 
-        private void ClearMoreInfo()
+        public void ClearMoreInfo()
         {
             DispatcherHelper.CheckBeginInvokeOnUI(new Action(() =>
             {

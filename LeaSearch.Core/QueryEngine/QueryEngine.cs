@@ -140,7 +140,7 @@ namespace LeaSearch.Core.QueryEngine
                 if (suitableQueryPlugins == null || !suitableQueryPlugins.Any())
                 {
                     //没有合适的可以执行的查询
-                    OnEndQuery();
+                    OnQueryEnd();
                     return;
                 }
                 //进入 suggect 模式
@@ -247,6 +247,7 @@ namespace LeaSearch.Core.QueryEngine
 #if DEBUG
                     MessageBox.Show($"plugin <{queryPlugin}> call PluginCallActive error: {e.Message}");
 #endif
+                    OnQueryError();
                 }
             }
             else
@@ -292,6 +293,7 @@ namespace LeaSearch.Core.QueryEngine
                     MessageBox.Show($"plugin <{queryPlugin}> call query error: {e.Message}");
 #endif
                     OnGetResult(null);
+                    OnQueryError();
                 }
 
 
@@ -343,6 +345,7 @@ namespace LeaSearch.Core.QueryEngine
                 MessageBox.Show($"plugin <{queryPlugin}> call query error: {e.Message}");
 #endif
                 OnGetResult(null);
+                OnQueryError();
             }
 
 
@@ -406,6 +409,8 @@ namespace LeaSearch.Core.QueryEngine
 #if DEBUG
                         MessageBox.Show($"plugin  <{plugin}> call SuitableForThisQuery method error: {e.Message}");
 #endif
+
+                        OnQueryError();
                     }
                 }
 
@@ -443,7 +448,12 @@ namespace LeaSearch.Core.QueryEngine
         /// <summary>
         /// 指示结束查询，没有合适的查询插件或者查询词为空等，导致无法继续查询
         /// </summary>
-        public event Action EndQuery;
+        public event Action QueryEnd;
+
+        /// <summary>
+        /// 查询过程中发生异常
+        /// </summary>
+        public event Action QueryError;
 
 
         #endregion
@@ -489,14 +499,21 @@ namespace LeaSearch.Core.QueryEngine
            }));
         }
 
-        protected virtual void OnEndQuery()
+        protected virtual void OnQueryEnd()
         {
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             {
-                EndQuery?.Invoke();
+                QueryEnd?.Invoke();
             }));
         }
 
 
+        protected virtual void OnQueryError()
+        {
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            {
+                QueryError?.Invoke();
+            }));
+        }
     }
 }

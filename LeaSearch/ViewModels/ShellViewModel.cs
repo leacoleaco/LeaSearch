@@ -26,7 +26,7 @@ namespace LeaSearch.ViewModels
         private string _queryText;
         private Visibility _resultVisibility = Visibility.Collapsed;
         private Core.Plugin.Plugin _currentSearchPlugin;
-        private QueryState _queryState = QueryState.StartQuery;
+        private QueryState _queryState = QueryState.QueryStart;
         private QueryEngine _queryEngine;
 
         #endregion
@@ -44,8 +44,11 @@ namespace LeaSearch.ViewModels
             queryEngine.PluginCallQuery += QueryEngine_PluginCallQuery;
             queryEngine.SuggectionQuery += QueryEngine_SuggectionQuery;
             queryEngine.GetResult += QueryEngine_GetResult;
-            queryEngine.EndQuery += QueryEngine_EndQuery;
+            queryEngine.QueryEnd += EngineQueryEnd;
+            queryEngine.QueryError += QueryEngine_QueryError;
         }
+
+
 
         #region Property
 
@@ -132,33 +135,18 @@ namespace LeaSearch.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-
-                    switch (_queryState)
+                    var resultsCount = SearchResultViewModel?.Results?.Count;
+                    if (resultsCount == 1)
                     {
-                        case QueryState.StartQuery:
-                            break;
-                        case QueryState.BeginPluginSearch:
-                            break;
-                        case QueryState.QuerySuitNoPlugin:
-                            break;
-                        case QueryState.QuerySuitOnePlugin:
-                            break;
-                        case QueryState.QuerySuitManyPlugin:
-                            break;
-                        case QueryState.QueryGotOneResult:
-                            SearchResultViewModel?.OpenResult();
-                            break;
-                        case QueryState.QueryGotManyResult:
-                            SearchResultViewModel?.SelectFirst();
-                            ShowNotice(@"notice_SelectMode".GetTranslation());
-                            Messenger.Default.Send<FocusMessage>(new FocusMessage() { FocusTarget = FocusTarget.ResultList });
-                            break;
-                        case QueryState.QueryGotNoResult:
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
+                        SearchResultViewModel?.OpenResult();
                     }
+                    else if (resultsCount > 1)
+                    {
+                        ShowNotice(@"notice_SelectMode".GetTranslation());
+                        Messenger.Default.Send<FocusMessage>(new FocusMessage() { FocusTarget = FocusTarget.ResultList });
+                        SearchResultViewModel?.SelectFirst();
 
+                    }
 
                 });
             }
@@ -187,7 +175,7 @@ namespace LeaSearch.ViewModels
         /// 通知前端查询状态发生了改变
         /// </summary>
         /// <param name="queryState"></param>
-        protected  void NotifyQueryStateChanged(QueryState queryState)
+        protected void NotifyQueryStateChanged(QueryState queryState)
         {
             _queryState = queryState;
             Messenger.Default.Send<QueryState>(queryState);
@@ -195,9 +183,9 @@ namespace LeaSearch.ViewModels
         }
 
         /// <summary>
-        /// 通知前端唤醒界面
+        /// 清理提示消息，并通知前端唤醒界面
         /// </summary>
-        protected  void NotifyWakeUpProgram()
+        protected void NotifyWakeUpProgram()
         {
             ShowNotice(null);
             Messenger.Default.Send(new ShellDisplayMessage() { Display = Display.WakeUp });
@@ -222,7 +210,7 @@ namespace LeaSearch.ViewModels
         private void Query()
         {
 
-            NotifyQueryStateChanged(QueryState.StartQuery);
+            NotifyQueryStateChanged(QueryState.QueryStart);
 
             if (!string.IsNullOrEmpty(QueryText))
             {
@@ -231,9 +219,10 @@ namespace LeaSearch.ViewModels
             else
             {
                 //if no result ,then close search
-                NotifyQueryStateChanged(QueryState.QueryGotNoResult);
+                NotifyQueryStateChanged(QueryState.QueryEnd);
                 SuggestionResultViewModel.Clear();
                 SearchResultViewModel.Clear();
+                SearchResultViewModel.ClearMoreInfo();
                 CurrentSearchPlugin = null;
             }
 
@@ -243,11 +232,13 @@ namespace LeaSearch.ViewModels
 
         private void QueryEngine_PluginCallActive(Core.Plugin.Plugin currentPlugin, PluginCalledArg pluginCalledArg)
         {
+            //插件模式激活，也是查询完毕的一个方式
+            NotifyQueryStateChanged(QueryState.QueryEnd);
+
             //插件模式如果激活了，则产生指示
             ShowNotice(pluginCalledArg.InfoMessage);
 
             CurrentSearchPlugin = currentPlugin;
-
 
         }
 
@@ -256,7 +247,6 @@ namespace LeaSearch.ViewModels
             CurrentSearchPlugin = currentPlugin;
             //清理指示
             ShowNotice(null);
-            NotifyQueryStateChanged(QueryState.BeginPluginSearch);
         }
 
         private void QueryEngine_SuggectionQuery(Core.Plugin.Plugin currentPlugin)
@@ -266,11 +256,21 @@ namespace LeaSearch.ViewModels
             CurrentSearchPlugin = null;
         }
 
-        private void QueryEngine_EndQuery()
+        private void EngineQueryEnd()
         {
             //如果查询终止，无法继续查询，则清理指示
             ShowNotice(null);
             CurrentSearchPlugin = null;
+            SearchResultViewModel.ClearMoreInfo();
+            NotifyQueryStateChanged(QueryState.QueryEnd);
+
+        }
+
+        private void QueryEngine_QueryError()
+        {
+            //插件查询出错，
+            NotifyQueryStateChanged(QueryState.QueryError);
+            SearchResultViewModel.ClearMoreInfo();
         }
 
 
@@ -279,8 +279,8 @@ namespace LeaSearch.ViewModels
             if (result == null || !result.Results.Any())
             {
                 //如果没有返回结果
-                NotifyQueryStateChanged(QueryState.QueryGotNoResult);
                 ShowNotice(@"notice_NoResult".GetTranslation());
+                SearchResultViewModel.ClearMoreInfo();
             }
             else
             {
@@ -289,14 +289,9 @@ namespace LeaSearch.ViewModels
                 {
                     //大于1条记录，则需要进行选择模式
                     ShowNotice(@"notice_EnterChooseMode".GetTranslation());
-                    NotifyQueryStateChanged(QueryState.QueryGotManyResult);
-                }
-                else
-                {
-                    //只返回了一条记录
-                    NotifyQueryStateChanged(QueryState.QueryGotOneResult);
                 }
             }
+            NotifyQueryStateChanged(QueryState.QueryEnd);
 
         }
 
@@ -317,14 +312,22 @@ namespace LeaSearch.ViewModels
 
     public enum QueryState
     {
-        StartQuery,
-        BeginPluginSearch,
-        QuerySuitNoPlugin,
-        QuerySuitOnePlugin,
-        QuerySuitManyPlugin,
-        QueryGotOneResult,
-        QueryGotManyResult,
-        QueryGotNoResult,
+        /// <summary>
+        /// 开始查询
+        /// </summary>
+        QueryStart,
+        /// <summary>
+        /// 查询结束
+        /// </summary>
+        QueryEnd,
+        /// <summary>
+        /// 查询出错
+        /// </summary>
+        QueryError,
+        /// <summary>
+        /// 查询被终止
+        /// </summary>
+        QueryStop
     }
 
 

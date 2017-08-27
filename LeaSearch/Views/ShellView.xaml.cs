@@ -145,37 +145,18 @@ namespace LeaSearch.Views
 
                            switch (queryState)
                            {
-                               case QueryState.StartQuery:
-
-                                   ProgressBar.Visibility = Visibility.Hidden;
-                                   break;
-                               case QueryState.QuerySuitNoPlugin:
-                                   //PluginCol.Width = new GridLength(0, GridUnitType.Pixel);
-                                   ResultGrid.Visibility = Visibility.Collapsed;
-                                   break;
-                               case QueryState.QuerySuitOnePlugin:
-                                   PluginCol.Width = new GridLength(0, GridUnitType.Pixel);
-                                   ProgressBar.Visibility = Visibility.Hidden;
-                                   ResultGrid.Visibility = Visibility.Collapsed;
-                                   break;
-                               case QueryState.QuerySuitManyPlugin:
-                                   //PluginCol.Width = new GridLength(0, GridUnitType.Pixel);
-                                   ProgressBar.Visibility = Visibility.Hidden;
-                                   ResultGrid.Visibility = Visibility.Collapsed;
-                                   break;
-                               case QueryState.BeginPluginSearch:
+                               case QueryState.QueryStart:
                                    ProgressBar.Visibility = Visibility.Visible;
                                    break;
-                               case QueryState.QueryGotOneResult:
-                               case QueryState.QueryGotManyResult:
+                               case QueryState.QueryEnd:
                                    ProgressBar.Visibility = Visibility.Hidden;
-                                   ResultGrid.Visibility = Visibility.Visible;
                                    break;
-                               case QueryState.QueryGotNoResult:
+                               case QueryState.QueryError:
                                    ProgressBar.Visibility = Visibility.Hidden;
-                                   ResultGrid.Visibility = Visibility.Collapsed;
                                    break;
-
+                               case QueryState.QueryStop:
+                                   ProgressBar.Visibility = Visibility.Hidden;
+                                   break;
                                default:
                                    throw new ArgumentOutOfRangeException(nameof(queryState), queryState, null);
                            }

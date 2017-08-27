@@ -12,6 +12,13 @@
         </DoubleAnimationUsingKeyFrames>
     </Storyboard>
 
+    <Storyboard x:Key="ProgressShowStroyboard">
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)">
+            <EasingDoubleKeyFrame KeyTime="0" Value="0" />
+            <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="1" />
+        </DoubleAnimationUsingKeyFrames>
+    </Storyboard>
+
     <Style x:Key="BaseProgressBorderStyle" TargetType="{x:Type Border}">
         <Setter Property="Background" Value="#616161" />
 
@@ -22,6 +29,7 @@
         <Style.Triggers>
             <Trigger Property="Visibility" Value="Visible">
                 <Trigger.EnterActions>
+                    <BeginStoryboard x:Name="showStoryboard" Storyboard="{StaticResource ProgressShowStroyboard}" />
                     <BeginStoryboard x:Name="ps" Storyboard="{StaticResource ProgressStoryboard}" />
                 </Trigger.EnterActions>
                 <!--<Trigger.ExitActions>
