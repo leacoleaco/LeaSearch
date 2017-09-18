@@ -12,11 +12,22 @@
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition />
+            <RowDefinition />
         </Grid.RowDefinitions>
         <htmlEditor:HtmlEditor x:Name="HtmlEditor" BindingContent="{Binding Text, ElementName=TextEditor, Mode=TwoWay}" />
         <TextBox
             x:Name="TextEditor"
             Grid.Row="1"
+            AcceptsReturn="True"
+            AcceptsTab="True"
+            AutoWordSelection="True"
+            Text="Smith Html Editor Binding Content Test."
+            TextChanged="TextEditor_OnTextChanged"
+            TextWrapping="Wrap"
+            VerticalScrollBarVisibility="Auto" />
+        <TextBox
+            x:Name="TextEditor1"
+            Grid.Row="2"
             AcceptsReturn="True"
             AcceptsTab="True"
             AutoWordSelection="True"

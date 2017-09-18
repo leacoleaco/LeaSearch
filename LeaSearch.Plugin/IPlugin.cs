@@ -58,5 +58,12 @@ namespace LeaSearch.Plugin
         /// <returns></returns>
         QueryDetailResult QueryDetail(ResultItem currentItem);
 
+
+        /// <summary>
+        /// 发起帮助请求信息时激活
+        /// </summary>
+        /// <returns></returns>
+        HelpInfo GetHelpInfo(QueryParam queryParam);
+
     }
 }

@@ -77,6 +77,11 @@ namespace LeaSearch.Plugin.Baidu
             throw new NotImplementedException();
         }
 
+        public HelpInfo GetHelpInfo(QueryParam queryParam)
+        {
+            throw new NotImplementedException();
+        }
+
         private void DoSearch(string queryStr)
         {
             //var client = new RestClient($"https://m.baidu.com/s?wd={queryStr}");

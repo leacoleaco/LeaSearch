@@ -55,14 +55,14 @@ namespace LeaSearch.ViewModels
 
         private void queryEngine_PluginCallActive(Core.Plugin.Plugin plugin, PluginCalledArg arg)
         {
-            if (arg.MoreInfo != null)
-            {
-                ShowMoreInfo(arg.MoreInfo);
-            }
-            else
-            {
-                ClearMoreInfo();
-            }
+            //if (arg.MoreInfo != null)
+            //{
+            //    ShowMoreInfo(arg.MoreInfo);
+            //}
+            //else
+            //{
+            //    ClearMoreInfo();
+            //}
 
             Clear();
         }

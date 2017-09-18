@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Messaging;
@@ -8,9 +7,7 @@ using LeaSearch.Common.Messages;
 using LeaSearch.Common.View;
 using LeaSearch.Core.HotKey;
 using LeaSearch.Core.Ioc;
-using LeaSearch.Core.QueryEngine;
 using LeaSearch.Infrastructure.Helper;
-using LeaSearch.Plugin;
 using LeaSearch.ViewModels;
 
 namespace LeaSearch.Views

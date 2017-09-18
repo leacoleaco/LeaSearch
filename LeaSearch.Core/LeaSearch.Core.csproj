@@ -116,6 +116,10 @@
       <Project>{DD4DF17A-D0A4-45DD-A108-8226A4DB78CD}</Project>
       <Name>LeaSearch.Plugin</Name>
     </ProjectReference>
+    <ProjectReference Include="..\libs\HtmlToXamlConverter\HtmlToXamlConverter.csproj">
+      <Project>{9377112b-cec8-41ec-ac9c-91be1e0b55c2}</Project>
+      <Name>HtmlToXamlConverter</Name>
+    </ProjectReference>
     <ProjectReference Include="..\libs\SmithHtmlEditor\SmithHtmlEditor.csproj">
       <Project>{84badda1-ab3a-4064-b87e-178d7446901d}</Project>
       <Name>SmithHtmlEditor</Name>

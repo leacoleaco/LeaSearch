@@ -150,7 +150,7 @@
                     <FlowDocumentReader
                         d:DataContext="{d:DesignInstance detailInfos:FlowDocumentInfo}"
                         Document="{Binding Document, Mode=OneWay}"
-                        ViewingMode="Scroll" />
+                        ViewingMode="Page" />
                 </DataTemplate>
 
                 <templateSelector:InfoContentTemplateSelector

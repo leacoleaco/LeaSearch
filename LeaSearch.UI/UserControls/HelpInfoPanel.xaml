@@ -1,0 +1,53 @@
+﻿<UserControl
+    x:Class="LeaSearch.UI.UserControls.HelpInfoPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="helpInfoPanel"
+    d:DesignHeight="200"
+    d:DesignWidth="600"
+    mc:Ignorable="d">
+    <StackPanel>
+
+        <DockPanel
+            x:Name="ErrorPanel"
+            LastChildFill="True"
+            Visibility="Collapsed">
+            <Image
+                Width="20"
+                Height="20"
+                Margin="2,0"
+                VerticalAlignment="Center"
+                DockPanel.Dock="Left"
+                RenderOptions.BitmapScalingMode="HighQuality"
+                Source="/LeaSearch.UI;component/images/error.png"
+                UseLayoutRounding="True" />
+            <TextBlock
+                x:Name="NoticeErrorTextBlock"
+                VerticalAlignment="Center"
+                Style="{DynamicResource NoticeErrorTextBlockStyle}"
+                Text="{Binding ErrorText, ElementName=noticePanel}" />
+        </DockPanel>
+        <DockPanel
+            x:Name="InfoPanel"
+            LastChildFill="True"
+            Visibility="Collapsed">
+            <Image
+                Width="20"
+                Height="20"
+                Margin="2,0"
+                VerticalAlignment="Center"
+                DockPanel.Dock="Left"
+                RenderOptions.BitmapScalingMode="HighQuality"
+                Source="/LeaSearch.UI;component/Images/info.png"
+                UseLayoutRounding="True" />
+            <TextBlock
+                x:Name="NoticeInfoTextBlock"
+                VerticalAlignment="Center"
+                Style="{DynamicResource NoticeInfoTextBlockStyle}"
+                Text="{Binding InfoText, ElementName=noticePanel}" />
+
+        </DockPanel>
+    </StackPanel>
+</UserControl>

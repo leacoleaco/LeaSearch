@@ -71,7 +71,7 @@
             CommandParameter="8"
             Gesture="Alt+D9" />
     </Window.InputBindings>
-    <Border Style="{DynamicResource WindowBorderStyle}">
+    <Border VerticalAlignment="Top" Style="{DynamicResource WindowBorderStyle}">
         <StackPanel>
             <DockPanel LastChildFill="True">
                 <Image
@@ -140,6 +140,8 @@
                 <views:SuggestionResultView x:Name="SuggestionResultsListView" Grid.Column="0" />
                 <views:SearchResultView x:Name="SearchResultListView" Grid.Column="1" />
             </Grid>
+            <ContentControl x:Name="HelpInfoView" MaxHeight="400">
+            </ContentControl>
         </StackPanel>
     </Border>
 </Window>

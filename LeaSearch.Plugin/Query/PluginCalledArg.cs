@@ -9,10 +9,7 @@ namespace LeaSearch.Plugin
         /// </summary>
         public string InfoMessage { get; set; }
 
-        /// <summary>
-        /// 在激活插件后，默认展示的更多信息
-        /// </summary>
-        public IInfo MoreInfo { get; set; }
+
     }
 
 }

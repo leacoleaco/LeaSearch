@@ -73,6 +73,9 @@
     <Compile Include="UserControls\MarkDownControl.xaml.cs">
       <DependentUpon>MarkDownControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\HelpInfoPanel.xaml.cs">
+      <DependentUpon>HelpInfoPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\NoticePanel.xaml.cs">
       <DependentUpon>NoticePanel.xaml</DependentUpon>
     </Compile>
@@ -81,6 +84,10 @@
     <Page Include="UserControls\MarkDownControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\HelpInfoPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControls\NoticePanel.xaml">
       <SubType>Designer</SubType>

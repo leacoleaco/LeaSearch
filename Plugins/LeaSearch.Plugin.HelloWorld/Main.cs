@@ -41,7 +41,6 @@ namespace LeaSearch.Plugin.HelloWorld
                 InfoMessage = _sharedContext.SharedMethod.GetTranslation(@"leasearch_plugin_helloWorld_pluginCallActive"),
                 //在程序进入插件模式后展示的信息
                 //可以可以返回的信息： FlowDocumentInfo （流文档 形式）
-                MoreInfo = new FlowDocumentInfo() { Document = _HelpDocument },
             };
         }
 
@@ -111,6 +110,9 @@ namespace LeaSearch.Plugin.HelloWorld
             return new QueryDetailResult() { MoreInfo = new TextInfo() { Text = $"this is a test info when preview {currentItem.Title}" } };
         }
 
-
+        public HelpInfo GetHelpInfo(QueryParam queryParam)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

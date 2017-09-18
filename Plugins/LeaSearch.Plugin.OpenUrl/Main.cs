@@ -99,6 +99,11 @@ namespace LeaSearch.Plugin.OpenUrl
             throw new NotImplementedException();
         }
 
+        public HelpInfo GetHelpInfo(QueryParam queryParam)
+        {
+            throw new NotImplementedException();
+        }
+
 
         public bool IsUrl(string raw)
         {
