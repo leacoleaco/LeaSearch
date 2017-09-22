@@ -12,7 +12,7 @@ namespace LeaSearch.Plugin.HelloWorld
         private SharedContext _sharedContext;
         private FlowDocument _HelpDocument;
 
-        public void InitPlugin(SharedContext sharedContext)
+        public void InitPlugin(SharedContext sharedContext, PluginMetaData pluginMetaData)
         {
             _sharedContext = sharedContext;
 

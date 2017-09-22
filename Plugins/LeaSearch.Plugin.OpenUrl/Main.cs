@@ -44,7 +44,7 @@ namespace LeaSearch.Plugin.OpenUrl
 
         private SharedContext _sharedContext;
 
-        public void InitPlugin(SharedContext sharedContext)
+        public void InitPlugin(SharedContext sharedContext,PluginMetaData pluginMetaData)
         {
             _sharedContext = sharedContext;
         }

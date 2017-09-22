@@ -27,7 +27,5 @@ namespace LeaSearch.Plugin
         /// </summary>
         public ContentControl DetailViewControl { get; internal set; }
 
-
-        
     }
 }

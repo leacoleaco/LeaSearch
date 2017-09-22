@@ -97,7 +97,12 @@ namespace LeaSearch.Core.Plugin
         {
             try
             {
-                plugin.PluginInstance?.InitPlugin(this._sharedContext);
+                var pluginMetaData = new PluginMetaData
+                {
+                    PluginRootPath = plugin.PluginRootPath
+                };
+
+                plugin.PluginInstance?.InitPlugin(this._sharedContext, pluginMetaData);
                 return plugin;
             }
             catch (Exception e)

@@ -11,8 +11,9 @@ namespace LeaSearch.Plugin
         /// 这个方法是用于共享主程序中的一些信息
         /// 比如： 语言、消息弹框、界面等
         /// </summary>
-        /// <param name="sharedContext"></param>
-        void InitPlugin(SharedContext sharedContext);
+        /// <param name="sharedContext">全局唯一的上下文</param>
+        /// <param name="pluginMetaData">初始化后本插件的信息</param>
+        void InitPlugin(SharedContext sharedContext,PluginMetaData pluginMetaData);
 
 
         /// <summary>

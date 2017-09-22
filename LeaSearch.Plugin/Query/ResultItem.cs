@@ -45,6 +45,9 @@ namespace LeaSearch.Plugin
         /// </summary>
         public Func<SharedContext, StateAfterCommandInvoke> SelectedAction { get; set; }
 
-
+        /// <summary>
+        /// 权重
+        /// </summary>
+        public int Score { get; set; }
     }
 }

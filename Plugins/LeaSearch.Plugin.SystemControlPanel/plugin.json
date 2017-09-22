@@ -1,0 +1,13 @@
+﻿{
+  "PluginId": "LeaSearch.Plugin.SystemControlPanel",
+  "Name": "System Control Panel Search",
+  "DisplayName": "ControlPanel",
+  "DefalutPrefixKeyword": "cp",
+  "Author": "Rico Lee",
+  "Version": "1.0.0",
+  "Language": "csharp",
+  "Description": "Search the system control panel",
+  "Website": "https://github.com/leacoleaco/LeaSearch",
+  "EntryFileName": "LeaSearch.Plugin.SystemControlPanel.dll",
+  "IcoPath": "Images/ControlPanel.png"
+}

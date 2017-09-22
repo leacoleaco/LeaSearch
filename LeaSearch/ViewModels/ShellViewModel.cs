@@ -268,7 +268,7 @@ namespace LeaSearch.ViewModels
             CurrentSearchPlugin = currentPlugin;
 
             //插件模式如果激活了，则产生指示
-            ShowNotice(pluginCalledArg.InfoMessage);
+            ShowNotice(pluginCalledArg?.InfoMessage);
         }
 
         private void QueryEngine_PluginCallQuery(Core.Plugin.Plugin currentPlugin)
@@ -305,9 +305,7 @@ namespace LeaSearch.ViewModels
 
         private void QueryEngine_GetResult(QueryListResult result)
         {
-
-
-            if (!result.Results.Any())
+            if (result?.Results == null || !result.Results.Any())
             {
                 //如果没有返回结果
                 ShowNotice(@"notice_NoResult".GetTranslation());

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeaSearch", "LeaSearch\LeaSearch.csproj", "{C3AFA80A-3537-408E-9EDD-BD6C04A8093D}"
 EndProject
@@ -30,6 +30,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmithHtmlEditor", "libs\SmithHtmlEditor\SmithHtmlEditor.csproj", "{84BADDA1-AB3A-4064-B87E-178D7446901D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlToXamlConverter", "libs\HtmlToXamlConverter\HtmlToXamlConverter.csproj", "{9377112B-CEC8-41EC-AC9C-91BE1E0B55C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeaSearch.Plugin.SystemControlPanel", "Plugins\LeaSearch.Plugin.SystemControlPanel\LeaSearch.Plugin.SystemControlPanel.csproj", "{42B4E729-A82E-4CB4-AA7E-C155BEA8879F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,6 +87,10 @@ Global
 		{9377112B-CEC8-41EC-AC9C-91BE1E0B55C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9377112B-CEC8-41EC-AC9C-91BE1E0B55C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9377112B-CEC8-41EC-AC9C-91BE1E0B55C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42B4E729-A82E-4CB4-AA7E-C155BEA8879F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42B4E729-A82E-4CB4-AA7E-C155BEA8879F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42B4E729-A82E-4CB4-AA7E-C155BEA8879F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42B4E729-A82E-4CB4-AA7E-C155BEA8879F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,5 +102,9 @@ Global
 		{FF36D7A3-E618-4EC3-8890-AE9AFC9471DE} = {F07A2119-9E0A-4655-A86D-BDCFBB158018}
 		{84BADDA1-AB3A-4064-B87E-178D7446901D} = {E0391F05-D919-4782-9EE0-AE81B3337136}
 		{9377112B-CEC8-41EC-AC9C-91BE1E0B55C2} = {E0391F05-D919-4782-9EE0-AE81B3337136}
+		{42B4E729-A82E-4CB4-AA7E-C155BEA8879F} = {F07A2119-9E0A-4655-A86D-BDCFBB158018}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FE334089-068B-4A01-9DE6-F846B64B2F85}
 	EndGlobalSection
 EndGlobal
