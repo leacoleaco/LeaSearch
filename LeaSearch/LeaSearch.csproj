@@ -106,6 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converts\Path2ImageSourceConvert.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="TemplateSelector\InfoContentTemplateSelector.cs" />
     <Compile Include="ViewModels\DetailResultViewModel.cs" />
     <Compile Include="ViewModels\SearchResultViewModel.cs" />
@@ -171,6 +172,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\HelpInfoView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\SuggestionResultView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -189,6 +194,9 @@
     </Compile>
     <Compile Include="ViewModels\SuggestionResultViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
+    <Compile Include="Views\HelpInfoView.xaml.cs">
+      <DependentUpon>HelpInfoView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SuggestionResultView.xaml.cs">
       <DependentUpon>SuggestionResultView.xaml</DependentUpon>
     </Compile>

@@ -26,7 +26,7 @@ namespace LeaSearch.Plugin.Calculator
             @")+$", RegexOptions.Compiled);
 
 
-        private FlowDocument _HelpDocument;
+        private FlowDocument _helpDocument;
 
         private static readonly Regex RegBrackets = new Regex(@"[\(\)\[\]]", RegexOptions.Compiled);
 
@@ -38,7 +38,7 @@ namespace LeaSearch.Plugin.Calculator
 
             var executingAssembly = Assembly.GetExecutingAssembly();
             var helpInfoStream = executingAssembly?.GetManifestResourceStream("LeaSearch.Plugin.Calculator.Resources.HelpInfo.xaml");
-            if (helpInfoStream != null) _HelpDocument = XamlReader.Load(helpInfoStream) as FlowDocument;
+            if (helpInfoStream != null) _helpDocument = XamlReader.Load(helpInfoStream) as FlowDocument;
 
         }
 
@@ -104,7 +104,7 @@ namespace LeaSearch.Plugin.Calculator
         {
             return new HelpInfo()
             {
-                Info = new FlowDocumentInfo() { Document = _HelpDocument }
+                Info = new FlowDocumentInfo() { Document = _helpDocument }
             };
         }
 

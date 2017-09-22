@@ -11,6 +11,7 @@ using LeaSearch.Common.Messages;
 using LeaSearch.Common.ViewModel;
 using LeaSearch.Core.I18N;
 using LeaSearch.Core.Ioc;
+using LeaSearch.Core.MessageModels;
 using LeaSearch.Core.Notice;
 using LeaSearch.Core.QueryEngine;
 using LeaSearch.Plugin;
@@ -46,6 +47,11 @@ namespace LeaSearch.ViewModels
             queryEngine.GetResult += QueryEngine_GetResult;
             queryEngine.QueryEnd += EngineQueryEnd;
             queryEngine.QueryError += QueryEngine_QueryError;
+
+            queryEngine.ShowHelpInfo += (helpinfo) =>
+            {
+                Messenger.Default.Send(new SetHelpInfoMessage() { HelpInfo = helpinfo });
+            };
         }
 
 
@@ -259,11 +265,10 @@ namespace LeaSearch.ViewModels
             //插件模式激活，也是查询完毕的一个方式
             NotifyQueryStateChanged(QueryState.QueryEnd);
 
-            //插件模式如果激活了，则产生指示
-            ShowNotice(pluginCalledArg.InfoMessage);
-
             CurrentSearchPlugin = currentPlugin;
 
+            //插件模式如果激活了，则产生指示
+            ShowNotice(pluginCalledArg.InfoMessage);
         }
 
         private void QueryEngine_PluginCallQuery(Core.Plugin.Plugin currentPlugin)
@@ -300,7 +305,9 @@ namespace LeaSearch.ViewModels
 
         private void QueryEngine_GetResult(QueryListResult result)
         {
-            if (result == null || !result.Results.Any())
+
+
+            if (!result.Results.Any())
             {
                 //如果没有返回结果
                 ShowNotice(@"notice_NoResult".GetTranslation());

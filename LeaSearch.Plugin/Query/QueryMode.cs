@@ -6,6 +6,10 @@
     public enum QueryMode
     {
         /// <summary>
+        /// 无模式
+        /// </summary>
+        None,
+        /// <summary>
         /// 命令模式
         /// </summary>
         Command,

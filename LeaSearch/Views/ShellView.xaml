@@ -140,8 +140,7 @@
                 <views:SuggestionResultView x:Name="SuggestionResultsListView" Grid.Column="0" />
                 <views:SearchResultView x:Name="SearchResultListView" Grid.Column="1" />
             </Grid>
-            <ContentControl x:Name="HelpInfoView" MaxHeight="400">
-            </ContentControl>
+            <views:HelpInfoView x:Name="HelpInfoView" MaxHeight="400" />
         </StackPanel>
     </Border>
 </Window>

@@ -5,6 +5,7 @@
     xmlns:controls="clr-namespace:LeaSearch.UI.Controls;assembly=LeaSearch.UI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:detailInfos="clr-namespace:LeaSearch.Plugin.DetailInfos;assembly=LeaSearch.Plugin"
+    xmlns:htmlRichTextBox="clr-namespace:LeaSearch.UI.Controls.HtmlRichTextBox;assembly=LeaSearch.UI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:templateSelector="clr-namespace:LeaSearch.TemplateSelector"
     xmlns:userControls="clr-namespace:LeaSearch.UI.UserControls;assembly=LeaSearch.UI"
@@ -129,7 +130,7 @@
                     <TextBlock
                         Margin="5"
                         d:DataContext="{d:DesignInstance detailInfos:TextInfo}"
-                        Style="{DynamicResource Resource InfoContentTextBlockStyle}"
+                        Style="{DynamicResource InfoContentTextBlockStyle}"
                         Text="{Binding Text, Mode=OneWay}"
                         TextWrapping="WrapWithOverflow" />
                 </DataTemplate>

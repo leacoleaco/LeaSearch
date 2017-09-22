@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Documents;
 
 namespace LeaSearch.Plugin.Query
 {
@@ -28,6 +29,8 @@ namespace LeaSearch.Plugin.Query
         /// 主界面的错误提示
         /// </summary>
         public string ErrorMessage { get; set; }
+
+        public FlowDocument HelpInfo { get; set; }
 
 
         public void AddResultItem(ResultItem item)

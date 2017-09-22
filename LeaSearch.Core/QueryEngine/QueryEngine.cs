@@ -46,6 +46,27 @@ namespace LeaSearch.Core.QueryEngine
 
         private readonly LeaSearchCommandManager _commandManager;
 
+        private QueryMode _currentQueryMode = QueryMode.None;
+
+
+        /// <summary>
+        /// 当前的查询模式
+        /// </summary>
+        public QueryMode CurrentQueryMode
+        {
+            get { return _currentQueryMode; }
+            set
+            {
+                if (_currentQueryMode != value)
+                    //每切换一个模式，就要清除之前的帮助信息
+                    OnShowHelpInfo(null);
+
+                _currentQueryMode = value;
+
+            }
+
+        }
+
         /// <summary>
         /// 模糊查询配置
         /// </summary>
@@ -59,11 +80,13 @@ namespace LeaSearch.Core.QueryEngine
                 FuzzyStringComparisonOptions.CaseSensitive,
             };
 
+
         public QueryEngine(PluginManager pluginManager, LeaSearchCommandManager commandManager)
         {
             this._pluginManager = pluginManager;
             _commandManager = commandManager;
         }
+
 
         public void Init()
         {
@@ -78,7 +101,11 @@ namespace LeaSearch.Core.QueryEngine
         public void Query(string queryText)
         {
             //如果什么字符都没传入，则不执行查询
-            if (string.IsNullOrWhiteSpace(queryText)) return;
+            if (string.IsNullOrWhiteSpace(queryText))
+            {
+                CurrentQueryMode = QueryMode.None;
+                return;
+            }
 
             //we need to trim start space
             queryText = queryText.TrimStart();
@@ -140,6 +167,7 @@ namespace LeaSearch.Core.QueryEngine
                 if (suitableQueryPlugins == null || !suitableQueryPlugins.Any())
                 {
                     //没有合适的可以执行的查询
+                    CurrentQueryMode = QueryMode.None;
                     OnQueryEnd();
                     return;
                 }
@@ -184,6 +212,8 @@ namespace LeaSearch.Core.QueryEngine
         /// <param name="queryParam"></param>
         private void DoCommandCallQuery(QueryParam queryParam)
         {
+
+            CurrentQueryMode = QueryMode.Command;
 
             //查询是否有合适的系统插件
             if (_commandManager == null) return;
@@ -233,6 +263,25 @@ namespace LeaSearch.Core.QueryEngine
         /// <param name="queryPlugin"></param>
         private void DoPluginCallQuery(QueryParam queryParam, Plugin.Plugin queryPlugin)
         {
+            CurrentQueryMode = QueryMode.PluginCall;
+
+            //先显示帮助信息
+            try
+            {
+                var helpInfo = queryPlugin.PluginInstance.GetHelpInfo(queryParam);
+                if (helpInfo != null)
+                {
+                    OnShowHelpInfo(helpInfo);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Exception($"plugin <{queryPlugin}> call GetHelpInfo error: {e.Message}", e);
+#if DEBUG
+                MessageBox.Show($"plugin <{queryPlugin}> call GetHelpInfo error: {e.Message}");
+#endif
+            }
+
             if (string.IsNullOrWhiteSpace(queryParam.Keyword))
             {
                 //如果只是刚刚激活plugin call 查询模式
@@ -253,9 +302,6 @@ namespace LeaSearch.Core.QueryEngine
             else
             {
                 //如果激活了 plugin call 查询模式并已经传入数据
-
-
-
 
                 var currentSearchPlugin = queryPlugin;
 
@@ -306,6 +352,8 @@ namespace LeaSearch.Core.QueryEngine
 
         private void DoSuggestionQuery(QueryParam queryParam, Plugin.Plugin[] queryPlugins)
         {
+
+            CurrentQueryMode = QueryMode.Suggestion;
 
             //使用 提供的所有 plugin ，按照关联度进行查询
             //TODO : 按照关联度执行多个查询
@@ -456,6 +504,8 @@ namespace LeaSearch.Core.QueryEngine
         public event Action QueryError;
 
 
+
+        public event Action<HelpInfo> ShowHelpInfo;
         #endregion
 
         protected virtual void OnGetResult(QueryListResult result)
@@ -513,6 +563,14 @@ namespace LeaSearch.Core.QueryEngine
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             {
                 QueryError?.Invoke();
+            }));
+        }
+
+        protected virtual void OnShowHelpInfo(HelpInfo info)
+        {
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            {
+                ShowHelpInfo?.Invoke(info);
             }));
         }
     }
