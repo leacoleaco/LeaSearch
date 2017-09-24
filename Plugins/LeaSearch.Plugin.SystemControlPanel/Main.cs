@@ -8,32 +8,43 @@ namespace LeaSearch.Plugin.SystemControlPanel
 {
     public class Main : Plugin
     {
-        private List<ControlPanelItem> controlPanelItems = new List<ControlPanelItem>();
-        private string iconFolder;
-        private string fileType;
 
 
         public override void InitPlugin(SharedContext sharedContext, IPluginApi pluginApi)
         {
             base.InitPlugin(sharedContext, pluginApi);
 
-            controlPanelItems = ControlPanelList.Create(48);
-            iconFolder = Path.Combine(pluginApi.PluginRootPath, @"Images\ControlPanelIcons\");
-            fileType = ".bmp";
+            //return;
+
+            var controlPanelItems = ControlPanelList.Create(48);
+            var iconFolder = Path.Combine(pluginApi.PluginRootPath, @"Images\ControlPanelIcons\");
+            var fileType = ".bmp";
 
             if (!Directory.Exists(iconFolder))
             {
                 Directory.CreateDirectory(iconFolder);
             }
 
+            PluginApi.RemoveIndex();
 
+            var dataItems = new List<DataItem>();
             foreach (ControlPanelItem item in controlPanelItems)
             {
                 if (!File.Exists(iconFolder + item.GUID + fileType))
                 {
                     item.Icon?.ToBitmap().Save(iconFolder + item.GUID + fileType);
                 }
+                dataItems.Add(
+                    new DataItem()
+                    {
+                        Name = item.LocalizedString,
+                        IconPath = Path.Combine(PluginApi.PluginRootPath,
+                            @"Images\\ControlPanelIcons\\" + item.GUID + fileType),
+                        Tip = item.InfoTip,
+                        Body = SharedContext.SharedMethod.SerializeToJson(item),
+                    });
             }
+            PluginApi.AddDataItemToIndex(dataItems.ToArray());
         }
 
 
@@ -41,19 +52,22 @@ namespace LeaSearch.Plugin.SystemControlPanel
         {
             var res = new QueryListResult();
 
-            foreach (var item in controlPanelItems)
+            //var searchRes = PluginApi.SearchDataItems(queryParam.Keyword);
+            var searchRes = PluginApi.GetAllDataItems();
+
+            foreach (var item in searchRes)
             {
+                ControlPanelItem obj = SharedContext.SharedMethod.DeserializeFromJson<ControlPanelItem>(item.Body);
                 var result = new ResultItem
                 {
-                    Title = item.LocalizedString,
-                    SubTitle = item.InfoTip,
-                    IconPath = Path.Combine(PluginApi.PluginRootPath,
-                        @"Images\\ControlPanelIcons\\" + item.GUID + fileType),
+                    Title = item.Name,
+                    SubTitle = item.Tip,
+                    IconPath = item.IconPath,
                     SelectedAction = e =>
                     {
                         try
                         {
-                            Process.Start(item.ExecutablePath);
+                            Process.Start(obj.ExecutablePath);
                         }
                         catch (Exception)
                         {

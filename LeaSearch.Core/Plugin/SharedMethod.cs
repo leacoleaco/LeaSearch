@@ -4,6 +4,7 @@ using LeaSearch.Core.I18N;
 using LeaSearch.Core.Notice;
 using LeaSearch.Infrastructure.Logger;
 using LeaSearch.Plugin;
+using Newtonsoft.Json;
 
 namespace LeaSearch.Core.Plugin
 {
@@ -60,6 +61,14 @@ namespace LeaSearch.Core.Plugin
             }
         }
 
-      
+        public string SerializeToJson(object obj)
+        {
+            return JsonConvert.SerializeObject(obj);
+        }
+
+        public T DeserializeFromJson<T>(string json)
+        {
+            return JsonConvert.DeserializeObject<T>(json);
+        }
     }
 }

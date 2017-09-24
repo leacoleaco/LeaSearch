@@ -51,5 +51,21 @@
         void CopyToClipboard(object copyObj);
 
 
+        /// <summary>
+        /// 序列化到json
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        string SerializeToJson(object obj);
+
+        /// <summary>
+        /// 反序列化到对象
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="json"></param>
+        /// <returns></returns>
+        T DeserializeFromJson<T>(string json);
+
+
     }
 }

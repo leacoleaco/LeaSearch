@@ -9,10 +9,11 @@ namespace LeaSearch.Core.Plugin
     public class Plugin : PluginBaseInfo
     {
 
-        public Plugin(PluginBaseInfo pluginBaseInfo, LeaSearch.Plugin.Plugin pluginInstance, string pluginId) : base(pluginBaseInfo.PluginRootPath, pluginBaseInfo.PluginMetadata, pluginBaseInfo.PluginSettings)
+        public Plugin(PluginBaseInfo pluginBaseInfo, LeaSearch.Plugin.Plugin pluginInstance, string pluginId, PluginType pluginType) : base(pluginBaseInfo.PluginRootPath, pluginBaseInfo.PluginMetadata, pluginBaseInfo.PluginSettings)
         {
-            this.PluginInstance = pluginInstance;
-            this.PluginId = pluginId;
+            PluginInstance = pluginInstance;
+            PluginId = pluginId;
+            PluginType = pluginType;
         }
 
         /// <summary>
@@ -20,7 +21,12 @@ namespace LeaSearch.Core.Plugin
         /// </summary>
         public LeaSearch.Plugin.Plugin PluginInstance { get; }
 
+        /// <summary>
+        /// plugin's id
+        /// </summary>
         public String PluginId { get; }
+
+        public PluginType PluginType { get; }
 
         /// <summary>
         /// if plugin is not correct load, or set to disabled, then it will disabled
@@ -34,9 +40,9 @@ namespace LeaSearch.Core.Plugin
 
         public override string ToString()
         {
-            if (this.PluginMetadata != null && string.IsNullOrEmpty(this.PluginMetadata.Name))
+            if (PluginMetadata != null && string.IsNullOrEmpty(PluginMetadata.Name))
             {
-                return this.PluginMetadata.Name;
+                return PluginMetadata.Name;
             }
 
             return base.ToString();

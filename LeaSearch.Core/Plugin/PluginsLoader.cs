@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using LeaSearch.Infrastructure.Logger;
+using LeaSearch.SearchEngine;
 using Newtonsoft.Json;
 
 namespace LeaSearch.Core.Plugin
@@ -16,10 +17,12 @@ namespace LeaSearch.Core.Plugin
         public const string PythonExecutable = "pythonw.exe";
 
         private readonly SharedContext _sharedContext;
+        private LuceneManager _luceneManager;
 
-        public PluginsLoader(SharedContext sharedContext)
+        public PluginsLoader(SharedContext sharedContext, LuceneManager luceneManager)
         {
             _sharedContext = sharedContext;
+            _luceneManager = luceneManager;
         }
 
         public List<Plugin> LoadPlugins(string pluginInstallPath)
@@ -81,9 +84,8 @@ namespace LeaSearch.Core.Plugin
 
             pluginBaseInfos.ForEach(p =>
             {
-                IPluginApi pluginApi = new PluginApi(p);
 
-                var plugin = LoadCSharpPlugin(p, pluginApi);
+                var plugin = LoadCSharpPlugin(p);
                 if (plugin != null)
                 {
                     //加载 C# plugin
@@ -105,7 +107,7 @@ namespace LeaSearch.Core.Plugin
         /// <param name="pluginApiaData"></param>
         /// <param name="pluginApi"></param>
         /// <returns></returns>
-        private Plugin LoadCSharpPlugin(PluginBaseInfo pluginBaseInfo, IPluginApi pluginApi)
+        private Plugin LoadCSharpPlugin(PluginBaseInfo pluginBaseInfo)
         {
 
 #if DEBUG
@@ -150,7 +152,10 @@ namespace LeaSearch.Core.Plugin
                 return null;
             }
 #endif
-            var csharpPlugin = new Plugin(pluginBaseInfo, pluginInstance, type.FullName);
+            var csharpPlugin = new Plugin(pluginBaseInfo, pluginInstance, type.FullName, PluginType.Csharp);
+
+            //与plugin共享api
+            IPluginApi pluginApi = new PluginApiForCsharpPlugin(csharpPlugin, _luceneManager);
 
             return InitCSharpPlugin(csharpPlugin, pluginApi);
         }
@@ -159,7 +164,6 @@ namespace LeaSearch.Core.Plugin
         /// 初始化插件
         /// </summary>
         /// <param name="plugin"></param>
-        /// <param name="pluginApiaData"></param>
         /// <param name="pluginApi"></param>
         /// <returns></returns>
         private Plugin InitCSharpPlugin(Plugin plugin, IPluginApi pluginApi)

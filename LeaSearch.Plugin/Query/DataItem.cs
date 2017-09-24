@@ -9,9 +9,10 @@
 
         public string Name { get; set; }
 
+        public string Tip { get; set; }
+
         public string IconPath { get; set; }
 
         public string Body { get; set; }
-
     }
 }

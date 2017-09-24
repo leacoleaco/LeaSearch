@@ -14,17 +14,11 @@ namespace LeaSearch.Core.Plugin
     {
         private readonly PluginsLoader _pluginsLoader;
 
-        private SharedContext _sharedContext;
-
         private List<Plugin> _plugins;
-
-        private LuceneManager _luceneManager;
 
         public PluginManager(SharedContext sharedContext, LuceneManager luceneManager)
         {
-            this._sharedContext = sharedContext;
-            _luceneManager = luceneManager;
-            this._pluginsLoader = new PluginsLoader(sharedContext);
+            _pluginsLoader = new PluginsLoader(sharedContext, luceneManager);
         }
 
         /// <summary>
