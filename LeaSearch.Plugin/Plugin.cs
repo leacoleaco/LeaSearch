@@ -4,9 +4,8 @@ namespace LeaSearch.Plugin
 {
     public abstract class Plugin : IPlugin
     {
-        protected SharedContext _sharedContext;
-        protected PluginMetaData _pluginMetaData;
-
+        protected SharedContext SharedContext;
+        protected IPluginApi PluginApi;
 
 
         /// <summary>
@@ -17,13 +16,12 @@ namespace LeaSearch.Plugin
         /// 比如： 语言、消息弹框、界面等
         /// </summary>
         /// <param name="sharedContext">全局唯一的上下文</param>
-        /// <param name="pluginMetaData">初始化后本插件的信息</param>
-        public virtual void InitPlugin(SharedContext sharedContext, PluginMetaData pluginMetaData)
+        /// <param name="pluginApi">每个plugin单独共享的操作用的API</param>
+        public virtual void InitPlugin(SharedContext sharedContext, IPluginApi pluginApi)
         {
-            _sharedContext = sharedContext;
-            _pluginMetaData = pluginMetaData;
+            SharedContext = sharedContext;
+            PluginApi = pluginApi;
         }
-
 
         /// <summary>
         /// if plugin is in suggection mode, and plugin setup "ParticipateSuggection=true",

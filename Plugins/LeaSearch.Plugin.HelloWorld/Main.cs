@@ -11,9 +11,9 @@ namespace LeaSearch.Plugin.HelloWorld
     {
         private FlowDocument _HelpDocument;
 
-        public override void InitPlugin(SharedContext sharedContext, PluginMetaData pluginMetaData)
+        public override void InitPlugin(SharedContext sharedContext, IPluginApi pluginApi)
         {
-            base.InitPlugin(sharedContext, pluginMetaData);
+            base.InitPlugin(sharedContext, pluginApi);
 
 
             //读取 dll 内文件，可以吧文件设置为 “嵌入的资源”，然后通过以下代码方式读取
@@ -37,7 +37,7 @@ namespace LeaSearch.Plugin.HelloWorld
             return new PluginCalledArg()
             {
                 //插件模式激活后，在插件下发的提示信息
-                InfoMessage = _sharedContext.SharedMethod.GetTranslation(@"leasearch_plugin_helloWorld_pluginCallActive"),
+                InfoMessage = SharedContext.SharedMethod.GetTranslation(@"leasearch_plugin_helloWorld_pluginCallActive"),
                 //在程序进入插件模式后展示的信息
                 //可以可以返回的信息： FlowDocumentInfo （流文档 形式）
             };

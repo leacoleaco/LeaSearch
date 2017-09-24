@@ -1,5 +1,4 @@
-﻿using LeaSearch.Infrastructure.Logger;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace LeaSearch.Plugin
 {

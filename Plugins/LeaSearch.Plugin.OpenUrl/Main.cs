@@ -64,7 +64,7 @@ namespace LeaSearch.Plugin.OpenUrl
                 new ResultItem
                 {
                     Title = keyword,
-                    SubTitle = _sharedContext.SharedMethod.GetTranslation("leasearch_plugin_openurl_open_url", keyword),
+                    SubTitle = SharedContext.SharedMethod.GetTranslation("leasearch_plugin_openurl_open_url", keyword),
                     IconPath = "url.png",
                     SelectedAction = x =>
                     {

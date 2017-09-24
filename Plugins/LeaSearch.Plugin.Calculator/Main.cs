@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Markup;
 using LeaSearch.Plugin.DetailInfos;
 using LeaSearch.Plugin.Query;
@@ -31,9 +27,9 @@ namespace LeaSearch.Plugin.Calculator
         private static readonly Regex RegBrackets = new Regex(@"[\(\)\[\]]", RegexOptions.Compiled);
 
 
-        public override void InitPlugin(SharedContext sharedContext, PluginMetaData pluginMetaData)
+        public override void InitPlugin(SharedContext sharedContext, IPluginApi pluginApi)
         {
-            base.InitPlugin(sharedContext, pluginMetaData);
+            base.InitPlugin(sharedContext, pluginApi);
 
             var executingAssembly = Assembly.GetExecutingAssembly();
             var helpInfoStream = executingAssembly?.GetManifestResourceStream("LeaSearch.Plugin.Calculator.Resources.HelpInfo.xaml");
@@ -57,7 +53,7 @@ namespace LeaSearch.Plugin.Calculator
         {
             return new PluginCalledArg()
             {
-                InfoMessage = _sharedContext.SharedMethod.GetTranslation("leasearch_plugin_calculator_pluginCallActive"),
+                InfoMessage = SharedContext.SharedMethod.GetTranslation("leasearch_plugin_calculator_pluginCallActive"),
             };
         }
 
@@ -69,7 +65,7 @@ namespace LeaSearch.Plugin.Calculator
             if (!expression.checkSyntax())
             {
                 //如果表达式有误                
-                var translation = _sharedContext.SharedMethod.GetTranslation(@"leasearch_plugin_calculator_express_err");
+                var translation = SharedContext.SharedMethod.GetTranslation(@"leasearch_plugin_calculator_express_err");
                 return new QueryListResult()
                 {
                     ErrorMessage = translation
@@ -83,7 +79,7 @@ namespace LeaSearch.Plugin.Calculator
             {
                 IconPath = "calculator.png",
                 Title = result,
-                SubTitle = _sharedContext.SharedMethod.GetTranslation(@"leasearch_plugin_calculator_copy"),
+                SubTitle = SharedContext.SharedMethod.GetTranslation(@"leasearch_plugin_calculator_copy"),
                 SelectedAction =(SharedContext) =>
                 {
                     SharedContext.SharedMethod.CopyToClipboard(result);

@@ -1,5 +1,4 @@
-﻿using System.Windows.Documents;
-using LeaSearch.Plugin.DetailInfos;
+﻿using LeaSearch.Plugin.DetailInfos;
 
 namespace LeaSearch.Plugin
 {

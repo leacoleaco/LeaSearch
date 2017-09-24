@@ -1,13 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using LeaSearch.Common.Env;
-using LeaSearch.Core.Image;
-using LeaSearch.Plugin;
 
 namespace LeaSearch.Core.Plugin
 {

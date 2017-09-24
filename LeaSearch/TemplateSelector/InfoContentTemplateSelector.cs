@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using LeaSearch.Plugin;
 using LeaSearch.Plugin.DetailInfos;
 
 namespace LeaSearch.TemplateSelector

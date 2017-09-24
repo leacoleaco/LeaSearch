@@ -12,8 +12,8 @@ namespace LeaSearch.Plugin
         /// 比如： 语言、消息弹框、界面等
         /// </summary>
         /// <param name="sharedContext">全局唯一的上下文</param>
-        /// <param name="pluginMetaData">初始化后本插件的信息</param>
-        void InitPlugin(SharedContext sharedContext, PluginMetaData pluginMetaData);
+        /// <param name="pluginApi">插件与系统共享的接口</param>
+        void InitPlugin(SharedContext sharedContext, IPluginApi pluginApi);
 
 
 

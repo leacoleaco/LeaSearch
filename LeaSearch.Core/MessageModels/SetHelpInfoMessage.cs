@@ -1,6 +1,4 @@
-﻿using System.Windows.Documents;
-using LeaSearch.Plugin;
-using LeaSearch.Plugin.DetailInfos;
+﻿using LeaSearch.Plugin;
 
 namespace LeaSearch.Core.MessageModels
 {

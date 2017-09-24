@@ -1,22 +1,17 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
 using LeaSearch.Common.Env;
 using LeaSearch.Common.Messages;
 using LeaSearch.Common.ViewModel;
 using LeaSearch.Core.I18N;
-using LeaSearch.Core.Ioc;
 using LeaSearch.Core.MessageModels;
 using LeaSearch.Core.Notice;
 using LeaSearch.Core.QueryEngine;
 using LeaSearch.Plugin;
 using LeaSearch.Plugin.Query;
-using Microsoft.Expression.Interactivity.Core;
 
 namespace LeaSearch.ViewModels
 {

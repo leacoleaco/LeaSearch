@@ -80,14 +80,16 @@ namespace LeaSearch.Core.Plugin
 
 
             pluginBaseInfos.ForEach(p =>
-               {
-                   var plugin = LoadCSharpPlugin(p);
-                   if (plugin != null)
-                   {
-                       //加载 C# plugin
-                       csharpPlugins.Add(plugin);
-                   }
-               });
+            {
+                IPluginApi pluginApi = new PluginApi(p);
+
+                var plugin = LoadCSharpPlugin(p, pluginApi);
+                if (plugin != null)
+                {
+                    //加载 C# plugin
+                    csharpPlugins.Add(plugin);
+                }
+            });
 
 
 
@@ -96,13 +98,14 @@ namespace LeaSearch.Core.Plugin
         }
 
 
-
         /// <summary>
         /// load C# plugin,create instance
         /// </summary>
         /// <param name="pluginBaseInfo"></param>
+        /// <param name="pluginApiaData"></param>
+        /// <param name="pluginApi"></param>
         /// <returns></returns>
-        private Plugin LoadCSharpPlugin(PluginBaseInfo pluginBaseInfo)
+        private Plugin LoadCSharpPlugin(PluginBaseInfo pluginBaseInfo, IPluginApi pluginApi)
         {
 
 #if DEBUG
@@ -149,24 +152,23 @@ namespace LeaSearch.Core.Plugin
 #endif
             var csharpPlugin = new Plugin(pluginBaseInfo, pluginInstance, type.FullName);
 
-            return InitCSharpPlugin(csharpPlugin);
+            return InitCSharpPlugin(csharpPlugin, pluginApi);
         }
 
         /// <summary>
         /// 初始化插件
         /// </summary>
         /// <param name="plugin"></param>
+        /// <param name="pluginApiaData"></param>
+        /// <param name="pluginApi"></param>
         /// <returns></returns>
-        private Plugin InitCSharpPlugin(Plugin plugin)
+        private Plugin InitCSharpPlugin(Plugin plugin, IPluginApi pluginApi)
         {
             try
             {
-                var pluginMetaData = new PluginMetaData
-                {
-                    PluginRootPath = plugin.PluginRootPath
-                };
 
-                plugin.PluginInstance?.InitPlugin(this._sharedContext, pluginMetaData);
+
+                plugin.PluginInstance?.InitPlugin(this._sharedContext, pluginApi);
                 return plugin;
             }
             catch (Exception e)
@@ -180,7 +182,6 @@ namespace LeaSearch.Core.Plugin
             }
         }
     }
-
 }
 
 //public static IEnumerable<Plugin PythonPlugins(List<PluginMetadata> source, string pythonDirecotry)

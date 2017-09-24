@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LeaSearch.Plugin.Query;
 
 namespace LeaSearch.Plugin.SystemControlPanel
@@ -17,12 +13,12 @@ namespace LeaSearch.Plugin.SystemControlPanel
         private string fileType;
 
 
-        public override void InitPlugin(SharedContext sharedContext, PluginMetaData pluginMetaData)
+        public override void InitPlugin(SharedContext sharedContext, IPluginApi pluginApi)
         {
-            base.InitPlugin(sharedContext, pluginMetaData);
+            base.InitPlugin(sharedContext, pluginApi);
 
             controlPanelItems = ControlPanelList.Create(48);
-            iconFolder = Path.Combine(pluginMetaData.PluginRootPath, @"Images\ControlPanelIcons\");
+            iconFolder = Path.Combine(pluginApi.PluginRootPath, @"Images\ControlPanelIcons\");
             fileType = ".bmp";
 
             if (!Directory.Exists(iconFolder))
@@ -51,7 +47,7 @@ namespace LeaSearch.Plugin.SystemControlPanel
                 {
                     Title = item.LocalizedString,
                     SubTitle = item.InfoTip,
-                    IconPath = Path.Combine(_pluginMetaData.PluginRootPath,
+                    IconPath = Path.Combine(PluginApi.PluginRootPath,
                         @"Images\\ControlPanelIcons\\" + item.GUID + fileType),
                     SelectedAction = e =>
                     {

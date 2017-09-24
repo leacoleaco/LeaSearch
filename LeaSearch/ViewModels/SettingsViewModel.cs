@@ -1,9 +1,4 @@
 ﻿using LeaSearch.Common.Env;
-using LeaSearch.Core.HotKey;
-using LeaSearch.Core.I18N;
-using LeaSearch.Core.Ioc;
-using LeaSearch.Core.Theme;
-using LeaSearch.Infrastructure.Storage;
 
 namespace LeaSearch.ViewModels
 {

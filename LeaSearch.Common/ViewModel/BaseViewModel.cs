@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using GalaSoft.MvvmLight;
+﻿using GalaSoft.MvvmLight;
 using LeaSearch.Common.Env;
 
 namespace LeaSearch.Common.ViewModel

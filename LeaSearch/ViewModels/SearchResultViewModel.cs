@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Threading;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Threading;
@@ -19,8 +15,6 @@ using LeaSearch.Core.QueryEngine;
 using LeaSearch.Plugin;
 using LeaSearch.Plugin.DetailInfos;
 using LeaSearch.Plugin.Query;
-using LeaSearch.UI.Controls.HtmlRichTextBox;
-using Microsoft.Expression.Interactivity.Core;
 
 namespace LeaSearch.ViewModels
 {
