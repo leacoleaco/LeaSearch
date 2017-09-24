@@ -5,21 +5,14 @@ using LeaSearch.Plugin.Query;
 
 namespace LeaSearch.Plugin.Baidu
 {
-    public class Main : IPlugin
+    public class Main : Plugin
     {
-        private SharedContext _sharedContext;
-
-        public void InitPlugin(SharedContext sharedContext, PluginMetaData pluginMetaData)
-        {
-            _sharedContext = sharedContext;
-        }
-
-        public bool SuitableForSuggectionQuery(QueryParam queryParam)
+        public override bool SuitableForSuggectionQuery(QueryParam queryParam)
         {
             return true;
         }
 
-        public PluginCalledArg PluginCallActive(QueryParam queryParam)
+        public override PluginCalledArg PluginCallActive(QueryParam queryParam)
         {
             return new PluginCalledArg()
             {
@@ -27,7 +20,7 @@ namespace LeaSearch.Plugin.Baidu
             };
         }
 
-        public QueryListResult Query(QueryParam queryParam)
+        public override QueryListResult Query(QueryParam queryParam)
         {
             var res = new QueryListResult();
 
@@ -72,15 +65,7 @@ namespace LeaSearch.Plugin.Baidu
             return res;
         }
 
-        public QueryDetailResult QueryDetail(ResultItem currentItem)
-        {
-            throw new NotImplementedException();
-        }
 
-        public HelpInfo GetHelpInfo(QueryParam queryParam)
-        {
-            throw new NotImplementedException();
-        }
 
         private void DoSearch(string queryStr)
         {

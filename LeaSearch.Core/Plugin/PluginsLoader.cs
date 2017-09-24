@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using LeaSearch.Infrastructure.Logger;
-using LeaSearch.Infrastructure.Storage;
 using Newtonsoft.Json;
 
 namespace LeaSearch.Core.Plugin
@@ -16,19 +15,19 @@ namespace LeaSearch.Core.Plugin
         public const string Python = "python";
         public const string PythonExecutable = "pythonw.exe";
 
-        private SharedContext _sharedContext;
+        private readonly SharedContext _sharedContext;
 
         public PluginsLoader(SharedContext sharedContext)
         {
-            this._sharedContext = sharedContext;
+            _sharedContext = sharedContext;
         }
 
         public List<Plugin> LoadPlugins(string pluginInstallPath)
         {
-            var pluginBases = ReadPluginBase(pluginInstallPath);
+            var pluginBases = ReadPluginBaseInfo(pluginInstallPath);
             if (pluginBases != null)
             {
-                return LoadPluginsWithPluginBase(pluginBases);
+                return LoadPluginsWithPluginBaseInfo(pluginBases);
             }
 
             return null;
@@ -39,9 +38,9 @@ namespace LeaSearch.Core.Plugin
         /// </summary>
         /// <param name="pluginInstallPath">the plugin's parent dir</param>
         /// <returns></returns>
-        private List<PluginBase> ReadPluginBase(string pluginInstallPath)
+        private List<PluginBaseInfo> ReadPluginBaseInfo(string pluginInstallPath)
         {
-            var result = new List<PluginBase>();
+            var result = new List<PluginBaseInfo>();
             //search plugin dir file, read "plugin.json"
             DirectoryInfo dir = new DirectoryInfo(pluginInstallPath);
             if (!dir.Exists) return null;
@@ -61,7 +60,7 @@ namespace LeaSearch.Core.Plugin
                         //TODO:how to read the plugin's custom setting
                         var pluginsetting = new PluginSettings();
 
-                        var pluginBase = new PluginBase(d.FullName, pluginMetadata, pluginsetting);
+                        var pluginBase = new PluginBaseInfo(d.FullName, pluginMetadata, pluginsetting);
                         result.Add(pluginBase);
                     }
                 }
@@ -71,29 +70,94 @@ namespace LeaSearch.Core.Plugin
 
         /// <summary>
         /// load plugin from assembly
+        ///从plugin的基础信息来加载 plugin assembly
         /// </summary>
-        /// <param name="pluginBase"></param>
+        /// <param name="pluginBaseInfos"></param>
         /// <returns></returns>
-        private List<Plugin> LoadPluginsWithPluginBase(List<PluginBase> pluginBase)
+        private List<Plugin> LoadPluginsWithPluginBaseInfo(List<PluginBaseInfo> pluginBaseInfos)
         {
             var csharpPlugins = new List<Plugin>();
-            pluginBase.ForEach(p =>
-            {
-                var plugin = LoadCSharpPlugin(p);
-                if (plugin != null)
-                {
-                    csharpPlugins.Add(plugin);
-                }
-            });
 
-            //var pythonPlugins = PythonPlugins(metadatas, settings.PythonDirectory);
-            //var executablePlugins = ExecutablePlugins(metadatas);
-            //var plugins = csharpPlugins.Concat(pythonPlugins).Concat(executablePlugins).ToList();
+
+            pluginBaseInfos.ForEach(p =>
+               {
+                   var plugin = LoadCSharpPlugin(p);
+                   if (plugin != null)
+                   {
+                       //加载 C# plugin
+                       csharpPlugins.Add(plugin);
+                   }
+               });
+
+
+
             var plugins = csharpPlugins;
             return plugins;
         }
 
-        private Plugin InitPlugin(Plugin plugin)
+
+
+        /// <summary>
+        /// load C# plugin,create instance
+        /// </summary>
+        /// <param name="pluginBaseInfo"></param>
+        /// <returns></returns>
+        private Plugin LoadCSharpPlugin(PluginBaseInfo pluginBaseInfo)
+        {
+
+#if DEBUG
+            var assembly = Assembly.Load(AssemblyName.GetAssemblyName(pluginBaseInfo.PluginEntryPath));
+            var types = assembly.GetTypes();
+            var type = types.First(o => o.IsClass && !o.IsAbstract && o.GetInterfaces().Contains(typeof(LeaSearch.Plugin.IPlugin)));
+            var pluginInstance = (LeaSearch.Plugin.Plugin)Activator.CreateInstance(type);
+#else
+            Assembly assembly;
+            try
+            {
+                assembly = Assembly.Load(AssemblyName.GetAssemblyName(pluginBaseInfos.PluginEntryPath));
+            }
+            catch (Exception e)
+            {
+                Logger.Exception(
+                    $"|PluginsLoader.CSharpPlugins|Couldn't load assembly for {pluginBaseInfos.PluginMetadata.Name}", e);
+                return null;
+            }
+            var types = assembly.GetTypes();
+            Type type;
+            try
+            {
+                type = types.First(o => o.IsClass && !o.IsAbstract && o.GetInterfaces().Contains(typeof(Plugin)));
+            }
+            catch (InvalidOperationException e)
+            {
+                Logger.Exception(
+                    $"|PluginsLoader.CSharpPlugins|Can't find class implement Plugin for <{pluginBaseInfos.PluginMetadata.Name}>",
+                    e);
+                return null;
+            }
+            Plugin pluginInstance;
+            try
+            {
+                pluginInstance = (Plugin)Activator.CreateInstance(type);
+            }
+            catch (Exception e)
+            {
+                Logger.Exception(
+                    $"|PluginsLoader.CSharpPlugins|Can't create instance for <{pluginBaseInfos.PluginMetadata.Name}>", e);
+                return null;
+            }
+#endif
+            var csharpPlugin = new Plugin(pluginBaseInfo, pluginInstance, type.FullName);
+
+            return InitCSharpPlugin(csharpPlugin);
+        }
+
+        /// <summary>
+        /// 初始化插件
+        /// </summary>
+        /// <param name="plugin"></param>
+        /// <returns></returns>
+        private Plugin InitCSharpPlugin(Plugin plugin)
         {
             try
             {
@@ -114,61 +178,6 @@ namespace LeaSearch.Core.Plugin
 
                 return null;
             }
-        }
-
-        /// <summary>
-        /// load C# plugin,create instance
-        /// </summary>
-        /// <param name="pluginBase"></param>
-        /// <returns></returns>
-        private Plugin LoadCSharpPlugin(PluginBase pluginBase)
-        {
-
-#if DEBUG
-            var assembly = Assembly.Load(AssemblyName.GetAssemblyName(pluginBase.PluginEntryPath));
-            var types = assembly.GetTypes();
-            var type = types.First(o => o.IsClass && !o.IsAbstract && o.GetInterfaces().Contains(typeof(IPlugin)));
-            var pluginInstance = (IPlugin)Activator.CreateInstance(type);
-#else
-            Assembly assembly;
-            try
-            {
-                assembly = Assembly.Load(AssemblyName.GetAssemblyName(pluginBase.PluginEntryPath));
-            }
-            catch (Exception e)
-            {
-                Logger.Exception(
-                    $"|PluginsLoader.CSharpPlugins|Couldn't load assembly for {pluginBase.PluginMetadata.Name}", e);
-                return null;
-            }
-            var types = assembly.GetTypes();
-            Type type;
-            try
-            {
-                type = types.First(o => o.IsClass && !o.IsAbstract && o.GetInterfaces().Contains(typeof(IPlugin)));
-            }
-            catch (InvalidOperationException e)
-            {
-                Logger.Exception(
-                    $"|PluginsLoader.CSharpPlugins|Can't find class implement IPlugin for <{pluginBase.PluginMetadata.Name}>",
-                    e);
-                return null;
-            }
-            IPlugin pluginInstance;
-            try
-            {
-                pluginInstance = (IPlugin)Activator.CreateInstance(type);
-            }
-            catch (Exception e)
-            {
-                Logger.Exception(
-                    $"|PluginsLoader.CSharpPlugins|Can't create instance for <{pluginBase.PluginMetadata.Name}>", e);
-                return null;
-            }
-#endif
-            var csharpPlugin = new Plugin(pluginBase, pluginInstance, type.FullName);
-
-            return InitPlugin(csharpPlugin);
         }
     }
 

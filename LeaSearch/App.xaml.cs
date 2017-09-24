@@ -17,6 +17,7 @@ using LeaSearch.Infrastructure.ErrorReport;
 using LeaSearch.Infrastructure.Logger;
 using LeaSearch.Infrastructure.Storage;
 using LeaSearch.Plugin;
+using LeaSearch.SearchEngine;
 using LeaSearch.ViewModels;
 using LeaSearch.Views;
 
@@ -113,6 +114,7 @@ namespace LeaSearch
             _builder.RegisterType<LeaSearchCommandManager>().SingleInstance();
 
             _builder.RegisterType<QueryEngine>().SingleInstance();
+            _builder.RegisterType<LuceneManager>().SingleInstance();
 
 
             _builder.RegisterType<ShellViewModel>().SingleInstance();

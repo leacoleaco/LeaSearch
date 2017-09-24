@@ -92,12 +92,12 @@ namespace LeaSearch.Infrastructure.ErrorReport
                 else if (string.IsNullOrEmpty(ass.Location))
                 {
                     sb.Append("location is null or empty");
-                    
+
                 }
                 else
                 {
-                sb.Append(ass.Location);
-                    
+                    sb.Append(ass.Location);
+
                 }
                 sb.AppendLine(")");
             }
@@ -106,54 +106,52 @@ namespace LeaSearch.Infrastructure.ErrorReport
         }
 
         // http://msdn.microsoft.com/en-us/library/hh925568%28v=vs.110%29.aspx
-        private static List<string> GetFrameworkVersionFromRegistry()
+        private static IEnumerable<string> GetFrameworkVersionFromRegistry()
         {
             try
             {
                 var result = new List<string>();
-                using (RegistryKey ndpKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\NET Framework Setup\NDP\"))
+                using (var ndpKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\NET Framework Setup\NDP\"))
                 {
-                    foreach (string versionKeyName in ndpKey.GetSubKeyNames())
+                    foreach (var versionKeyName in ndpKey.GetSubKeyNames())
                     {
-                        if (versionKeyName.StartsWith("v"))
+                        if (!versionKeyName.StartsWith("v")) continue;
+                        var versionKey = ndpKey.OpenSubKey(versionKeyName);
+                        if (versionKey == null) continue;
+                        var name = (string)versionKey.GetValue("Version", "");
+                        var sp = versionKey.GetValue("SP", "").ToString();
+                        var install = versionKey.GetValue("Install", "").ToString();
+                        if (install != "")
+                            if (sp != "" && install == "1")
+                                result.Add($"{versionKeyName} {name} SP{sp}");
+                            else
+                                result.Add($"{versionKeyName} {name}");
+
+                        if (name != "")
                         {
-                            RegistryKey versionKey = ndpKey.OpenSubKey(versionKeyName);
-                            string name = (string)versionKey.GetValue("Version", "");
-                            string sp = versionKey.GetValue("SP", "").ToString();
-                            string install = versionKey.GetValue("Install", "").ToString();
-                            if (install != "")
-                                if (sp != "" && install == "1")
-                                    result.Add(string.Format("{0} {1} SP{2}", versionKeyName, name, sp));
-                                else
-                                    result.Add(string.Format("{0} {1}", versionKeyName, name));
-
+                            continue;
+                        }
+                        foreach (var subKeyName in versionKey.GetSubKeyNames())
+                        {
+                            var subKey = versionKey.OpenSubKey(subKeyName);
+                            name = (string)subKey.GetValue("Version", "");
                             if (name != "")
+                                sp = subKey.GetValue("SP", "").ToString();
+                            install = subKey.GetValue("Install", "").ToString();
+                            if (install != "")
                             {
-                                continue;
-                            }
-                            foreach (string subKeyName in versionKey.GetSubKeyNames())
-                            {
-                                RegistryKey subKey = versionKey.OpenSubKey(subKeyName);
-                                name = (string)subKey.GetValue("Version", "");
-                                if (name != "")
-                                    sp = subKey.GetValue("SP", "").ToString();
-                                install = subKey.GetValue("Install", "").ToString();
-                                if (install != "")
-                                {
-                                    if (sp != "" && install == "1")
-                                        result.Add(string.Format("{0} {1} {2} SP{3}", versionKeyName, subKeyName, name, sp));
-                                    else if (install == "1")
-                                        result.Add(string.Format("{0} {1} {2}", versionKeyName, subKeyName, name));
-                                }
-
+                                if (sp != "" && install == "1")
+                                    result.Add($"{versionKeyName} {subKeyName} {name} SP{sp}");
+                                else if (install == "1")
+                                    result.Add($"{versionKeyName} {subKeyName} {name}");
                             }
 
                         }
                     }
                 }
-                using (RegistryKey ndpKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\"))
+                using (var ndpKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\"))
                 {
-                    int releaseKey = (int)ndpKey.GetValue("Release");
+                    var releaseKey = (int)ndpKey.GetValue("Release");
                     {
                         if (releaseKey == 378389)
                             result.Add("v4.5");
@@ -167,7 +165,7 @@ namespace LeaSearch.Infrastructure.ErrorReport
                 }
                 return result;
             }
-            catch (System.Exception e)
+            catch (Exception)
             {
                 return new List<string>();
             }

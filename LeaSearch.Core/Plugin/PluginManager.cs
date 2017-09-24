@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LeaSearch.Common.Env;
 using LeaSearch.Plugin;
+using LeaSearch.SearchEngine;
 
 namespace LeaSearch.Core.Plugin
 {
@@ -15,15 +16,18 @@ namespace LeaSearch.Core.Plugin
     /// </summary>
     public class PluginManager
     {
-        private PluginsLoader _pluginsLoader;
+        private readonly PluginsLoader _pluginsLoader;
 
         private SharedContext _sharedContext;
 
         private List<Plugin> _plugins;
 
-        public PluginManager(SharedContext sharedContext)
+        private LuceneManager _luceneManager;
+
+        public PluginManager(SharedContext sharedContext, LuceneManager luceneManager)
         {
             this._sharedContext = sharedContext;
+            _luceneManager = luceneManager;
             this._pluginsLoader = new PluginsLoader(sharedContext);
         }
 

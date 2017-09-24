@@ -49,5 +49,7 @@
         /// </summary>
         /// <param name="copyObj"></param>
         void CopyToClipboard(object copyObj);
+
+
     }
 }

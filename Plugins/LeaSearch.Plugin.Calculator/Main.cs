@@ -12,7 +12,7 @@ using org.mariuszgromada.math.mxparser;
 
 namespace LeaSearch.Plugin.Calculator
 {
-    public class Main : IPlugin
+    public class Main : Plugin
     {
 
         private static Regex regValidExpressChar = new Regex(
@@ -30,11 +30,10 @@ namespace LeaSearch.Plugin.Calculator
 
         private static readonly Regex RegBrackets = new Regex(@"[\(\)\[\]]", RegexOptions.Compiled);
 
-        private SharedContext _sharedContext;
 
-        public void InitPlugin(SharedContext sharedContext, PluginMetaData pluginMetaData)
+        public override void InitPlugin(SharedContext sharedContext, PluginMetaData pluginMetaData)
         {
-            _sharedContext = sharedContext;
+            base.InitPlugin(sharedContext, pluginMetaData);
 
             var executingAssembly = Assembly.GetExecutingAssembly();
             var helpInfoStream = executingAssembly?.GetManifestResourceStream("LeaSearch.Plugin.Calculator.Resources.HelpInfo.xaml");
@@ -42,7 +41,7 @@ namespace LeaSearch.Plugin.Calculator
 
         }
 
-        public bool SuitableForSuggectionQuery(QueryParam queryParam)
+        public override bool SuitableForSuggectionQuery(QueryParam queryParam)
         {
             if (queryParam.Keyword.Length <= 2 // don't affect when user only input "e" or "i" keyword
                 || !regValidExpressChar.IsMatch(queryParam.Keyword)
@@ -54,7 +53,7 @@ namespace LeaSearch.Plugin.Calculator
 
         }
 
-        public PluginCalledArg PluginCallActive(QueryParam queryParam)
+        public override PluginCalledArg PluginCallActive(QueryParam queryParam)
         {
             return new PluginCalledArg()
             {
@@ -63,7 +62,7 @@ namespace LeaSearch.Plugin.Calculator
         }
 
 
-        public QueryListResult Query(QueryParam queryParam)
+        public override QueryListResult Query(QueryParam queryParam)
         {
             var expression = new Expression(queryParam.Keyword);
 
@@ -95,12 +94,9 @@ namespace LeaSearch.Plugin.Calculator
             };
         }
 
-        public QueryDetailResult QueryDetail(ResultItem currentItem)
-        {
-            throw new System.NotImplementedException();
-        }
 
-        public HelpInfo GetHelpInfo(QueryParam queryParam)
+
+        public override HelpInfo GetHelpInfo(QueryParam queryParam)
         {
             return new HelpInfo()
             {

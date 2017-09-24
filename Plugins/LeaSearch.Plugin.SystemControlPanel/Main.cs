@@ -10,21 +10,16 @@ using LeaSearch.Plugin.Query;
 
 namespace LeaSearch.Plugin.SystemControlPanel
 {
-    public class Main : IPlugin
+    public class Main : Plugin
     {
-
-        private SharedContext _sharedContext;
-        private PluginMetaData _pluginMetaData;
         private List<ControlPanelItem> controlPanelItems = new List<ControlPanelItem>();
         private string iconFolder;
         private string fileType;
 
 
-
-        public void InitPlugin(SharedContext sharedContext, PluginMetaData pluginMetaData)
+        public override void InitPlugin(SharedContext sharedContext, PluginMetaData pluginMetaData)
         {
-            _sharedContext = sharedContext;
-            _pluginMetaData = pluginMetaData;
+            base.InitPlugin(sharedContext, pluginMetaData);
 
             controlPanelItems = ControlPanelList.Create(48);
             iconFolder = Path.Combine(pluginMetaData.PluginRootPath, @"Images\ControlPanelIcons\");
@@ -45,17 +40,8 @@ namespace LeaSearch.Plugin.SystemControlPanel
             }
         }
 
-        public bool SuitableForSuggectionQuery(QueryParam queryParam)
-        {
-            return false;
-        }
 
-        public PluginCalledArg PluginCallActive(QueryParam queryParam)
-        {
-            return null;
-        }
-
-        public QueryListResult Query(QueryParam queryParam)
+        public override QueryListResult Query(QueryParam queryParam)
         {
             var res = new QueryListResult();
 
@@ -75,8 +61,8 @@ namespace LeaSearch.Plugin.SystemControlPanel
                         }
                         catch (Exception)
                         {
-                                //Silently Fail for now.. todo
-                            }
+                            //Silently Fail for now.. todo
+                        }
                         return new StateAfterCommandInvoke() { ShowProgram = false };
                     }
                 };
@@ -91,14 +77,5 @@ namespace LeaSearch.Plugin.SystemControlPanel
         }
 
 
-        public QueryDetailResult QueryDetail(ResultItem currentItem)
-        {
-            return null;
-        }
-
-        public HelpInfo GetHelpInfo(QueryParam queryParam)
-        {
-            return null;
-        }
     }
 }

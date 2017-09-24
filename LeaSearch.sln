@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlToXamlConverter", "libs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeaSearch.Plugin.SystemControlPanel", "Plugins\LeaSearch.Plugin.SystemControlPanel\LeaSearch.Plugin.SystemControlPanel.csproj", "{42B4E729-A82E-4CB4-AA7E-C155BEA8879F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeaSearch.SearchEngine", "LeaSearch.SearchEngine\LeaSearch.SearchEngine.csproj", "{C3753A15-983D-4936-88D9-47D03BF820DD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,10 @@ Global
 		{42B4E729-A82E-4CB4-AA7E-C155BEA8879F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42B4E729-A82E-4CB4-AA7E-C155BEA8879F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42B4E729-A82E-4CB4-AA7E-C155BEA8879F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3753A15-983D-4936-88D9-47D03BF820DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3753A15-983D-4936-88D9-47D03BF820DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3753A15-983D-4936-88D9-47D03BF820DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3753A15-983D-4936-88D9-47D03BF820DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

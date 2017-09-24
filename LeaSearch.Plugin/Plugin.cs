@@ -2,8 +2,13 @@
 
 namespace LeaSearch.Plugin
 {
-    public interface IPlugin
+    public abstract class Plugin : IPlugin
     {
+        protected SharedContext _sharedContext;
+        protected PluginMetaData _pluginMetaData;
+
+
+
         /// <summary>
         /// let plugin that may get the share info from main program
         /// for example : i18n、 message 、UI etc.
@@ -13,8 +18,11 @@ namespace LeaSearch.Plugin
         /// </summary>
         /// <param name="sharedContext">全局唯一的上下文</param>
         /// <param name="pluginMetaData">初始化后本插件的信息</param>
-        void InitPlugin(SharedContext sharedContext, PluginMetaData pluginMetaData);
-
+        public virtual void InitPlugin(SharedContext sharedContext, PluginMetaData pluginMetaData)
+        {
+            _sharedContext = sharedContext;
+            _pluginMetaData = pluginMetaData;
+        }
 
 
         /// <summary>
@@ -26,8 +34,10 @@ namespace LeaSearch.Plugin
         /// </summary>
         /// <param name="queryParam"></param>
         /// <returns></returns>
-        bool SuitableForSuggectionQuery(QueryParam queryParam);
-
+        public virtual bool SuitableForSuggectionQuery(QueryParam queryParam)
+        {
+            return false;
+        }
 
         ///  <summary>
         ///  this method will call when in "direct call plugin mode",
@@ -40,8 +50,10 @@ namespace LeaSearch.Plugin
         ///  </summary>
         /// <param name="queryParam"></param>
         /// <returns></returns>
-        PluginCalledArg PluginCallActive(QueryParam queryParam);
-
+        public virtual PluginCalledArg PluginCallActive(QueryParam queryParam)
+        {
+            return null;
+        }
 
         /// <summary>
         /// query result for list 
@@ -52,8 +64,10 @@ namespace LeaSearch.Plugin
         /// </summary>
         /// <param name="queryParam"></param>
         /// <returns></returns>
-        QueryListResult Query(QueryParam queryParam);
-
+        public virtual QueryListResult Query(QueryParam queryParam)
+        {
+            return null;
+        }
 
         /// <summary>
         /// query a detail info when input space in select item
@@ -61,15 +75,20 @@ namespace LeaSearch.Plugin
         /// </summary>
         /// <param name="currentItem">需要预览的节点，可以用里面的 queryparam 属性获取之前的查询讯息</param>
         /// <returns></returns>
-        QueryDetailResult QueryDetail(ResultItem currentItem);
-
+        public virtual QueryDetailResult QueryDetail(ResultItem currentItem)
+        {
+            return null;
+        }
 
 
         /// <summary>
         /// 发起帮助请求信息时激活
         /// </summary>
         /// <returns></returns>
-        HelpInfo GetHelpInfo(QueryParam queryParam);
+        public virtual HelpInfo GetHelpInfo(QueryParam queryParam)
+        {
+            return null;
+        }
 
     }
 }

@@ -5,7 +5,7 @@ using LeaSearch.Plugin.Query;
 
 namespace LeaSearch.Plugin.OpenUrl
 {
-    public class Main : IPlugin
+    public class Main : Plugin
     {
         //based on https://gist.github.com/dperini/729294
         private const string urlPattern = "^" +
@@ -42,19 +42,13 @@ namespace LeaSearch.Plugin.OpenUrl
             "$";
         private readonly Regex _reg = new Regex(urlPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private SharedContext _sharedContext;
 
-        public void InitPlugin(SharedContext sharedContext,PluginMetaData pluginMetaData)
-        {
-            _sharedContext = sharedContext;
-        }
-
-        public bool SuitableForSuggectionQuery(QueryParam queryParam)
+        public override bool SuitableForSuggectionQuery(QueryParam queryParam)
         {
             return IsUrl(queryParam.Keyword);
         }
 
-        public PluginCalledArg PluginCallActive(QueryParam queryParam)
+        public override PluginCalledArg PluginCallActive(QueryParam queryParam)
         {
             return new PluginCalledArg()
             {
@@ -62,7 +56,7 @@ namespace LeaSearch.Plugin.OpenUrl
             };
         }
 
-        public QueryListResult Query(QueryParam queryParam)
+        public override QueryListResult Query(QueryParam queryParam)
         {
             var res = new QueryListResult();
             var keyword = queryParam.Keyword;
@@ -83,7 +77,7 @@ namespace LeaSearch.Plugin.OpenUrl
                             Process.Start(keyword);
                             return new StateAfterCommandInvoke();
                         }
-                        catch (Exception )
+                        catch (Exception)
                         {
                             x.SharedMethod.ShowMessageWithTranslation("leasearch_plugin_openurl_canot_open_url", keyword);
                             return new StateAfterCommandInvoke();
@@ -93,17 +87,6 @@ namespace LeaSearch.Plugin.OpenUrl
             );
             return res;
         }
-
-        public QueryDetailResult QueryDetail(ResultItem currentItem)
-        {
-            throw new NotImplementedException();
-        }
-
-        public HelpInfo GetHelpInfo(QueryParam queryParam)
-        {
-            throw new NotImplementedException();
-        }
-
 
         public bool IsUrl(string raw)
         {

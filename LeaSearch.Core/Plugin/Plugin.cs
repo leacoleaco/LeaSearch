@@ -14,10 +14,10 @@ namespace LeaSearch.Core.Plugin
     /// <summary>
     /// this is the all things for a plugin
     /// </summary>
-    public class Plugin : PluginBase
+    public class Plugin : PluginBaseInfo
     {
 
-        public Plugin(PluginBase pluginBase, IPlugin pluginInstance, string pluginId) : base(pluginBase.PluginRootPath, pluginBase.PluginMetadata, pluginBase.PluginSettings)
+        public Plugin(PluginBaseInfo pluginBaseInfo, LeaSearch.Plugin.Plugin pluginInstance, string pluginId) : base(pluginBaseInfo.PluginRootPath, pluginBaseInfo.PluginMetadata, pluginBaseInfo.PluginSettings)
         {
             this.PluginInstance = pluginInstance;
             this.PluginId = pluginId;
@@ -26,7 +26,7 @@ namespace LeaSearch.Core.Plugin
         /// <summary>
         /// plugin 's instance
         /// </summary>
-        public IPlugin PluginInstance { get; }
+        public LeaSearch.Plugin.Plugin PluginInstance { get; }
 
         public String PluginId { get; }
 
@@ -56,10 +56,10 @@ namespace LeaSearch.Core.Plugin
         Suggection, PluginCall
     }
 
-    public class PluginBase
+    public class PluginBaseInfo
     {
 
-        public PluginBase(string pluginRootPath, PluginMetadata pluginMetadata, PluginSettings pluginSettings)
+        public PluginBaseInfo(string pluginRootPath, PluginMetadata pluginMetadata, PluginSettings pluginSettings)
         {
             PluginRootPath = pluginRootPath;
             PluginMetadata = pluginMetadata;

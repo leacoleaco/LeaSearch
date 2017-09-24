@@ -7,14 +7,13 @@ using LeaSearch.Plugin.Query;
 
 namespace LeaSearch.Plugin.HelloWorld
 {
-    public class Main : IPlugin
+    public class Main : Plugin
     {
-        private SharedContext _sharedContext;
         private FlowDocument _HelpDocument;
 
-        public void InitPlugin(SharedContext sharedContext, PluginMetaData pluginMetaData)
+        public override void InitPlugin(SharedContext sharedContext, PluginMetaData pluginMetaData)
         {
-            _sharedContext = sharedContext;
+            base.InitPlugin(sharedContext, pluginMetaData);
 
 
             //读取 dll 内文件，可以吧文件设置为 “嵌入的资源”，然后通过以下代码方式读取
@@ -23,7 +22,7 @@ namespace LeaSearch.Plugin.HelloWorld
             if (helpInfoStream != null) _HelpDocument = XamlReader.Load(helpInfoStream) as FlowDocument;
         }
 
-        public bool SuitableForSuggectionQuery(QueryParam queryParam)
+        public override bool SuitableForSuggectionQuery(QueryParam queryParam)
         {
             var queryParamPrefixKeyword = queryParam.PrefixKeyword.ToLower();
             if (queryParamPrefixKeyword == "lea" || queryParamPrefixKeyword == "leasearch")
@@ -33,7 +32,7 @@ namespace LeaSearch.Plugin.HelloWorld
             return false;
         }
 
-        public PluginCalledArg PluginCallActive(QueryParam queryParam)
+        public override PluginCalledArg PluginCallActive(QueryParam queryParam)
         {
             return new PluginCalledArg()
             {
@@ -44,7 +43,7 @@ namespace LeaSearch.Plugin.HelloWorld
             };
         }
 
-        public QueryListResult Query(QueryParam queryParam)
+        public override QueryListResult Query(QueryParam queryParam)
         {
             var result = new QueryListResult()
             {
@@ -102,7 +101,7 @@ namespace LeaSearch.Plugin.HelloWorld
             return result;
         }
 
-        public QueryDetailResult QueryDetail(ResultItem currentItem)
+        public override QueryDetailResult QueryDetail(ResultItem currentItem)
         {
             //模拟查询详情的耗时情况
             Thread.Sleep(3000);
@@ -110,9 +109,6 @@ namespace LeaSearch.Plugin.HelloWorld
             return new QueryDetailResult() { MoreInfo = new TextInfo() { Text = $"this is a test info when preview {currentItem.Title}" } };
         }
 
-        public HelpInfo GetHelpInfo(QueryParam queryParam)
-        {
-            throw new System.NotImplementedException();
-        }
+
     }
 }

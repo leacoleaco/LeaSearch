@@ -49,9 +49,11 @@
     <Compile Include="DetailInfos\SimpleHtmlInfo.cs" />
     <Compile Include="DetailInfos\FlowDocumentInfo.cs" />
     <Compile Include="HelpInfo.cs" />
+    <Compile Include="IPlugin.cs" />
+    <Compile Include="Query\DataItem.cs" />
     <Compile Include="Query\QueryMode.cs" />
     <Compile Include="Query\StateAfterCommandInvoke.cs" />
-    <Compile Include="IPlugin.cs" />
+    <Compile Include="Plugin.cs" />
     <Compile Include="Query\PluginCalledArg.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\QueryDetailResult.cs" />
@@ -71,5 +73,6 @@
       <Name>LeaSearch.Infrastructure</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
