@@ -170,16 +170,14 @@ namespace LeaSearch.Core.Plugin
         {
             try
             {
-
-
                 plugin.PluginInstance?.InitPlugin(this._sharedContext, pluginApi);
                 return plugin;
             }
             catch (Exception e)
             {
-                Logger.Error($"plugin <{plugin}> call init method throw error: {e.Message}");
+                Logger.Exception($"plugin <{plugin.PluginId}> call InitPlugin method throw error: {e.Message}",e);
 #if DEBUG
-                MessageBox.Show($"plugin <{plugin}> call init method throw error: {e.Message}");
+                MessageBox.Show($"plugin <{plugin.PluginId}> call InitPlugin method throw error: {e.Message}");
 #endif
 
                 return null;

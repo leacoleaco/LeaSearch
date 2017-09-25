@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Media;
 
 namespace LeaSearch.Plugin
 {
@@ -29,9 +30,14 @@ namespace LeaSearch.Plugin
         public string SubTitle { get; set; }
 
         /// <summary>
-        /// 列表图标的路径
+        /// 列表图标的路径,系统会异步加载图标
         /// </summary>
         public string IconPath { get; set; }
+
+        /// <summary>
+        /// 列表图标 
+        /// </summary>
+        public byte[] IconBytes { get; set; }
 
         /// <summary>
         /// 附加信息，可以用于预览中获取等
@@ -48,5 +54,7 @@ namespace LeaSearch.Plugin
         /// 权重
         /// </summary>
         public int Score { get; set; }
+
+
     }
 }

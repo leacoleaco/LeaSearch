@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Windows;
 using LeaSearch.Core.I18N;
 using LeaSearch.Core.Notice;
@@ -69,6 +72,22 @@ namespace LeaSearch.Core.Plugin
         public T DeserializeFromJson<T>(string json)
         {
             return JsonConvert.DeserializeObject<T>(json);
+        }
+
+        public byte[] BitmapToBytes(Bitmap bitmap, ImageFormat imageFormat = null)
+        {
+            if (imageFormat == null)
+            {
+                imageFormat = ImageFormat.Jpeg;
+            }
+            using (MemoryStream stream = new MemoryStream())
+            {
+                bitmap.Save(stream, imageFormat);
+                byte[] data = new byte[stream.Length];
+                stream.Seek(0, SeekOrigin.Begin);
+                stream.Read(data, 0, Convert.ToInt32(stream.Length));
+                return data;
+            }
         }
     }
 }

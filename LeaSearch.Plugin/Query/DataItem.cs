@@ -13,6 +13,8 @@
 
         public string IconPath { get; set; }
 
+        public byte[] IconBytes { get; set; }
+
         public string Body { get; set; }
     }
 }

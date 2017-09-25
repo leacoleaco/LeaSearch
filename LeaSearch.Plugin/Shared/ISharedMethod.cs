@@ -1,4 +1,7 @@
-﻿namespace LeaSearch.Plugin
+﻿using System.Drawing;
+using System.Drawing.Imaging;
+
+namespace LeaSearch.Plugin
 {
     public interface ISharedMethod
     {
@@ -66,6 +69,12 @@
         /// <returns></returns>
         T DeserializeFromJson<T>(string json);
 
-
+        /// <summary>
+        /// bit map 转 byte数组
+        /// </summary>
+        /// <param name="bitmap">需要转换的bitmap</param>
+        /// <param name="imageFormat">按照该格式转换</param>
+        /// <returns></returns>
+        byte[] BitmapToBytes(Bitmap bitmap, ImageFormat imageFormat = null);
     }
 }

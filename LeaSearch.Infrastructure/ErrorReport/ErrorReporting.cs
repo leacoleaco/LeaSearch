@@ -17,7 +17,7 @@ namespace LeaSearch.Infrastructure.ErrorReport
 
             MessageBox.Show("程序遇到一些问题而崩溃。\r\n原因：" + e.Message);
 
-            Application.Current.Shutdown();
+            Application.Current?.Shutdown();
         }
 
 

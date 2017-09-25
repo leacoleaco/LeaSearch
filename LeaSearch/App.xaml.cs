@@ -82,7 +82,7 @@ namespace LeaSearch
         /// <param name="e"></param>
         protected override void OnStartup(StartupEventArgs e)
         {
-            Logger.Info("App.OnStartup-----------------------------");
+            //Logger.Info("App.OnStartup-----------------------------");
 
             DispatcherHelper.Initialize();
 
@@ -91,8 +91,8 @@ namespace LeaSearch
             RegisterDispatcherUnhandledException();
 
             //read settings form file
-            LeaSearchJsonStorage<Settings> _storage = new LeaSearchJsonStorage<Settings>();
-            var settings = _storage.Load();
+            LeaSearchJsonStorage<Settings> storage = new LeaSearchJsonStorage<Settings>();
+            var settings = storage.Load();
 
             //init notify bar icon
             InitializeNotifyIcon();

@@ -71,14 +71,14 @@ namespace LeaSearch.Core.QueryEngine
         /// 模糊查询配置
         /// </summary>
         private readonly List<FuzzyStringComparisonOptions> _options = new List<FuzzyStringComparisonOptions>()
-            {
-                FuzzyStringComparisonOptions.UseJaccardDistance,
-                FuzzyStringComparisonOptions.UseNormalizedLevenshteinDistance,
-                FuzzyStringComparisonOptions.UseJaccardDistance,
-                FuzzyStringComparisonOptions.UseOverlapCoefficient,
-                FuzzyStringComparisonOptions.UseLongestCommonSubsequence,
-                FuzzyStringComparisonOptions.CaseSensitive,
-            };
+        {
+            FuzzyStringComparisonOptions.UseJaccardDistance,
+            FuzzyStringComparisonOptions.UseNormalizedLevenshteinDistance,
+            FuzzyStringComparisonOptions.UseJaccardDistance,
+            FuzzyStringComparisonOptions.UseOverlapCoefficient,
+            FuzzyStringComparisonOptions.UseLongestCommonSubsequence,
+            FuzzyStringComparisonOptions.CaseSensitive,
+        };
 
 
         public QueryEngine(PluginManager pluginManager, LeaSearchCommandManager commandManager)
@@ -200,8 +200,18 @@ namespace LeaSearch.Core.QueryEngine
                     return p.PluginId == currentItem.PluginId;
                 });
 
-                var queryDetailResult = plugin?.PluginInstance.QueryDetail(currentItem);
-                OnGetDetailResult(queryDetailResult);
+                try
+                {
+                    var queryDetailResult = plugin?.PluginInstance.QueryDetail(currentItem);
+                    OnGetDetailResult(queryDetailResult);
+                }
+                catch (Exception e)
+                {
+                    Logger.Exception($"plugin <{plugin.PluginId}> call QueryDetail method throw error: {e.Message}", e);
+#if DEBUG
+                    MessageBox.Show($"plugin <{plugin.PluginId}> call QueryDetail method throw error: {e.Message}");
+#endif 
+                }
 
             }, _updateSource.Token);
         }
@@ -292,9 +302,9 @@ namespace LeaSearch.Core.QueryEngine
                 }
                 catch (Exception e)
                 {
-                    Logger.Exception($"plugin <{queryPlugin}> call PluginCallActive error: {e.Message}", e);
+                    Logger.Exception($"plugin <{queryPlugin.PluginId}> call PluginCallActive  method throw error: {e.Message}", e);
 #if DEBUG
-                    MessageBox.Show($"plugin <{queryPlugin}> call PluginCallActive error: {e.Message}");
+                    MessageBox.Show($"plugin <{queryPlugin.PluginId}> call PluginCallActive method throw error: {e.Message}");
 #endif
                     OnQueryError();
                 }
@@ -334,18 +344,13 @@ namespace LeaSearch.Core.QueryEngine
                 }
                 catch (Exception e)
                 {
-                    Logger.Exception($"plugin <{queryPlugin}> call query error: {e.Message}", e);
+                    Logger.Exception($"plugin <{queryPlugin.PluginId}> call Query method throw error: {e.Message}", e);
 #if DEBUG
-                    MessageBox.Show($"plugin <{queryPlugin}> call query error: {e.Message}");
+                    MessageBox.Show($"plugin <{queryPlugin.PluginId}> call Query method throw error: {e.Message}");
 #endif
                     OnGetResult(null);
                     OnQueryError();
                 }
-
-
-
-
-
 
             }
         }
@@ -388,9 +393,9 @@ namespace LeaSearch.Core.QueryEngine
             }
             catch (Exception e)
             {
-                Logger.Exception($"plugin <{queryPlugin}> call query error: {e.Message}", e);
+                Logger.Exception($"plugin <{queryPlugin.PluginId}> call Query method throw error: {e.Message}", e);
 #if DEBUG
-                MessageBox.Show($"plugin <{queryPlugin}> call query error: {e.Message}");
+                MessageBox.Show($"plugin <{queryPlugin.PluginId}> call Query method throw error: {e.Message}");
 #endif
                 OnGetResult(null);
                 OnQueryError();
@@ -453,11 +458,10 @@ namespace LeaSearch.Core.QueryEngine
                     }
                     catch (Exception e)
                     {
-                        Logger.Exception($"plugin <{plugin}>  call SuitableForThisQuery method error: {e.Message}", e);
+                        Logger.Exception($"plugin <{plugin.PluginId}> call SuitableForThisQuery method throw error: {e.Message}", e);
 #if DEBUG
-                        MessageBox.Show($"plugin  <{plugin}> call SuitableForThisQuery method error: {e.Message}");
+                        MessageBox.Show($"plugin <{plugin.PluginId}> call SuitableForThisQuery method throw error: {e.Message}");
 #endif
-
                         OnQueryError();
                     }
                 }

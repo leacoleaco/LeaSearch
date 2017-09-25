@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Windows.Media.Imaging;
 using LeaSearch.Plugin.Query;
 
 namespace LeaSearch.Plugin.SystemControlPanel
@@ -17,29 +18,30 @@ namespace LeaSearch.Plugin.SystemControlPanel
             //return;
 
             var controlPanelItems = ControlPanelList.Create(48);
-            var iconFolder = Path.Combine(pluginApi.PluginRootPath, @"Images\ControlPanelIcons\");
-            var fileType = ".bmp";
+            //var iconFolder = Path.Combine(pluginApi.PluginRootPath, @"Images\ControlPanelIcons\");
+            //var fileType = ".bmp";
 
-            if (!Directory.Exists(iconFolder))
-            {
-                Directory.CreateDirectory(iconFolder);
-            }
+            //if (!Directory.Exists(iconFolder))
+            //{
+            //    Directory.CreateDirectory(iconFolder);
+            //}
 
             PluginApi.RemoveIndex();
 
             var dataItems = new List<DataItem>();
             foreach (ControlPanelItem item in controlPanelItems)
             {
-                if (!File.Exists(iconFolder + item.GUID + fileType))
-                {
-                    item.Icon?.ToBitmap().Save(iconFolder + item.GUID + fileType);
-                }
+                //if (!File.Exists(iconFolder + item.GUID + fileType))
+                //{
+                //    item.Icon?.ToBitmap().Save(iconFolder + item.GUID + fileType);
+                //}
                 dataItems.Add(
                     new DataItem()
                     {
                         Name = item.LocalizedString,
-                        IconPath = Path.Combine(PluginApi.PluginRootPath,
-                            @"Images\\ControlPanelIcons\\" + item.GUID + fileType),
+                        //IconPath = Path.Combine(PluginApi.PluginRootPath,
+                        //    @"Images\\ControlPanelIcons\\" + item.GUID + fileType),
+                        IconBytes =SharedContext.SharedMethod.BitmapToBytes(item.Icon?.ToBitmap()),
                         Tip = item.InfoTip,
                         Body = SharedContext.SharedMethod.SerializeToJson(item.ExcutableInfo),
                     });
@@ -62,7 +64,8 @@ namespace LeaSearch.Plugin.SystemControlPanel
                 {
                     Title = item.Name,
                     SubTitle = item.Tip,
-                    IconPath = item.IconPath,
+                    //IconPath = item.IconPath,
+                    IconBytes = item.IconBytes,
                     SelectedAction = e =>
                     {
                         try
