@@ -9,7 +9,7 @@ using Microsoft.Win32;
 namespace LeaSearch.Plugin.SystemControlPanel
 {
     //from:https://raw.githubusercontent.com/CoenraadS/Windows-Control-Panel-Items
-    public static class ControlPanelList
+    internal static class ControlPanelList
     {
         private const uint GROUP_ICON = 14;
         private const uint LOAD_LIBRARY_AS_DATAFILE = 0x00000002;
@@ -49,11 +49,11 @@ namespace LeaSearch.Plugin.SystemControlPanel
         static RegistryKey nameSpace = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\ControlPanel\\NameSpace");
         static RegistryKey clsid = Registry.ClassesRoot.OpenSubKey("CLSID");
 
-        public static List<ControlPanelItem> Create(uint iconSize)
+        internal static List<ControlPanelItem> Create(uint iconSize)
         {
             int size = (int)iconSize;
             RegistryKey currentKey;
-            ProcessStartInfo executablePath;
+            ExcutableInfo executablePath;
             List<ControlPanelItem> controlPanelItems = new List<ControlPanelItem>();
             string localizedString;
             string infoTip;
@@ -85,9 +85,9 @@ namespace LeaSearch.Plugin.SystemControlPanel
             return controlPanelItems;
         }
 
-        private static ProcessStartInfo getExecutablePath(RegistryKey currentKey)
+        private static ExcutableInfo getExecutablePath(RegistryKey currentKey)
         {
-            ProcessStartInfo executablePath = new ProcessStartInfo();
+            ExcutableInfo executablePath = new ExcutableInfo();
             string applicationName;
 
             if (currentKey.GetValue("System.ApplicationName") != null)
@@ -103,7 +103,7 @@ namespace LeaSearch.Plugin.SystemControlPanel
                 string input = "\"" + Environment.ExpandEnvironmentVariables(currentKey.OpenSubKey("Shell\\Open\\Command").GetValue(null).ToString()) + "\"";
                 executablePath.FileName = "cmd.exe";
                 executablePath.Arguments = "/C " + input;
-                executablePath.WindowStyle = ProcessWindowStyle.Hidden;   
+                executablePath.HideWindow = true;
             }
             else
             {

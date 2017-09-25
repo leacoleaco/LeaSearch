@@ -1,25 +1,26 @@
-﻿using System.Diagnostics;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace LeaSearch.Plugin.SystemControlPanel
 {
     //from:https://raw.githubusercontent.com/CoenraadS/Windows-Control-Panel-Items
-    public class ControlPanelItem
+    internal class ControlPanelItem
     {
-        public string LocalizedString { get; private set; }
-        public string InfoTip { get; private set; }
-        public string GUID { get; private set; }
-        public ProcessStartInfo ExecutablePath { get; private set; }
-        public Icon Icon { get; private set; }
-        public int Score { get; set; }
 
-        public ControlPanelItem(string newLocalizedString, string newInfoTip, string newGUID, ProcessStartInfo newExecutablePath, Icon newIcon)
+        internal ControlPanelItem(string newLocalizedString, string newInfoTip, string newGUID, ExcutableInfo excutableInfo, Icon newIcon)
         {
             LocalizedString = newLocalizedString;
             InfoTip = newInfoTip;
-            ExecutablePath = newExecutablePath;
+            ExcutableInfo = excutableInfo;
             Icon = newIcon;
             GUID = newGUID;
         }
+
+
+        internal string LocalizedString { get; private set; }
+        internal string InfoTip { get; private set; }
+        internal string GUID { get; private set; }
+        internal ExcutableInfo ExcutableInfo { get; private set; }
+        internal Icon Icon { get; private set; }
+
     }
 }

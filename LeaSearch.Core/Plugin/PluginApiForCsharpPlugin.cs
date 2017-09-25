@@ -28,7 +28,7 @@ namespace LeaSearch.Core.Plugin
             {
                 dataItem.PluginId = _plugin.PluginId;
             }
-            _luceneManager.Add(dataItems);
+            _luceneManager.AddToIndex(dataItems);
         }
 
         public void UpdateDataItemToIndex(DataItem[] dataItems)
@@ -37,7 +37,7 @@ namespace LeaSearch.Core.Plugin
             {
                 dataItem.PluginId = _plugin.PluginId;
             }
-            _luceneManager.Update(dataItems);
+            _luceneManager.UpdateToIndex(dataItems);
         }
 
         public DataItem[] SearchDataItemInIndex(string keyword, int page = 1, int pageSize = 10)

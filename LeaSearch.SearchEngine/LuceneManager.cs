@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using LeaSearch.Plugin.Query;
 using Lucene.Net.Analysis;
@@ -14,10 +15,31 @@ namespace LeaSearch.SearchEngine
 {
     public class LuceneManager
     {
-        private static readonly DirectoryInfo IndexDir = new DirectoryInfo("Data\\Index");
+        private const string IndexDir = "Data\\Index";
+        private readonly DirectoryInfo _indexDir;
         //static Analyzer analyzer = new PanGuAnalyzer(); //MMSegAnalyzer //StandardAnalyzer
-        private static readonly Analyzer Analyzer = new StandardAnalyzer(Version.LUCENE_30);
-        private readonly IndexSearcher _indexSearcher = new IndexSearcher(FSDirectory.Open(IndexDir), true);
+        private readonly Analyzer _analyzer = new StandardAnalyzer(Version.LUCENE_30);
+        private IndexSearcher _indexSearcher;
+
+
+        public LuceneManager()
+        {
+            if (!System.IO.Directory.Exists(IndexDir))
+            {
+                System.IO.Directory.CreateDirectory(IndexDir);
+            }
+            _indexDir = new DirectoryInfo(IndexDir);
+
+        }
+
+        /// <summary>
+        /// 初始化 查询引擎
+        /// </summary>
+        public void InitSearcher()
+        {
+            _indexSearcher = new IndexSearcher(FSDirectory.Open(_indexDir), true);
+        }
+
 
         //~LuceneManager()
         //{
@@ -34,8 +56,11 @@ namespace LeaSearch.SearchEngine
         /// <returns></returns>
         public DataItem[] Search(string keyword, int top)
         {
+
+            if (_indexSearcher == null) throw new Exception("Lucene index is not ready!");
+
             //拼装查询语句
-            var query = new QueryParser(Version.LUCENE_30, "Name", Analyzer).Parse(keyword);
+            var query = new QueryParser(Version.LUCENE_30, "Name", _analyzer).Parse(keyword);
             //new MultiFieldQueryParser(Version.LUCENE_30,new string[] {"PluginId"},Analyzer).Parse()
 
 
@@ -51,6 +76,7 @@ namespace LeaSearch.SearchEngine
                 res.Add(new DataItem()
                 {
                     Name = doc.Get("Name"),
+                    Tip = doc.Get("Tip"),
                     IconPath = doc.Get("IconPath"),
                     PluginId = doc.Get("PluginId"),
                     Body = doc.Get("Body"),
@@ -62,6 +88,9 @@ namespace LeaSearch.SearchEngine
 
         public DataItem[] SearchByPluginId(string pluginId, int top = 100)
         {
+
+            if (_indexSearcher == null) throw new Exception("Lucene index is not ready!");
+
             Term t = new Term("PluginId", pluginId);
             Query query = new TermQuery(t);
 
@@ -77,6 +106,7 @@ namespace LeaSearch.SearchEngine
                 res.Add(new DataItem()
                 {
                     Name = doc.Get("Name"),
+                    Tip = doc.Get("Tip"),
                     IconPath = doc.Get("IconPath"),
                     PluginId = doc.Get("PluginId"),
                     Body = doc.Get("Body"),
@@ -90,7 +120,7 @@ namespace LeaSearch.SearchEngine
 
         public void DeleteAllIndex()
         {
-            IndexWriter _indexWriter = new IndexWriter(FSDirectory.Open(IndexDir), Analyzer, true, IndexWriter.MaxFieldLength.LIMITED);
+            IndexWriter _indexWriter = new IndexWriter(FSDirectory.Open(_indexDir), _analyzer, true, IndexWriter.MaxFieldLength.LIMITED);
             _indexWriter.DeleteAll();//删除所有的索引
             //writer.DeleteDocuments(new Term("key", "val"));//删除该词条
             //                                               //注意 在执行这个删除操作的时候，其实lucene本身并没有将数据从硬盘删除，而是保存到了一个单独的后缀名为.del的文件中。
@@ -99,10 +129,16 @@ namespace LeaSearch.SearchEngine
 
         }
 
-
-        public void Add(DataItem[] items)
+        public void CreateIndex()
         {
-            IndexWriter _indexWriter = new IndexWriter(FSDirectory.Open(IndexDir), Analyzer, true, IndexWriter.MaxFieldLength.LIMITED);
+            IndexWriter _indexWriter = new IndexWriter(FSDirectory.Open(_indexDir), _analyzer, true, IndexWriter.MaxFieldLength.LIMITED);
+            _indexWriter.Commit();
+            _indexWriter.Dispose();
+        }
+
+        public void AddToIndex(DataItem[] items)
+        {
+            IndexWriter _indexWriter = new IndexWriter(FSDirectory.Open(_indexDir), _analyzer, true, IndexWriter.MaxFieldLength.LIMITED);
             foreach (var item in items)
             {
                 //Index         Store	TermVector	            用法
@@ -125,9 +161,9 @@ namespace LeaSearch.SearchEngine
             _indexWriter.Dispose();
         }
 
-        public void Update(DataItem[] items)
+        public void UpdateToIndex(DataItem[] items)
         {
-            IndexWriter _indexWriter = new IndexWriter(FSDirectory.Open(IndexDir), Analyzer, true, IndexWriter.MaxFieldLength.LIMITED);
+            IndexWriter _indexWriter = new IndexWriter(FSDirectory.Open(_indexDir), _analyzer, true, IndexWriter.MaxFieldLength.LIMITED);
             foreach (var item in items)
             {
                 var id = $"{item.PluginId}-{item.Name}";
@@ -149,7 +185,7 @@ namespace LeaSearch.SearchEngine
 
         public void DeleteIndexByPluginId(string pluginId)
         {
-            IndexWriter _indexWriter = new IndexWriter(FSDirectory.Open(IndexDir), Analyzer, true, IndexWriter.MaxFieldLength.LIMITED);
+            IndexWriter _indexWriter = new IndexWriter(FSDirectory.Open(_indexDir), _analyzer, true, IndexWriter.MaxFieldLength.LIMITED);
             Term term = new Term("PluginId", pluginId);
             _indexWriter.DeleteDocuments(term);
             _indexWriter.Commit();

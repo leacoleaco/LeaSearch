@@ -133,6 +133,9 @@ namespace LeaSearch
             //doing things when exit
             RegisterExitEvents();
 
+            var luceneManager = Ioc.Reslove<LuceneManager>();
+            luceneManager.CreateIndex();
+
             //// initalize image manager to start better manage img or cache img
             Ioc.Reslove<ImageManager>().Initialize();
 
@@ -148,6 +151,8 @@ namespace LeaSearch
             //// re-setup the global hotkey
             Ioc.Reslove<HotKeyManager>().RefreshGlobalHotkeyAction();
 
+            //start searcher, the index should created
+            luceneManager.InitSearcher();
 
             Ioc.Reslove<QueryEngine>().Init();
 

@@ -41,7 +41,7 @@ namespace LeaSearch.Plugin.SystemControlPanel
                         IconPath = Path.Combine(PluginApi.PluginRootPath,
                             @"Images\\ControlPanelIcons\\" + item.GUID + fileType),
                         Tip = item.InfoTip,
-                        Body = SharedContext.SharedMethod.SerializeToJson(item),
+                        Body = SharedContext.SharedMethod.SerializeToJson(item.ExcutableInfo),
                     });
             }
             PluginApi.AddDataItemToIndex(dataItems.ToArray());
@@ -57,7 +57,7 @@ namespace LeaSearch.Plugin.SystemControlPanel
 
             foreach (var item in searchRes)
             {
-                ControlPanelItem obj = SharedContext.SharedMethod.DeserializeFromJson<ControlPanelItem>(item.Body);
+                ExcutableInfo excutableInfo = SharedContext.SharedMethod.DeserializeFromJson<ExcutableInfo>(item.Body);
                 var result = new ResultItem
                 {
                     Title = item.Name,
@@ -67,7 +67,7 @@ namespace LeaSearch.Plugin.SystemControlPanel
                     {
                         try
                         {
-                            Process.Start(obj.ExecutablePath);
+                            Process.Start(excutableInfo.GetProcessStartInfo());
                         }
                         catch (Exception)
                         {

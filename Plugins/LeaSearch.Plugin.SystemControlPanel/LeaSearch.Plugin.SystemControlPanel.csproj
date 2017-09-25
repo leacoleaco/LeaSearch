@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="ControlPanelItem.cs" />
     <Compile Include="ControlPanelList.cs" />
+    <Compile Include="ExcutableInfo.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
