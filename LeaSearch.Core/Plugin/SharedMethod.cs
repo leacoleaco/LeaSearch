@@ -78,7 +78,7 @@ namespace LeaSearch.Core.Plugin
         {
             if (imageFormat == null)
             {
-                imageFormat = ImageFormat.Jpeg;
+                imageFormat = ImageFormat.Png;
             }
             using (MemoryStream stream = new MemoryStream())
             {

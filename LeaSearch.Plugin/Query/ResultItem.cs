@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Media;
+using LeaSearch.Plugin.Utils;
 
 namespace LeaSearch.Plugin
 {
@@ -55,6 +56,23 @@ namespace LeaSearch.Plugin
         /// </summary>
         public int Score { get; set; }
 
-
+        /// <summary>
+        /// 图标对象
+        /// </summary>
+        public object Icon
+        {
+            get
+            {
+                if (IconBytes != null)
+                {
+                    return IconBytes;
+                }
+                if (IconPath != null)
+                {
+                    return IconPath;
+                }
+                return null;
+            }
+        }
     }
 }

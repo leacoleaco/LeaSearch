@@ -83,8 +83,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Converts\Bytes2ImageSourceConvert.cs" />
-    <Compile Include="Converts\Path2ImageSourceConvert.cs" />
+    <Compile Include="Converts\ImageSourceConvert.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="TemplateSelector\InfoContentTemplateSelector.cs" />
     <Compile Include="ViewModels\DetailResultViewModel.cs" />

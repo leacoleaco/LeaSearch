@@ -73,14 +73,7 @@ namespace LeaSearch.SearchEngine
                 //Console.WriteLine(sd.Score);
                 Document doc = _indexSearcher.Doc(sd.Doc);
                 //Console.WriteLine(doc.Get("body"));
-                res.Add(new DataItem()
-                {
-                    Name = doc.Get("Name"),
-                    Tip = doc.Get("Tip"),
-                    IconPath = doc.Get("IconPath"),
-                    PluginId = doc.Get("PluginId"),
-                    Body = doc.Get("Body"),
-                });
+                res.Add(Document2DataItem(doc));
 
             }
             return res.ToArray();
@@ -103,14 +96,7 @@ namespace LeaSearch.SearchEngine
                 //Console.WriteLine(sd.Score);
                 Document doc = _indexSearcher.Doc(sd.Doc);
                 //Console.WriteLine(doc.Get("body"));
-                res.Add(new DataItem()
-                {
-                    Name = doc.Get("Name"),
-                    Tip = doc.Get("Tip"),
-                    IconPath = doc.Get("IconPath"),
-                    PluginId = doc.Get("PluginId"),
-                    Body = doc.Get("Body"),
-                });
+                res.Add(Document2DataItem(doc));
 
             }
             return res.ToArray();
@@ -141,20 +127,7 @@ namespace LeaSearch.SearchEngine
             IndexWriter _indexWriter = new IndexWriter(FSDirectory.Open(_indexDir), _analyzer, true, IndexWriter.MaxFieldLength.LIMITED);
             foreach (var item in items)
             {
-                //Index         Store	TermVector	            用法
-                //NOT_ANSLYZED	YES	    NO	                    文件名、主键
-                //ANSLYZED	    YES	    WITH_POSITUION_OFFSETS	标题、摘要
-                //ANSLYZED	    NO	    WITH_POSITUION_OFFSETS	很长的全文
-                //NO	        YES	    NO	                    文档类型
-                //NOT_ANSLYZED	NO	    NO	                    隐藏的关键词
-                Document doc = new Document();
-                doc.Add(new Field("Id", $"{item.PluginId}-{item.Name}", Field.Store.YES, Field.Index.NOT_ANALYZED, Field.TermVector.NO));
-                doc.Add(new Field("PluginId", item.PluginId, Field.Store.YES, Field.Index.NOT_ANALYZED, Field.TermVector.NO));
-                doc.Add(new Field("Name", item.Name, Field.Store.YES, Field.Index.ANALYZED));
-                doc.Add(new Field("Tip", item.Tip, Field.Store.YES, Field.Index.ANALYZED));
-                doc.Add(new Field("IconPath", item.IconPath, Field.Store.YES, Field.Index.NOT_ANALYZED));
-                doc.Add(new Field("Body", item.Body, Field.Store.YES, Field.Index.ANALYZED));
-                _indexWriter.AddDocument(doc);
+                _indexWriter.AddDocument(DataItem2Document(item));
             }
             _indexWriter.Commit();
             _indexWriter.Optimize();
@@ -168,14 +141,7 @@ namespace LeaSearch.SearchEngine
             {
                 var id = $"{item.PluginId}-{item.Name}";
                 Term term = new Term("Id", id);
-                Document doc = new Document();
-                doc.Add(new Field("Id", id, Field.Store.YES, Field.Index.NO));
-                doc.Add(new Field("PluginId", item.PluginId, Field.Store.YES, Field.Index.NOT_ANALYZED));
-                doc.Add(new Field("Name", item.Name, Field.Store.YES, Field.Index.ANALYZED));
-                doc.Add(new Field("Tip", item.Tip, Field.Store.YES, Field.Index.ANALYZED));
-                doc.Add(new Field("IconPath", item.IconPath, Field.Store.YES, Field.Index.NOT_ANALYZED));
-                doc.Add(new Field("Body", item.Body, Field.Store.YES, Field.Index.ANALYZED));
-                _indexWriter.UpdateDocument(term, doc);
+                _indexWriter.UpdateDocument(term, DataItem2Document(item));
 
             }
             _indexWriter.Commit();
@@ -193,6 +159,77 @@ namespace LeaSearch.SearchEngine
             _indexWriter.Dispose();
         }
 
+        private Document DataItem2Document(DataItem item)
+        {
+            //Field.Store.YES:存储字段值（未分词前的字段值） 
+            //Field.Store.NO:不存储,存储与索引没有关系
+            //Field.Store.COMPRESS:压缩存储,用于长文本或二进制，但性能受损
 
+            //Field.Index.ANALYZED:分词建索引
+            //Field.Index.ANALYZED_NO_NORMS:分词建索引，但是Field的值不像通常那样被保存，而是只取一个byte，这样节约存储空间
+            //Field.Index.NOT_ANALYZED:不分词且索引
+            //Field.Index.NOT_ANALYZED_NO_NORMS:不分词建索引，Field的值去一个byte保存
+
+            //TermVector表示文档的条目（由一个Document和Field定位）和它们在当前文档中所出现的次数
+            //Field.TermVector.YES:为每个文档（Document）存储该字段的TermVector
+            //Field.TermVector.NO:不存储TermVector
+            //Field.TermVector.WITH_POSITIONS:存储位置
+            //Field.TermVector.WITH_OFFSETS:存储偏移量
+            //Field.TermVector.WITH_POSITIONS_OFFSETS:存储位置和偏移量
+
+            //Index         Store	TermVector	            用法
+            //NOT_ANSLYZED	YES	    NO	                    文件名、主键
+            //ANSLYZED	    YES	    WITH_POSITUION_OFFSETS	标题、摘要
+            //ANSLYZED	    NO	    WITH_POSITUION_OFFSETS	很长的全文
+            //NO	        YES	    NO	                    文档类型
+            //NOT_ANSLYZED	NO	    NO	                    隐藏的关键词
+            Document doc = new Document();
+            doc.Add(new Field("Id", $"{item.PluginId}-{item.Name}", Field.Store.YES, Field.Index.NOT_ANALYZED, Field.TermVector.NO));
+            doc.Add(new Field("PluginId", item.PluginId, Field.Store.YES, Field.Index.NOT_ANALYZED, Field.TermVector.NO));
+            doc.Add(new Field("Name", item.Name, Field.Store.YES, Field.Index.ANALYZED));
+            if (item.Tip != null)
+            {
+                doc.Add(new Field("Tip", item.Tip, Field.Store.YES, Field.Index.ANALYZED));
+            }
+
+            if (item.IconPath != null)
+            {
+                doc.Add(new Field("IconPath", item.IconPath, Field.Store.YES, Field.Index.NO));
+            }
+
+            if (item.IconBytes != null)
+            {
+                doc.Add(new Field("IconBytes", item.IconBytes, Field.Store.YES));
+            }
+
+            if (item.Body != null)
+            {
+                doc.Add(new Field("Body", item.Body, Field.Store.YES, Field.Index.ANALYZED));
+            }
+
+            if (item.Extra != null)
+            {
+                doc.Add(new Field("Extra", item.Extra, Field.Store.YES, Field.Index.NO));
+            }
+
+            return doc;
+        }
+
+        private DataItem Document2DataItem(Document doc)
+        {
+            var ret = new DataItem()
+            {
+                Name = doc.Get("Name"),
+                Tip = doc.Get("Tip"),
+                IconPath = doc.Get("IconPath"),
+                IconBytes = doc.GetBinaryValue("IconBytes"),
+                PluginId = doc.Get("PluginId"),
+                Body = doc.Get("Body"),
+                Extra = doc.Get("Extra"),
+            };
+
+
+            return ret;
+        }
     }
 }
