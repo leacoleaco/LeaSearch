@@ -18,7 +18,8 @@ namespace LeaSearch.SearchEngine
         private const string IndexDir = "Data\\Index";
         private readonly DirectoryInfo _indexDir;
         //static Analyzer analyzer = new PanGuAnalyzer(); //MMSegAnalyzer //StandardAnalyzer
-        private readonly Analyzer _analyzer = new StandardAnalyzer(Version.LUCENE_30);
+        //private readonly Analyzer _analyzer = new StandardAnalyzer(Version.LUCENE_30);
+        private readonly Analyzer _analyzer = new LeaSearchAnalyzer(Version.LUCENE_30);
         private IndexSearcher _indexSearcher;
 
 

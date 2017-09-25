@@ -4,9 +4,9 @@ namespace LeaSearch.Plugin.SystemControlPanel
 {
     public class ExcutableInfo
     {
-        public string FileName { get; internal set; }
-        public string Arguments { get; internal set; }
-        public bool HideWindow { get; internal set; }
+        public string FileName { get; set; }
+        public string Arguments { get; set; }
+        public bool HideWindow { get; set; }
 
 
         public ProcessStartInfo GetProcessStartInfo()

@@ -41,9 +41,9 @@ namespace LeaSearch.Plugin.SystemControlPanel
                         Name = item.LocalizedString,
                         //IconPath = Path.Combine(PluginApi.PluginRootPath,
                         //    @"Images\\ControlPanelIcons\\" + item.GUID + fileType),
-                        IconBytes =SharedContext.SharedMethod.BitmapToBytes(item.Icon?.ToBitmap()),
+                        IconBytes = SharedContext.SharedMethod.BitmapToBytes(item.Icon?.ToBitmap()),
                         Tip = item.InfoTip,
-                        Body = SharedContext.SharedMethod.SerializeToJson(item.ExcutableInfo),
+                        Extra = SharedContext.SharedMethod.SerializeToJson(item.ExcutableInfo),
                     });
             }
             PluginApi.AddDataItemToIndex(dataItems.ToArray());
@@ -54,12 +54,12 @@ namespace LeaSearch.Plugin.SystemControlPanel
         {
             var res = new QueryListResult();
 
-            //var searchRes = PluginApi.SearchDataItems(queryParam.Keyword);
-            var searchRes = PluginApi.GetAllDataItems();
+            var searchRes = PluginApi.SearchDataItems(queryParam.Keyword);
+            //var searchRes = PluginApi.GetAllDataItems();
 
             foreach (var item in searchRes)
             {
-                ExcutableInfo excutableInfo = SharedContext.SharedMethod.DeserializeFromJson<ExcutableInfo>(item.Body);
+                ExcutableInfo excutableInfo = SharedContext.SharedMethod.DeserializeFromJson<ExcutableInfo>(item.Extra);
                 var result = new ResultItem
                 {
                     Title = item.Name,
