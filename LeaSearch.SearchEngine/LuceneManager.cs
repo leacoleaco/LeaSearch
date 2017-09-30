@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using LeaSearch.Plugin.Query;
+using LeaSearch.SearchEngine.Analysis;
+using LeaSearch.SearchEngine.PanGuEx;
 using Lucene.Net.Analysis;
-using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
+using PanGu;
 using Version = Lucene.Net.Util.Version;
 
 namespace LeaSearch.SearchEngine
@@ -17,10 +19,11 @@ namespace LeaSearch.SearchEngine
     {
         private const string IndexDir = "Data\\Index";
         private readonly DirectoryInfo _indexDir;
-        //static Analyzer analyzer = new PanGuAnalyzer(); //MMSegAnalyzer //StandardAnalyzer
-        //private readonly Analyzer _analyzer = new StandardAnalyzer(Version.LUCENE_30);
-        private readonly Analyzer _analyzer = new LeaSearchAnalyzer(Version.LUCENE_30);
+        private readonly Analyzer _indexAnalyzer = new LeaSearchTitleIndexAnalyzer();
+        private readonly Analyzer _searchAnalyzer = new PanGuAnalyzer();
         private IndexSearcher _indexSearcher;
+
+        private Highlighter _highlighter;
 
 
         public LuceneManager()
@@ -31,6 +34,11 @@ namespace LeaSearch.SearchEngine
             }
             _indexDir = new DirectoryInfo(IndexDir);
 
+            _highlighter = new Highlighter(new SimpleHTMLFormatter("<em>", "</em>"), new Segment())
+            {
+                //最多显示的字符数
+                FragmentSize = 50
+            };
         }
 
         /// <summary>
@@ -61,7 +69,7 @@ namespace LeaSearch.SearchEngine
             if (_indexSearcher == null) throw new Exception("Lucene index is not ready!");
 
             //拼装查询语句
-            var query = new QueryParser(Version.LUCENE_30, "Name", _analyzer).Parse(keyword);
+            var query = new QueryParser(Version.LUCENE_30, "Name", _searchAnalyzer).Parse(keyword);
             //new MultiFieldQueryParser(Version.LUCENE_30,new string[] {"PluginId"},Analyzer).Parse()
 
 
@@ -74,7 +82,7 @@ namespace LeaSearch.SearchEngine
                 //Console.WriteLine(sd.Score);
                 Document doc = _indexSearcher.Doc(sd.Doc);
                 //Console.WriteLine(doc.Get("body"));
-                res.Add(Document2DataItem(doc));
+                res.Add(Document2DataItem(doc, keyword, "Name"));
 
             }
             return res.ToArray();
@@ -107,7 +115,7 @@ namespace LeaSearch.SearchEngine
 
         public void DeleteAllIndex()
         {
-            IndexWriter _indexWriter = new IndexWriter(FSDirectory.Open(_indexDir), _analyzer, true, IndexWriter.MaxFieldLength.LIMITED);
+            IndexWriter _indexWriter = new IndexWriter(FSDirectory.Open(_indexDir), _indexAnalyzer, true, IndexWriter.MaxFieldLength.LIMITED);
             _indexWriter.DeleteAll();//删除所有的索引
             //writer.DeleteDocuments(new Term("key", "val"));//删除该词条
             //                                               //注意 在执行这个删除操作的时候，其实lucene本身并没有将数据从硬盘删除，而是保存到了一个单独的后缀名为.del的文件中。
@@ -118,14 +126,14 @@ namespace LeaSearch.SearchEngine
 
         public void CreateIndex()
         {
-            IndexWriter _indexWriter = new IndexWriter(FSDirectory.Open(_indexDir), _analyzer, true, IndexWriter.MaxFieldLength.LIMITED);
+            IndexWriter _indexWriter = new IndexWriter(FSDirectory.Open(_indexDir), _indexAnalyzer, true, IndexWriter.MaxFieldLength.LIMITED);
             _indexWriter.Commit();
             _indexWriter.Dispose();
         }
 
         public void AddToIndex(DataItem[] items)
         {
-            IndexWriter _indexWriter = new IndexWriter(FSDirectory.Open(_indexDir), _analyzer, true, IndexWriter.MaxFieldLength.LIMITED);
+            IndexWriter _indexWriter = new IndexWriter(FSDirectory.Open(_indexDir), _indexAnalyzer, true, IndexWriter.MaxFieldLength.LIMITED);
             foreach (var item in items)
             {
                 _indexWriter.AddDocument(DataItem2Document(item));
@@ -137,7 +145,7 @@ namespace LeaSearch.SearchEngine
 
         public void UpdateToIndex(DataItem[] items)
         {
-            IndexWriter _indexWriter = new IndexWriter(FSDirectory.Open(_indexDir), _analyzer, true, IndexWriter.MaxFieldLength.LIMITED);
+            IndexWriter _indexWriter = new IndexWriter(FSDirectory.Open(_indexDir), _indexAnalyzer, true, IndexWriter.MaxFieldLength.LIMITED);
             foreach (var item in items)
             {
                 var id = $"{item.PluginId}-{item.Name}";
@@ -152,7 +160,7 @@ namespace LeaSearch.SearchEngine
 
         public void DeleteIndexByPluginId(string pluginId)
         {
-            IndexWriter _indexWriter = new IndexWriter(FSDirectory.Open(_indexDir), _analyzer, true, IndexWriter.MaxFieldLength.LIMITED);
+            IndexWriter _indexWriter = new IndexWriter(FSDirectory.Open(_indexDir), _indexAnalyzer, true, IndexWriter.MaxFieldLength.LIMITED);
             Term term = new Term("PluginId", pluginId);
             _indexWriter.DeleteDocuments(term);
             _indexWriter.Commit();
@@ -216,21 +224,30 @@ namespace LeaSearch.SearchEngine
             return doc;
         }
 
-        private DataItem Document2DataItem(Document doc)
+        private DataItem Document2DataItem(Document doc, string keyword = null, string searchField = null)
         {
             var ret = new DataItem()
             {
-                Name = doc.Get("Name"),
-                Tip = doc.Get("Tip"),
+                Name = GetHighlightStr(doc, "Name", keyword, searchField),
+                Tip = GetHighlightStr(doc, "Tip", keyword, searchField),
                 IconPath = doc.Get("IconPath"),
                 IconBytes = doc.GetBinaryValue("IconBytes"),
                 PluginId = doc.Get("PluginId"),
-                Body = doc.Get("Body"),
+                Body = GetHighlightStr(doc, "Body", keyword, searchField),
                 Extra = doc.Get("Extra"),
             };
 
 
             return ret;
+        }
+
+        private string GetHighlightStr(Document doc, string valueField, string keyword = null, string searchField = null)
+        {
+            var content = doc.Get(valueField);
+
+            if (string.IsNullOrEmpty(searchField) || string.IsNullOrWhiteSpace(keyword) || searchField != valueField) return content;
+
+            return _highlighter.GetBestFragment(keyword, content);
         }
     }
 }
