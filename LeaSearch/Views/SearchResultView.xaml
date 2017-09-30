@@ -55,63 +55,68 @@
             <!--  IsSynchronizedWithCurrentItem: http://stackoverflow.com/a/7833798/2833083  -->
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Button>
+                    <!--<Button>
                         <Button.Template>
                             <ControlTemplate>
                                 <ContentPresenter Content="{TemplateBinding Button.Content}" />
                             </ControlTemplate>
                         </Button.Template>
-                        <Button.Content>
-                            <Grid
-                                Margin="5"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Stretch"
-                                Cursor="Hand"
-                                UseLayoutRounding="False">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="32" />
-                                    <ColumnDefinition />
-                                    <ColumnDefinition Width="0" />
-                                </Grid.ColumnDefinitions>
-                                <Image
-                                    x:Name="IconImage"
-                                    Width="32"
-                                    Height="32"
-                                    HorizontalAlignment="Left"
-                                    RenderOptions.BitmapScalingMode="HighQuality"
-                                    Source="{Binding Icon, IsAsync=True, Mode=OneWay, Converter={StaticResource ImageSourceConvert}}"
-                                    UseLayoutRounding="True" />
-                                <Grid
-                                    Grid.Column="1"
-                                    Margin="5,0,5,0"
-                                    HorizontalAlignment="Stretch">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition />
-                                        <RowDefinition x:Name="SubTitleRowDefinition" Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <TextBlock
-                                        x:Name="Title"
-                                        VerticalAlignment="Center"
-                                        DockPanel.Dock="Left"
-                                        Style="{DynamicResource ItemTitleStyle}"
-                                        Text="{Binding Title}"
-                                        ToolTip="{Binding Title}" />
-                                    <TextBlock
-                                        x:Name="SubTitle"
-                                        Grid.Row="1"
-                                        Style="{DynamicResource ItemSubTitleStyle}"
-                                        Text="{Binding SubTitle}" />
-                                </Grid>
-                            </Grid>
-                        </Button.Content>
-                    </Button>
+                        <Button.Content>-->
+                    <Grid
+                        Margin="5"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Cursor="Hand"
+                        UseLayoutRounding="False">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="32" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="0" />
+                        </Grid.ColumnDefinitions>
+                        <Image
+                            x:Name="IconImage"
+                            Width="32"
+                            Height="32"
+                            HorizontalAlignment="Left"
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            Source="{Binding Icon, IsAsync=True, Mode=OneWay, Converter={StaticResource ImageSourceConvert}}"
+                            UseLayoutRounding="True" />
+                        <Grid
+                            Grid.Column="1"
+                            Margin="5,0,5,0"
+                            HorizontalAlignment="Stretch">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition x:Name="SubTitleRowDefinition" Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <controls:HighlightControl
+                                VerticalAlignment="Center"
+                                DockPanel.Dock="Left"
+                                Html="{Binding Title}"
+                                ToolTip="{Binding Title}" />
+                            <!--<TextBlock
+                                x:Name="Title"
+                                VerticalAlignment="Center"
+                                DockPanel.Dock="Left"
+                                Style="{DynamicResource ItemTitleStyle}"
+                                Text="{Binding Title}"
+                                ToolTip="{Binding Title}" />-->
+                            <TextBlock
+                                x:Name="SubTitle"
+                                Grid.Row="1"
+                                Style="{DynamicResource ItemSubTitleStyle}"
+                                Text="{Binding SubTitle}" />
+                        </Grid>
+                    </Grid>
+                    <!--</Button.Content>
+                    </Button>-->
                     <!--  a result item height is 50 including margin  -->
-                    <DataTemplate.Triggers>
+                    <!--<DataTemplate.Triggers>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Value="True">
                             <Setter TargetName="Title" Property="Style" Value="{DynamicResource ItemTitleSelectedStyle}" />
                             <Setter TargetName="SubTitle" Property="Style" Value="{DynamicResource ItemSubTitleSelectedStyle}" />
                         </DataTrigger>
-                    </DataTemplate.Triggers>
+                    </DataTemplate.Triggers>-->
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
