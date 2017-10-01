@@ -13,7 +13,7 @@
 
     <!--  提示  -->
     <system:String x:Key="notice_NoResult">找不到任何记录</system:String>
-    <system:String x:Key="notice_EnterChooseMode">点击回车进入选择模式</system:String>
+    <system:String x:Key="notice_EnterChooseMode">点击 回车/Tab 进入选择模式</system:String>
     <system:String x:Key="notice_SelectMode">使用↑/j/shift+tab 上移，使用↓/k /tab 下移，点击回车执行默认命令，空格执行预览等操作，ESC返回输入模式</system:String>
 
 </ResourceDictionary>

@@ -47,29 +47,29 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Languages\de.xaml">
+    <EmbeddedResource Include="Languages\de.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Languages\en.xaml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\en.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Languages\pl.xaml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\pl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Languages\zh-cn.xaml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\zh-cn.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Languages\zh-tw.xaml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\zh-tw.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Images\ControlPanel.png" />
+    <EmbeddedResource Include="Images\ControlPanel.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\LeaSearch.Plugin\LeaSearch.Plugin.csproj">

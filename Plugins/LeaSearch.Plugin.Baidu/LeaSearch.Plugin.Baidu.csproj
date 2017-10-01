@@ -54,9 +54,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="baidu.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <EmbeddedResource Include="baidu.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

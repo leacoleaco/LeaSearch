@@ -168,9 +168,7 @@ namespace LeaSearch.Core.Plugin
         {
             try
             {
-                PluginInitInfo pluginInitInfo = new PluginInitInfo();
-                plugin.PluginInstance?.InitPlugin(this._sharedContext, pluginApi, pluginInitInfo);
-                plugin.PluginInitInfo = pluginInitInfo;
+                plugin.PluginInstance?.InitPlugin(this._sharedContext, pluginApi);
                 return plugin;
             }
             catch (Exception e)

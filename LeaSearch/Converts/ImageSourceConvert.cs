@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.Windows.Data;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using LeaSearch.Core.Image;
 using LeaSearch.Core.Ioc;
@@ -14,6 +15,12 @@ namespace LeaSearch.Converts
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            var imageSource = value as ImageSource;
+            if (imageSource != null)
+            {
+                return imageSource;
+            }
+
             var s = value as string;
             if (s != null)
             {
@@ -32,7 +39,7 @@ namespace LeaSearch.Converts
                 return ImageUtils.ByteArrayToBitmapImage(bytes);
             }
 
-            return null;
+            return _imageManager.GetErrorIcon();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

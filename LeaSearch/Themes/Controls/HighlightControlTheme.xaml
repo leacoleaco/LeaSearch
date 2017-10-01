@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:LeaSearch.UI.Controls;assembly=LeaSearch.UI">
     <Style TargetType="{x:Type controls:HighlightControl}">
-        <Setter Property="HighLightForeground" Value="Aqua" />
+        <Setter Property="HighLightForeground" Value="#0DBCFF" />
         <Setter Property="FontFamily" Value="Segoe UI, Microsoft YaHei" />
         <Setter Property="Template">
             <Setter.Value>

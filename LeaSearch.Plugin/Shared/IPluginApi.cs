@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.IO;
+using System.Windows.Media;
 using LeaSearch.Plugin.Query;
 
 namespace LeaSearch.Plugin
@@ -28,6 +29,25 @@ namespace LeaSearch.Plugin
         /// </param>
         /// <returns></returns>
         Stream GetPluginEmbedResouceStream(string name);
+
+        /// <summary>
+        /// 取得嵌入的图片
+        /// </summary>
+        /// <param name="name">资源名称，相对插件跟路径,例如如在" Resource/Icon.png" 目录中，则填写 " Resource.Icon.png "
+        /// 注意要把 “/” 变为 “.”
+        /// </param>
+        /// <returns></returns>
+        ImageSource GetPluginEmbedImage(string name);
+
+
+        /// <summary>
+        /// 从嵌入资源中读取Icon并设置为icon
+        /// </summary>
+        /// <param name="imageName">资源名称，相对插件跟路径,例如如在" Resource/Icon.png" 目录中，则填写 " Resource.Icon.png "
+        /// 注意要把 “/” 变为 “.”
+        /// </param>
+        /// <returns></returns>
+        void SetIconFromEmbedResource(string imageName);
 
         /// <summary>
         /// 添加数据到全局索引文件中
@@ -60,6 +80,7 @@ namespace LeaSearch.Plugin
         ///移除插件的索引 
         /// </summary>
         void RemoveIndex();
+
 
     }
 }

@@ -23,9 +23,9 @@ namespace LeaSearch.Core.Plugin
         public LeaSearch.Plugin.Plugin PluginInstance { get; }
 
         /// <summary>
-        /// 初始化控件后的信息
+        /// 插件初始化信息
         /// </summary>
-        public PluginInitInfo PluginInitInfo { get; internal set; }
+        public PluginInitInfo PluginInitInfo { get; } = new PluginInitInfo();
 
         /// <summary>
         /// plugin's id
@@ -109,10 +109,10 @@ namespace LeaSearch.Core.Plugin
         }
 
 
-        /// <summary>
-        /// plugin 's icon
-        /// </summary>
-        public string PluginIconPath => Path.Combine(PluginRootPath, PluginMetadata.IcoPath);
+        ///// <summary>
+        ///// plugin 's icon
+        ///// </summary>
+        //public string PluginIconPath => Path.Combine(PluginRootPath, PluginMetadata.IcoPath);
 
         /// <summary>
         /// plugin 's entry file

@@ -1,7 +1,9 @@
 ﻿using System.IO;
 using System.Reflection;
+using System.Windows.Media;
 using LeaSearch.Plugin;
 using LeaSearch.Plugin.Query;
+using LeaSearch.Plugin.Utils;
 using LeaSearch.SearchEngine;
 
 namespace LeaSearch.Core.Plugin
@@ -32,6 +34,22 @@ namespace LeaSearch.Core.Plugin
             var pluginName = _pluginAssembly.GetName()?.Name;
 
             return _pluginAssembly.GetManifestResourceStream($"{pluginName}.{name}");
+        }
+
+        public ImageSource GetPluginEmbedImage(string name)
+        {
+            var stream = GetPluginEmbedResouceStream(name);
+            if (stream == null)
+            {
+                return null;
+            }
+            ImageSourceConverter converter = new ImageSourceConverter();
+            return (ImageSource)converter.ConvertFrom(stream);
+        }
+
+        public void SetIconFromEmbedResource(string imageName)
+        {
+            _plugin.PluginInitInfo.Icon = GetPluginEmbedImage(imageName);
         }
 
         public void AddDataItemToIndex(DataItem[] dataItems)

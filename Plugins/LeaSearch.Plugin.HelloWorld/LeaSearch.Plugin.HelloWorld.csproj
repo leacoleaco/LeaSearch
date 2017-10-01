@@ -49,9 +49,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="app.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <EmbeddedResource Include="app.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="plugin.json">
@@ -59,25 +57,22 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Languages\en.xaml">
+    <EmbeddedResource Include="Languages\en.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Languages\zh-cn.xaml">
+    <EmbeddedResource Include="Languages\zh-cn.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Languages\zh-tw.xaml">
+    <EmbeddedResource Include="Languages\zh-tw.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\HelpInfo.xaml">

@@ -13,7 +13,7 @@
 
     <!--  notice  -->
     <system:String x:Key="notice_NoResult">Can not find any record</system:String>
-    <system:String x:Key="notice_EnterChooseMode">Enter to select mode</system:String>
+    <system:String x:Key="notice_EnterChooseMode">Enter/Tab to select mode</system:String>
     <system:String x:Key="notice_SelectMode">Using↑/j/shift+tab move up， ↓/k /tab down，Enter doing default command，Space doing preview ，ESC back to input mode</system:String>
 
 </ResourceDictionary>

@@ -42,6 +42,12 @@ namespace LeaSearch.Plugin.OpenUrl
             "$";
         private readonly Regex _reg = new Regex(urlPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+        public override void InitPlugin(SharedContext sharedContext, IPluginApi pluginApi)
+        {
+            base.InitPlugin(sharedContext, pluginApi);
+
+            pluginApi.SetIconFromEmbedResource("url.png");
+        }
 
         public override bool SuitableForSuggectionQuery(QueryParam queryParam)
         {

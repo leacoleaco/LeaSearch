@@ -27,16 +27,17 @@ namespace LeaSearch.Plugin.Calculator
         private static readonly Regex RegBrackets = new Regex(@"[\(\)\[\]]", RegexOptions.Compiled);
 
 
-        public override PluginInitInfo InitPlugin(SharedContext sharedContext, IPluginApi pluginApi, PluginInitInfo pluginInitInfo)
+        public override void InitPlugin(SharedContext sharedContext, IPluginApi pluginApi)
         {
-            base.InitPlugin(sharedContext, pluginApi, pluginInitInfo);
+            base.InitPlugin(sharedContext, pluginApi);
+
+            pluginApi.SetIconFromEmbedResource("calculator.png");
 
             //var executingAssembly = Assembly.GetExecutingAssembly();
             //var helpInfoStream = executingAssembly?.GetManifestResourceStream("LeaSearch.Plugin.Calculator.Resources.HelpInfo.xaml");            //var executingAssembly = Assembly.GetExecutingAssembly();
             var helpInfoStream = pluginApi.GetPluginEmbedResouceStream("Resources.HelpInfo.xaml");
             if (helpInfoStream != null) _helpDocument = XamlReader.Load(helpInfoStream) as FlowDocument;
 
-            return pluginInitInfo;
         }
 
         public override bool SuitableForSuggectionQuery(QueryParam queryParam)

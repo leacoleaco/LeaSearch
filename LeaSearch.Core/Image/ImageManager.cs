@@ -138,6 +138,11 @@ namespace LeaSearch.Core.Image
             return _imageCache[Constant.DefaultIcon];
         }
 
+        public ImageSource GetErrorIcon()
+        {
+            return _imageCache[Constant.ErrorIcon];
+        }
+
 
         private ImageSource ShellIcon(string fileName)
         {

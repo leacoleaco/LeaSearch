@@ -44,9 +44,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="url.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <EmbeddedResource Include="url.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="plugin.json">

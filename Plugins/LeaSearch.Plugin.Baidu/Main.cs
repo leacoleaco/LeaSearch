@@ -6,6 +6,13 @@ namespace LeaSearch.Plugin.Baidu
 {
     public class Main : Plugin
     {
+        public override void InitPlugin(SharedContext sharedContext, IPluginApi pluginApi)
+        {
+            pluginApi.SetIconFromEmbedResource("baidu.png");
+
+            base.InitPlugin(sharedContext, pluginApi);
+        }
+
         public override bool SuitableForSuggectionQuery(QueryParam queryParam)
         {
             return true;

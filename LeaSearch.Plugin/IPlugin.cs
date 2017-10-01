@@ -10,8 +10,7 @@ namespace LeaSearch.Plugin
         /// </summary>
         /// <param name="sharedContext">全局唯一的上下文</param>
         /// <param name="pluginApi">插件与系统共享的接口</param>
-        /// <param name="pluginInitInfo"></param>
-        PluginInitInfo InitPlugin(SharedContext sharedContext, IPluginApi pluginApi, PluginInitInfo pluginInitInfo);
+        void InitPlugin(SharedContext sharedContext, IPluginApi pluginApi);
 
 
 

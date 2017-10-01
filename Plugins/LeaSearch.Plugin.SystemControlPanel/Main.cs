@@ -11,11 +11,12 @@ namespace LeaSearch.Plugin.SystemControlPanel
     {
 
 
-        public override PluginInitInfo InitPlugin(SharedContext sharedContext, IPluginApi pluginApi, PluginInitInfo pluginInitInfo)
+        public override void InitPlugin(SharedContext sharedContext, IPluginApi pluginApi)
         {
-            base.InitPlugin(sharedContext, pluginApi, pluginInitInfo);
+            base.InitPlugin(sharedContext, pluginApi);
 
-            //return;
+            pluginApi.SetIconFromEmbedResource("Images.ControlPanel.png");
+
 
             var controlPanelItems = ControlPanelList.Create(48);
             //var iconFolder = Path.Combine(pluginApi.PluginRootPath, @"Images\ControlPanelIcons\");
@@ -48,7 +49,6 @@ namespace LeaSearch.Plugin.SystemControlPanel
             }
             PluginApi.AddDataItemToIndex(dataItems.ToArray());
 
-            return pluginInitInfo;
         }
 
 
