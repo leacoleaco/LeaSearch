@@ -5,15 +5,13 @@ namespace LeaSearch.Plugin
     public interface IPlugin
     {
         /// <summary>
-        /// let plugin that may get the share info from main program
-        /// for example : i18n、 message 、UI etc.
-        /// 
-        /// 这个方法是用于共享主程序中的一些信息
-        /// 比如： 语言、消息弹框、界面等
+        /// initilze the plugin
+        /// 初始化插件
         /// </summary>
         /// <param name="sharedContext">全局唯一的上下文</param>
         /// <param name="pluginApi">插件与系统共享的接口</param>
-        void InitPlugin(SharedContext sharedContext, IPluginApi pluginApi);
+        /// <param name="pluginInitInfo"></param>
+        PluginInitInfo InitPlugin(SharedContext sharedContext, IPluginApi pluginApi, PluginInitInfo pluginInitInfo);
 
 
 

@@ -7,6 +7,7 @@ namespace LeaSearch.Plugin
     /// such as version、i18n、theme、DetailViewControl etc.
     /// 
     /// 本类包含所有与插件共享的方法与数据
+    ///这些方法都是相通的，主要是一些工具类和 主界面的信息
     /// </summary>
     public class SharedContext
     {

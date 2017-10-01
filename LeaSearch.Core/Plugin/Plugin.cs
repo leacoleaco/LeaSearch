@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using LeaSearch.Plugin;
 
 namespace LeaSearch.Core.Plugin
 {
@@ -20,6 +21,11 @@ namespace LeaSearch.Core.Plugin
         /// plugin 's instance
         /// </summary>
         public LeaSearch.Plugin.Plugin PluginInstance { get; }
+
+        /// <summary>
+        /// 初始化控件后的信息
+        /// </summary>
+        public PluginInitInfo PluginInitInfo { get; internal set; }
 
         /// <summary>
         /// plugin's id

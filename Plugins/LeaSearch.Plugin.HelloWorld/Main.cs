@@ -11,15 +11,16 @@ namespace LeaSearch.Plugin.HelloWorld
     {
         private FlowDocument _HelpDocument;
 
-        public override void InitPlugin(SharedContext sharedContext, IPluginApi pluginApi)
+        public override PluginInitInfo InitPlugin(SharedContext sharedContext, IPluginApi pluginApi, PluginInitInfo pluginInitInfo)
         {
-            base.InitPlugin(sharedContext, pluginApi);
+            base.InitPlugin(sharedContext, pluginApi, pluginInitInfo);
 
 
             //读取 dll 内文件，可以吧文件设置为 “嵌入的资源”，然后通过以下代码方式读取
-            var executingAssembly = Assembly.GetExecutingAssembly();
-            var helpInfoStream = executingAssembly?.GetManifestResourceStream("LeaSearch.Plugin.HelloWorld.Resources.HelpInfo.xaml");
+            var helpInfoStream = pluginApi.GetPluginEmbedResouceStream("Resources.HelpInfo.xaml");
             if (helpInfoStream != null) _HelpDocument = XamlReader.Load(helpInfoStream) as FlowDocument;
+
+            return pluginInitInfo;
         }
 
         public override bool SuitableForSuggectionQuery(QueryParam queryParam)

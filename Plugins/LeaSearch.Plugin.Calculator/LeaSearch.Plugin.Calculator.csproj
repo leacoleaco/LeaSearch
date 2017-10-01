@@ -55,9 +55,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="calculator.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <EmbeddedResource Include="calculator.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

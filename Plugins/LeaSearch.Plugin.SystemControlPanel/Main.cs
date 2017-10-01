@@ -11,9 +11,9 @@ namespace LeaSearch.Plugin.SystemControlPanel
     {
 
 
-        public override void InitPlugin(SharedContext sharedContext, IPluginApi pluginApi)
+        public override PluginInitInfo InitPlugin(SharedContext sharedContext, IPluginApi pluginApi, PluginInitInfo pluginInitInfo)
         {
-            base.InitPlugin(sharedContext, pluginApi);
+            base.InitPlugin(sharedContext, pluginApi, pluginInitInfo);
 
             //return;
 
@@ -47,6 +47,8 @@ namespace LeaSearch.Plugin.SystemControlPanel
                     });
             }
             PluginApi.AddDataItemToIndex(dataItems.ToArray());
+
+            return pluginInitInfo;
         }
 
 

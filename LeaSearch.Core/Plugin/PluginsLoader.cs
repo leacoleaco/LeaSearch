@@ -104,8 +104,6 @@ namespace LeaSearch.Core.Plugin
         /// load C# plugin,create instance
         /// </summary>
         /// <param name="pluginBaseInfo"></param>
-        /// <param name="pluginApiaData"></param>
-        /// <param name="pluginApi"></param>
         /// <returns></returns>
         private Plugin LoadCSharpPlugin(PluginBaseInfo pluginBaseInfo)
         {
@@ -155,7 +153,7 @@ namespace LeaSearch.Core.Plugin
             var csharpPlugin = new Plugin(pluginBaseInfo, pluginInstance, type.FullName, PluginType.Csharp);
 
             //与plugin共享api
-            IPluginApi pluginApi = new PluginApiForCsharpPlugin(csharpPlugin, _luceneManager);
+            IPluginApi pluginApi = new PluginApiForCsharpPlugin(csharpPlugin, _luceneManager, assembly);
 
             return InitCSharpPlugin(csharpPlugin, pluginApi);
         }
@@ -170,12 +168,14 @@ namespace LeaSearch.Core.Plugin
         {
             try
             {
-                plugin.PluginInstance?.InitPlugin(this._sharedContext, pluginApi);
+                PluginInitInfo pluginInitInfo = new PluginInitInfo();
+                plugin.PluginInstance?.InitPlugin(this._sharedContext, pluginApi, pluginInitInfo);
+                plugin.PluginInitInfo = pluginInitInfo;
                 return plugin;
             }
             catch (Exception e)
             {
-                Logger.Exception($"plugin <{plugin.PluginId}> call InitPlugin method throw error: {e.Message}",e);
+                Logger.Exception($"plugin <{plugin.PluginId}> call InitPlugin method throw error: {e.Message}", e);
 #if DEBUG
                 MessageBox.Show($"plugin <{plugin.PluginId}> call InitPlugin method throw error: {e.Message}");
 #endif

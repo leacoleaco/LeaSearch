@@ -45,6 +45,7 @@
     <Compile Include="DetailInfos\FlowDocumentInfo.cs" />
     <Compile Include="HelpInfo.cs" />
     <Compile Include="IPlugin.cs" />
+    <Compile Include="PluginInitInfo.cs" />
     <Compile Include="Query\DataItem.cs" />
     <Compile Include="Query\QueryMode.cs" />
     <Compile Include="Query\StateAfterCommandInvoke.cs" />

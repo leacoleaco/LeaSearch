@@ -1,4 +1,6 @@
-﻿using LeaSearch.Plugin;
+﻿using System.IO;
+using System.Reflection;
+using LeaSearch.Plugin;
 using LeaSearch.Plugin.Query;
 using LeaSearch.SearchEngine;
 
@@ -7,12 +9,14 @@ namespace LeaSearch.Core.Plugin
     internal class PluginApiForCsharpPlugin : IPluginApi
     {
         private readonly Plugin _plugin;
+        private readonly Assembly _pluginAssembly;
         private readonly LuceneManager _luceneManager;
 
-        public PluginApiForCsharpPlugin(Plugin plugin, LuceneManager luceneManager)
+        public PluginApiForCsharpPlugin(Plugin plugin, LuceneManager luceneManager, Assembly pluginAssembly)
         {
             _plugin = plugin;
             _luceneManager = luceneManager;
+            _pluginAssembly = pluginAssembly;
 
             if (plugin != null)
             {
@@ -21,6 +25,14 @@ namespace LeaSearch.Core.Plugin
         }
 
         public string PluginRootPath { get; }
+
+        public Stream GetPluginEmbedResouceStream(string name)
+        {
+            if (_pluginAssembly == null) return null;
+            var pluginName = _pluginAssembly.GetName()?.Name;
+
+            return _pluginAssembly.GetManifestResourceStream($"{pluginName}.{name}");
+        }
 
         public void AddDataItemToIndex(DataItem[] dataItems)
         {
