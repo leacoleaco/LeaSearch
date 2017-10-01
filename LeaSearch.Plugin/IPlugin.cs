@@ -1,4 +1,5 @@
-﻿using LeaSearch.Plugin.Query;
+﻿using LeaSearch.Plugin.Index;
+using LeaSearch.Plugin.Query;
 
 namespace LeaSearch.Plugin
 {
@@ -12,6 +13,13 @@ namespace LeaSearch.Plugin
         /// <param name="pluginApi">插件与系统共享的接口</param>
         void InitPlugin(SharedContext sharedContext, IPluginApi pluginApi);
 
+        /// <summary>
+        /// 初始化插件的索引
+        /// 只有在主程序单独调用插件的 ReloadIndex 方法时才会激活本方法
+        /// 为了提高程序加载速度，本方法只会在触发了某个条件的情况下才会自动执行，例如第一次加载插件等
+        /// </summary>
+        /// <param name="indexInfo"></param>
+        IndexInfo InitIndex(IndexInfo indexInfo);
 
 
         /// <summary>
@@ -22,7 +30,7 @@ namespace LeaSearch.Plugin
         /// 如果插件设置了“ParticipateSuggection=true”,那么当系统准备查询插件过程的时候就会调用这个方法
         /// </summary>
         /// <param name="queryParam"></param>
-        /// <returns></returns>
+        /// <returns>返回true，为插件数据可以支持本次查询</returns>
         bool SuitableForSuggectionQuery(QueryParam queryParam);
 
 
@@ -36,7 +44,7 @@ namespace LeaSearch.Plugin
         ///  然后输入数据后才会调用 query 方法
         ///  </summary>
         /// <param name="queryParam"></param>
-        /// <returns></returns>
+        /// <returns>插件激活后，返回的支持调用等的参数</returns>
         PluginCalledArg PluginCallActive(QueryParam queryParam);
 
 
@@ -48,7 +56,7 @@ namespace LeaSearch.Plugin
         /// 本方法仅当程序认为有查询字符时候才会唤醒
         /// </summary>
         /// <param name="queryParam"></param>
-        /// <returns></returns>
+        /// <returns>查询的结果</returns>
         QueryListResult Query(QueryParam queryParam);
 
 
@@ -57,7 +65,7 @@ namespace LeaSearch.Plugin
         /// 当在某个列表项目上，点击空格后展示的更多信息
         /// </summary>
         /// <param name="currentItem">需要预览的节点，可以用里面的 queryparam 属性获取之前的查询讯息</param>
-        /// <returns></returns>
+        /// <returns>查询详情的结果</returns>
         QueryDetailResult QueryDetail(ResultItem currentItem);
 
 
@@ -65,7 +73,7 @@ namespace LeaSearch.Plugin
         /// <summary>
         /// 发起帮助请求信息时激活
         /// </summary>
-        /// <returns></returns>
+        /// <returns>帮助信息</returns>
         HelpInfo GetHelpInfo(QueryParam queryParam);
 
     }

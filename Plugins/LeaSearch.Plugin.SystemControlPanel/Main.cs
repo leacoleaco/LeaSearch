@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Windows.Media.Imaging;
+using LeaSearch.Plugin.Index;
 using LeaSearch.Plugin.Query;
 
 namespace LeaSearch.Plugin.SystemControlPanel
@@ -17,40 +16,25 @@ namespace LeaSearch.Plugin.SystemControlPanel
 
             pluginApi.SetIconFromEmbedResource("Images.ControlPanel.png");
 
+        }
 
+        public override IndexInfo InitIndex(IndexInfo indexInfo)
+        {
             var controlPanelItems = ControlPanelList.Create(48);
-            //var iconFolder = Path.Combine(pluginApi.PluginRootPath, @"Images\ControlPanelIcons\");
-            //var fileType = ".bmp";
-
-            //if (!Directory.Exists(iconFolder))
-            //{
-            //    Directory.CreateDirectory(iconFolder);
-            //}
-
-            PluginApi.RemoveIndex();
-
             var dataItems = new List<DataItem>();
             foreach (ControlPanelItem item in controlPanelItems)
             {
-                //if (!File.Exists(iconFolder + item.GUID + fileType))
-                //{
-                //    item.Icon?.ToBitmap().Save(iconFolder + item.GUID + fileType);
-                //}
-                dataItems.Add(
+                indexInfo.AddItem(
                     new DataItem()
                     {
                         Name = item.LocalizedString,
-                        //IconPath = Path.Combine(PluginApi.PluginRootPath,
-                        //    @"Images\\ControlPanelIcons\\" + item.GUID + fileType),
                         IconBytes = SharedContext.SharedMethod.BitmapToBytes(item.Icon?.ToBitmap()),
                         Tip = item.InfoTip,
                         Extra = SharedContext.SharedMethod.SerializeToJson(item.ExcutableInfo),
                     });
             }
-            PluginApi.AddDataItemToIndex(dataItems.ToArray());
-
+            return indexInfo;
         }
-
 
         public override QueryListResult Query(QueryParam queryParam)
         {

@@ -139,8 +139,11 @@ namespace LeaSearch
             //// initalize image manager to start better manage img or cache img
             Ioc.Reslove<ImageManager>().Initialize();
 
-            //// re-setup the global hotkey
-            Ioc.Reslove<PluginManager>().LoadPlugins();
+            //// load plugins and build the index
+            var pluginManager = Ioc.Reslove<PluginManager>();
+            pluginManager.LoadPlugins();
+            pluginManager.BuildIndexForeachPlugin();
+
 
             //// load plugin before change language, because plugin language also needs be changed
             Ioc.Reslove<InternationalizationManager>().ChangeLanguage(settings.Language);

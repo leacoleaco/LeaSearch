@@ -1,7 +1,13 @@
-﻿using LeaSearch.Plugin.Query;
+﻿using LeaSearch.Plugin.Index;
+using LeaSearch.Plugin.Query;
 
 namespace LeaSearch.Plugin
 {
+
+    /// <summary>
+    /// 插件基类，
+    /// 本类只是用于在编写插件的时候继承，方便重写方法
+    /// </summary>
     public abstract class Plugin : IPlugin
     {
         protected SharedContext SharedContext;
@@ -18,6 +24,17 @@ namespace LeaSearch.Plugin
         {
             SharedContext = sharedContext;
             PluginApi = pluginApi;
+        }
+
+        /// <summary>
+        /// 初始化插件的索引
+        /// 只有在主程序单独调用插件的 ReloadIndex 方法时才会激活本方法
+        /// 为了提高程序加载速度，本方法只会在触发了某个条件的情况下才会自动执行，例如第一次加载插件等
+        /// </summary>
+        /// <param name="indexInfo"></param>
+        public virtual IndexInfo InitIndex(IndexInfo indexInfo)
+        {
+            return null;
         }
 
         /// <summary>

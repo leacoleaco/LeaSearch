@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.IO;
 using System.Windows.Media;
+using LeaSearch.Plugin.Index;
 using LeaSearch.Plugin.Query;
 
 namespace LeaSearch.Plugin

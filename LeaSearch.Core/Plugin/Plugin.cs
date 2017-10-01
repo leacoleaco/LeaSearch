@@ -6,6 +6,8 @@ namespace LeaSearch.Core.Plugin
 {
     /// <summary>
     /// this is the all things for a plugin
+    /// 加载到主程序后的插件类
+    /// 包含类插件进程的所有信息
     /// </summary>
     public class Plugin : PluginBaseInfo
     {

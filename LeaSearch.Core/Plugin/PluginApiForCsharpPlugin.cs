@@ -2,8 +2,7 @@
 using System.Reflection;
 using System.Windows.Media;
 using LeaSearch.Plugin;
-using LeaSearch.Plugin.Query;
-using LeaSearch.Plugin.Utils;
+using LeaSearch.Plugin.Index;
 using LeaSearch.SearchEngine;
 
 namespace LeaSearch.Core.Plugin
@@ -54,20 +53,12 @@ namespace LeaSearch.Core.Plugin
 
         public void AddDataItemToIndex(DataItem[] dataItems)
         {
-            foreach (var dataItem in dataItems)
-            {
-                dataItem.PluginId = _plugin.PluginId;
-            }
-            _luceneManager.AddToIndex(dataItems);
+            _luceneManager.AddToIndex(dataItems, _plugin.PluginId);
         }
 
         public void UpdateDataItemToIndex(DataItem[] dataItems)
         {
-            foreach (var dataItem in dataItems)
-            {
-                dataItem.PluginId = _plugin.PluginId;
-            }
-            _luceneManager.UpdateToIndex(dataItems);
+            _luceneManager.UpdateToIndex(dataItems, _plugin.PluginId);
         }
 
         public DataItem[] SearchDataItemInIndex(string keyword, int page = 1, int pageSize = 10)

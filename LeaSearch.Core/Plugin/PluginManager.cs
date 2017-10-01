@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows;
 using LeaSearch.Common.Env;
+using LeaSearch.Infrastructure.Logger;
 using LeaSearch.Plugin;
+using LeaSearch.Plugin.Index;
 using LeaSearch.SearchEngine;
 
 namespace LeaSearch.Core.Plugin
@@ -16,8 +20,12 @@ namespace LeaSearch.Core.Plugin
 
         private List<Plugin> _plugins;
 
+        private LuceneManager _luceneManager;
+
+
         public PluginManager(SharedContext sharedContext, LuceneManager luceneManager)
         {
+            _luceneManager = luceneManager;
             _pluginsLoader = new PluginsLoader(sharedContext, luceneManager);
         }
 
@@ -29,6 +37,27 @@ namespace LeaSearch.Core.Plugin
             _plugins = _pluginsLoader.LoadPlugins(Constant.PluginsDirectory);
         }
 
+        public void BuildIndexForeachPlugin()
+        {
+            List<IndexInfo> prepareIndexInfos = new List<IndexInfo>();
+            foreach (var plugin in _plugins)
+            {
+                try
+                {
+                    var initIndex = plugin.PluginInstance.InitIndex(new IndexInfo(plugin.PluginId));
+                    prepareIndexInfos.Add(initIndex);
+
+                }
+                catch (Exception e)
+                {
+                    Logger.Exception($"plugin <{plugin.PluginId}> call InitIndex method throw error: {e.Message}", e);
+#if DEBUG
+                    MessageBox.Show($"plugin <{plugin.PluginId}> call InitIndex method throw error: {e.Message}");
+#endif
+                }
+            }
+            _luceneManager.CreateIndex(prepareIndexInfos.ToArray());
+        }
 
         public List<Plugin> GetPlugins()
         {

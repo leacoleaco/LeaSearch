@@ -1,11 +1,21 @@
-﻿namespace LeaSearch.Plugin.Query
+﻿namespace LeaSearch.Plugin.Index
 {
     /// <summary>
     /// 进行索引的数据
     /// </summary>
     public class DataItem
     {
-        public string PluginId { get; set; }
+        public DataItem()
+        {
+
+        }
+
+        public DataItem(string pluginId)
+        {
+            this.PluginId = pluginId;
+        }
+
+        public string PluginId { get; }
 
         /// <summary>
         /// 名称。可以索引

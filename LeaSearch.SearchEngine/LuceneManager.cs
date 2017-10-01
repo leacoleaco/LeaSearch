@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using LeaSearch.Plugin.Query;
+using LeaSearch.Plugin.Index;
 using LeaSearch.SearchEngine.Analysis;
 using LeaSearch.SearchEngine.PanGuEx;
 using Lucene.Net.Analysis;
@@ -111,46 +111,74 @@ namespace LeaSearch.SearchEngine
             return res.ToArray();
         }
 
-
+        private IndexWriter GetIndexWriter()
+        {
+            return new IndexWriter(FSDirectory.Open(_indexDir), _indexAnalyzer, true, IndexWriter.MaxFieldLength.LIMITED);
+        }
 
         public void DeleteAllIndex()
         {
-            IndexWriter _indexWriter = new IndexWriter(FSDirectory.Open(_indexDir), _indexAnalyzer, true, IndexWriter.MaxFieldLength.LIMITED);
-            _indexWriter.DeleteAll();//删除所有的索引
+            IndexWriter indexWriter = GetIndexWriter();
+            indexWriter.DeleteAll();//删除所有的索引
             //writer.DeleteDocuments(new Term("key", "val"));//删除该词条
             //                                               //注意 在执行这个删除操作的时候，其实lucene本身并没有将数据从硬盘删除，而是保存到了一个单独的后缀名为.del的文件中。
-            _indexWriter.Commit();//进行提交操作 标记为删除的索引会被从硬盘删除
-            _indexWriter.Dispose();
+            indexWriter.Commit();//进行提交操作 标记为删除的索引会被从硬盘删除
+            indexWriter.Dispose();
 
         }
 
         public void CreateIndex()
         {
-            IndexWriter _indexWriter = new IndexWriter(FSDirectory.Open(_indexDir), _indexAnalyzer, true, IndexWriter.MaxFieldLength.LIMITED);
-            _indexWriter.Commit();
-            _indexWriter.Dispose();
+            IndexWriter indexWriter = GetIndexWriter();
+            indexWriter.Commit();
+            indexWriter.Dispose();
         }
 
-        public void AddToIndex(DataItem[] items)
+        ///  <summary>
+        /// 重新收集插件提供的索引
+        ///  </summary>
+        /// <param name="indexInfos"></param>
+        public void CreateIndex(IndexInfo[] indexInfos)
         {
-            IndexWriter _indexWriter = new IndexWriter(FSDirectory.Open(_indexDir), _indexAnalyzer, true, IndexWriter.MaxFieldLength.LIMITED);
-            foreach (var item in items)
+            IndexWriter indexWriter = GetIndexWriter();
+
+            foreach (var indexInfo in indexInfos)
             {
-                _indexWriter.AddDocument(DataItem2Document(item));
+                if (indexInfo == null) continue;
+
+                Term term = new Term("PluginId", indexInfo.PluginId);
+                indexWriter.DeleteDocuments(term);
+                foreach (var item in indexInfo.Items)
+                {
+                    indexWriter.AddDocument(DataItem2Document(item, indexInfo.PluginId));
+                }
+                indexWriter.Commit();
             }
-            _indexWriter.Commit();
-            _indexWriter.Optimize();
-            _indexWriter.Dispose();
+
+            indexWriter.Optimize();
+            indexWriter.Dispose();
         }
 
-        public void UpdateToIndex(DataItem[] items)
+        public void AddToIndex(DataItem[] items, string pluginId)
         {
-            IndexWriter _indexWriter = new IndexWriter(FSDirectory.Open(_indexDir), _indexAnalyzer, true, IndexWriter.MaxFieldLength.LIMITED);
+            IndexWriter indexWriter = GetIndexWriter();
             foreach (var item in items)
             {
-                var id = $"{item.PluginId}-{item.Name}";
+                indexWriter.AddDocument(DataItem2Document(item, pluginId));
+            }
+            indexWriter.Commit();
+            indexWriter.Optimize();
+            indexWriter.Dispose();
+        }
+
+        public void UpdateToIndex(DataItem[] items, string pluginId)
+        {
+            IndexWriter _indexWriter = GetIndexWriter();
+            foreach (var item in items)
+            {
+                var id = $"{pluginId}-{item.Name}";
                 Term term = new Term("Id", id);
-                _indexWriter.UpdateDocument(term, DataItem2Document(item));
+                _indexWriter.UpdateDocument(term, DataItem2Document(item, pluginId));
 
             }
             _indexWriter.Commit();
@@ -160,15 +188,15 @@ namespace LeaSearch.SearchEngine
 
         public void DeleteIndexByPluginId(string pluginId)
         {
-            IndexWriter _indexWriter = new IndexWriter(FSDirectory.Open(_indexDir), _indexAnalyzer, true, IndexWriter.MaxFieldLength.LIMITED);
+            IndexWriter indexWriter = GetIndexWriter();
             Term term = new Term("PluginId", pluginId);
-            _indexWriter.DeleteDocuments(term);
-            _indexWriter.Commit();
-            _indexWriter.Optimize();
-            _indexWriter.Dispose();
+            indexWriter.DeleteDocuments(term);
+            indexWriter.Commit();
+            indexWriter.Optimize();
+            indexWriter.Dispose();
         }
 
-        private Document DataItem2Document(DataItem item)
+        private Document DataItem2Document(DataItem item, string pluginId)
         {
             //Field.Store.YES:存储字段值（未分词前的字段值） 
             //Field.Store.NO:不存储,存储与索引没有关系
@@ -193,8 +221,8 @@ namespace LeaSearch.SearchEngine
             //NO	        YES	    NO	                    文档类型
             //NOT_ANSLYZED	NO	    NO	                    隐藏的关键词
             Document doc = new Document();
-            doc.Add(new Field("Id", $"{item.PluginId}-{item.Name}", Field.Store.YES, Field.Index.NOT_ANALYZED, Field.TermVector.NO));
-            doc.Add(new Field("PluginId", item.PluginId, Field.Store.YES, Field.Index.NOT_ANALYZED, Field.TermVector.NO));
+            doc.Add(new Field("Id", $"{pluginId}-{item.Name}", Field.Store.YES, Field.Index.NOT_ANALYZED, Field.TermVector.NO));
+            doc.Add(new Field("PluginId", pluginId, Field.Store.YES, Field.Index.NOT_ANALYZED, Field.TermVector.NO));
             doc.Add(new Field("Name", item.Name, Field.Store.YES, Field.Index.ANALYZED));
             if (item.Tip != null)
             {
@@ -226,18 +254,15 @@ namespace LeaSearch.SearchEngine
 
         private DataItem Document2DataItem(Document doc, string keyword = null, string searchField = null)
         {
-            var ret = new DataItem()
+            var ret = new DataItem(doc.Get("PluginId"))
             {
                 Name = GetHighlightStr(doc, "Name", keyword, searchField),
                 Tip = GetHighlightStr(doc, "Tip", keyword, searchField),
                 IconPath = doc.Get("IconPath"),
                 IconBytes = doc.GetBinaryValue("IconBytes"),
-                PluginId = doc.Get("PluginId"),
                 Body = GetHighlightStr(doc, "Body", keyword, searchField),
                 Extra = doc.Get("Extra"),
             };
-
-
             return ret;
         }
 
