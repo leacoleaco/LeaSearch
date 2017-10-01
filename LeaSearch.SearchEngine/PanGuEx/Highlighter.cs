@@ -39,11 +39,11 @@ namespace LeaSearch.SearchEngine.PanGuEx
         #region Private methods
         private List<WordInfo> PickupKeywords(ICollection<WordInfo> keywordsWordInfos, ICollection<WordInfo> contentWordInfos)
         {
-            List<WordInfo> ret = new List<WordInfo>();
+            var ret = new List<WordInfo>();
 
-            Dictionary<string, bool> dict = new Dictionary<string, bool>();
-            Dictionary<string, bool> pinyinDict = new Dictionary<string, bool>();
-            Dictionary<string, bool> initPinyinDict = new Dictionary<string, bool>();
+            var dict = new Dictionary<string, bool>();
+            var pinyinDict = new Dictionary<string, bool>();
+            var initPinyinDict = new Dictionary<string, bool>();
 
 
             //先生成高亮关键词
@@ -118,10 +118,10 @@ namespace LeaSearch.SearchEngine.PanGuEx
         //检索关键词
         private IEnumerable<WordInfo> Optimize(List<WordInfo> selection, int start, int end)
         {
-            int maxRank = 0;
+            var maxRank = 0;
             WordInfo lst = null;
 
-            for (int i = start; i < end; i++)
+            for (var i = start; i < end; i++)
             {
                 if (selection[i].Rank > maxRank)
                 {
@@ -129,10 +129,10 @@ namespace LeaSearch.SearchEngine.PanGuEx
                 }
             }
 
-            int rankSum = 0;
-            int endPosition = selection[start].GetEndPositon();
+            var rankSum = 0;
+            var endPosition = selection[start].GetEndPositon();
 
-            for (int i = start; i < end; i++)
+            for (var i = start; i < end; i++)
             {
                 if (endPosition < selection[i].GetEndPositon())
                 {
@@ -156,7 +156,7 @@ namespace LeaSearch.SearchEngine.PanGuEx
                 }
             }
 
-            WordInfo word = new WordInfo();
+            var word = new WordInfo();
 
             word.Position = selection[start].Position;
             word.Word = _Content.Substring(word.Position, endPosition - word.Position);
@@ -166,19 +166,19 @@ namespace LeaSearch.SearchEngine.PanGuEx
 
         private List<WordInfo> Optimize(List<WordInfo> selection)
         {
-            int start = 0;
-            int end = 0;
-            List<WordInfo> ret = new List<WordInfo>();
+            var start = 0;
+            var end = 0;
+            var ret = new List<WordInfo>();
 
             while (start < selection.Count)
             {
-                int endCharPos = selection[start].Position + selection[start].Word.Length;
+                var endCharPos = selection[start].Position + selection[start].Word.Length;
 
                 while (end < selection.Count)
                 {
                     if (selection[end].Position >= endCharPos)
                     {
-                        foreach (WordInfo wordInfo in Optimize(selection, start, end))
+                        foreach (var wordInfo in Optimize(selection, start, end))
                         {
                             ret.Add(wordInfo);
                         }
@@ -194,7 +194,7 @@ namespace LeaSearch.SearchEngine.PanGuEx
                 if (start != end)
                 {
                     //end point to the last word in the list
-                    foreach (WordInfo wordInfo in Optimize(selection, start, end))
+                    foreach (var wordInfo in Optimize(selection, start, end))
                     {
                         ret.Add(wordInfo);
                     }
@@ -208,15 +208,15 @@ namespace LeaSearch.SearchEngine.PanGuEx
 
         private List<Fragment> GetFragments(List<WordInfo> selection)
         {
-            List<Fragment> fragments = new List<Fragment>();
+            var fragments = new List<Fragment>();
 
             if (selection.Count == 0)
             {
                 return fragments;
             }
 
-            int start = 0;
-            int end = 0;
+            var start = 0;
+            var end = 0;
 
             while (start < selection.Count)
             {
@@ -234,7 +234,7 @@ namespace LeaSearch.SearchEngine.PanGuEx
                 if (start != end)
                 {
                     //end point to the last word in the list
-                    foreach (WordInfo wordInfo in Optimize(selection, start, end))
+                    foreach (var wordInfo in Optimize(selection, start, end))
                     {
                         fragments.Add(new Fragment(start, end, selection));
                     }
@@ -250,17 +250,12 @@ namespace LeaSearch.SearchEngine.PanGuEx
 
         private List<Fragment> GetFragments(string keywords, string content)
         {
-            ICollection<WordInfo> keywordsWordInfos = _PanGuSegment.DoSegment(keywords);
+            var keywordsWordInfos = _PanGuSegment.DoSegment(keywords);
 
             //Make lower
-            foreach (WordInfo wordInfo in keywordsWordInfos)
+            foreach (var wordInfo in keywordsWordInfos)
             {
-                if (wordInfo == null)
-                {
-                    continue;
-                }
-
-                if (wordInfo.Word == null)
+                if (wordInfo?.Word == null)
                 {
                     continue;
                 }
@@ -268,17 +263,12 @@ namespace LeaSearch.SearchEngine.PanGuEx
                 wordInfo.Word = wordInfo.Word.ToLower();
             }
 
-            ICollection<WordInfo> contentWordInfos = _PanGuSegment.DoSegment(content);
+            var contentWordInfos = _PanGuSegment.DoSegment(content);
 
             //Make lower
-            foreach (WordInfo wordInfo in contentWordInfos)
+            foreach (var wordInfo in contentWordInfos)
             {
-                if (wordInfo == null)
-                {
-                    continue;
-                }
-
-                if (wordInfo.Word == null)
+                if (wordInfo?.Word == null)
                 {
                     continue;
                 }
@@ -297,20 +287,20 @@ namespace LeaSearch.SearchEngine.PanGuEx
 
         private string FragmentToString(Fragment fragment)
         {
-            StringBuilder str = new StringBuilder();
+            var str = new StringBuilder();
 
-            int width = _Selection[fragment.End - 1].GetEndPositon() - _Selection[fragment.Start].Position;
+            var width = _Selection[fragment.End - 1].GetEndPositon() - _Selection[fragment.Start].Position;
 
-            int remain = (_FragmentSize - width) / 2;
+            var remain = (_FragmentSize - width) / 2;
 
             if (remain < 0)
             {
                 remain = 0;
             }
 
-            int fst = Math.Max(0, _Selection[fragment.Start].Position - remain);
+            var fst = Math.Max(0, _Selection[fragment.Start].Position - remain);
 
-            int lst = Math.Min(_Content.Length, _Selection[fragment.End - 1].GetEndPositon() + remain);
+            var lst = Math.Min(_Content.Length, _Selection[fragment.End - 1].GetEndPositon() + remain);
 
             if (fst == 0)
             {
@@ -324,7 +314,7 @@ namespace LeaSearch.SearchEngine.PanGuEx
             }
 
 
-            for (int i = fragment.Start; i < fragment.End; i++)
+            for (var i = fragment.Start; i < fragment.End; i++)
             {
                 str.AppendFormat("{0}{1}",
                     _Content.Substring(fst, _Selection[i].Position - fst),
@@ -354,7 +344,7 @@ namespace LeaSearch.SearchEngine.PanGuEx
         /// <returns></returns>
         public string GetBestFragment(string keywords, string content)
         {
-            List<Fragment> fragments = GetFragments(keywords, content);
+            var fragments = GetFragments(keywords, content);
 
             if (fragments.Count > 0)
             {
@@ -373,10 +363,10 @@ namespace LeaSearch.SearchEngine.PanGuEx
         /// <returns></returns>
         public IEnumerable<string> GetFragments(string keywords, string content, int maxFragments)
         {
-            List<Fragment> fragments = GetFragments(keywords, content);
-            int index = 0;
+            var fragments = GetFragments(keywords, content);
+            var index = 0;
 
-            foreach (Fragment fragment in fragments)
+            foreach (var fragment in fragments)
             {
                 if (index >= maxFragments)
                 {

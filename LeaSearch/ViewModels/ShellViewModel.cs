@@ -212,7 +212,7 @@ namespace LeaSearch.ViewModels
         /// </summary>
         protected void NotifyWakeUpProgram()
         {
-            ShowNotice(null);
+            //ShowNotice(null);
             Messenger.Default.Send(new ShellDisplayMessage() { Display = Display.WakeUp });
         }
 
@@ -222,6 +222,7 @@ namespace LeaSearch.ViewModels
         protected virtual void NotifyHideProgram()
         {
             Messenger.Default.Send(new ShellDisplayMessage() { Display = Display.Hide });
+            ShowNotice(null);
         }
         #endregion
 

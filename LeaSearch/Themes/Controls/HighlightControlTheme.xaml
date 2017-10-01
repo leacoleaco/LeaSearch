@@ -3,13 +3,25 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:LeaSearch.UI.Controls;assembly=LeaSearch.UI">
     <Style TargetType="{x:Type controls:HighlightControl}">
-
+        <Setter Property="HighLightForeground" Value="Aqua" />
+        <Setter Property="FontFamily" Value="Segoe UI, Microsoft YaHei" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:HighlightControl}">
-                    <TextBlock x:Name="PART_Text" />
+                    <Border
+                        Margin="{TemplateBinding Margin}"
+                        Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}">
+                        <TextBlock
+                            x:Name="PART_Text"
+                            FontFamily="{TemplateBinding FontFamily}"
+                            FontSize="{TemplateBinding FontSize}"
+                            FontWeight="{TemplateBinding FontWeight}"
+                            Foreground="{TemplateBinding Foreground}" />
+                    </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
+
 </ResourceDictionary>

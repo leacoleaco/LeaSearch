@@ -1,14 +1,15 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Style x:Key="NullNotShowTextBlockStyle" TargetType="{x:Type TextBlock}">
 
+    <Style x:Key="NullNotShowTextBlockStyle" TargetType="{x:Type TextBlock}">
         <Setter Property="Foreground" Value="AliceBlue" />
     </Style>
 
 
     <Style x:Key="InfoContentTextBlockStyle" TargetType="{x:Type TextBlock}">
-
         <Setter Property="Foreground" Value="#FFCCCCCC" />
     </Style>
+
+    <Style BasedOn="{StaticResource InfoContentTextBlockStyle}" TargetType="{x:Type TextBlock}" />
 
 
 </ResourceDictionary>

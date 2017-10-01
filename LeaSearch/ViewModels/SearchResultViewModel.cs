@@ -319,13 +319,20 @@ namespace LeaSearch.ViewModels
             }
         }
 
+        /// <summary>
+        ///执行了打开结果后的处理
+        /// </summary>
+        /// <param name="state"></param>
         protected void OnAfterOpenResultCommand(StateAfterCommandInvoke state)
         {
             if (state == null) return;
 
             if (!state.ShowProgram)
+            {
                 //如果指示隐藏主界面，则发送隐藏消息
                 Messenger.Default.Send(new ShellDisplayMessage() { Display = Display.Hide });
+            }
+
 
         }
 

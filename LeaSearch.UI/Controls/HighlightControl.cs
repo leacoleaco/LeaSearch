@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Media;
 
 namespace LeaSearch.UI.Controls
 {
@@ -13,6 +14,11 @@ namespace LeaSearch.UI.Controls
     {
         private TextBlock _textBlock;
 
+        public string Html
+        {
+            get { return (string)GetValue(HtmlProperty); }
+            set { SetValue(HtmlProperty, value); }
+        }
         public static readonly DependencyProperty HtmlProperty = DependencyProperty.Register(
             "Html", typeof(string), typeof(HighlightControl), new PropertyMetadata(default(string), OnHtmlChanged));
 
@@ -20,11 +26,17 @@ namespace LeaSearch.UI.Controls
         {
             var h = d as HighlightControl;
             var newText = e.NewValue as string;
-
             h?.SetText(newText);
         }
 
+        public static readonly DependencyProperty HighLightForegroundProperty = DependencyProperty.Register(
+            "HighLightForeground", typeof(Brush), typeof(HighlightControl), new PropertyMetadata(Brushes.Red));
 
+        public Brush HighLightForeground
+        {
+            get { return (Brush)GetValue(HighLightForegroundProperty); }
+            set { SetValue(HighLightForegroundProperty, value); }
+        }
 
         private string startWord = "<em>";
         private string endWord = "</em>";
@@ -71,21 +83,22 @@ namespace LeaSearch.UI.Controls
 
             foreach (var seg in segs)
             {
-                _textBlock.Inlines.Add(CreateRun(seg.Word));
+                _textBlock.Inlines.Add(CreateRun(seg, HighLightForeground));
             }
 
         }
 
-        public string Html
-        {
-            get { return (string)GetValue(HtmlProperty); }
-            set { SetValue(HtmlProperty, value); }
-        }
 
 
-        protected static Run CreateRun(string text)
+        protected Run CreateRun(WordSeg seg, Brush highLightForeground)
         {
-            var run = new Run(text);
+            var run = new Run(seg.Word);
+
+            if (seg.IsHighlight)
+            {
+                run.Foreground = highLightForeground;
+            }
+
             return run;
         }
 
@@ -102,7 +115,7 @@ namespace LeaSearch.UI.Controls
         }
     }
 
-    class WordSeg
+    public class WordSeg
     {
         public string Word;
         public bool IsHighlight;
