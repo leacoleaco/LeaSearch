@@ -1,0 +1,13 @@
+﻿{
+  "PluginId": "LeaSearch.Plugin.Programs",
+  "Name": "System Program Search",
+  "DisplayName": "Program",
+  "DefalutPrefixKeyword": "p",
+  "Author": "Rico Lee",
+  "Version": "1.0.0",
+  "Language": "csharp",
+  "Description": "Search the system program",
+  "Website": "https://github.com/leacoleaco/LeaSearch",
+  "EntryFileName": "LeaSearch.Plugin.Programs.dll",
+  "IcoPath": "Images/ControlPanel.png"
+}
