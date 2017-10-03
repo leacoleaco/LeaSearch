@@ -237,10 +237,6 @@ namespace Wox.Plugin.Program.Programs
             public UWP Package { get; set; }
 
 
-            public Action GetRunAction()
-            {
-                return Launch;
-            }
 
             //public List<Result> ContextMenus(IPublicAPI api)
             //{

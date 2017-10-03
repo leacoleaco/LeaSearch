@@ -12,7 +12,7 @@ namespace LeaSearch.Core.Plugin
         public string Name { get; set; }
         public string DisplayName { get; set; }
         public string DefalutPrefixKeyword { get; set; }
-        public bool ParticipateSuggection { get; set; }
+        public bool EnableSuggection { get; set; }
         public string Author { get; set; }
         public string Version { get; set; }
         public string Language { get; set; }

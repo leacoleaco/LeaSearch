@@ -41,11 +41,12 @@ namespace LeaSearch.Plugin
         /// if plugin is in suggection mode, and plugin setup "ParticipateSuggection=true",
         ///  then this method will be called when prepare query
         /// 
+        /// 如果插件设置了“EnableSuggection=True”,那么当系统准备查询插件过程的时候就会调用这个方法
         /// 这个方法会在“建议模式”唤醒，
-        /// 如果插件设置了“ParticipateSuggection=true”,那么当系统准备查询插件过程的时候就会调用这个方法
+        /// 返回true，说明插件在本次查询中可以提供建议
         /// </summary>
-        /// <param name="queryParam"></param>
-        /// <returns></returns>
+        /// <param name="queryParam">本次查询的请求</param>
+        /// <returns> 返回true，说明插件在本次查询中可以提供建议</returns>
         public virtual bool SuitableForSuggectionQuery(QueryParam queryParam)
         {
             return false;

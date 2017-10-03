@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using LeaSearch.Plugin.Index;
 using LeaSearch.Plugin.Query;
@@ -23,7 +22,7 @@ namespace LeaSearch.Plugin.Programs
                     Name = win32.Name,
                     Tip = win32.FullPath,
                     IconPath = win32.IcoPath,
-                    Extra = SharedContext.SharedMethod.SerializeToJson(win32)
+                    Extra = SharedContext.SharedMethod.SerializeToJson(new ExtItem() { Win32 = win32 })
                 });
             }
 
@@ -47,7 +46,7 @@ namespace LeaSearch.Plugin.Programs
                     Name = application.DisplayName,
                     Tip = application.Package.FullName,
                     IconPath = application.LogoPath,
-
+                    Extra = SharedContext.SharedMethod.SerializeToJson(new ExtItem() { Application = application }),
                 });
 
             }
@@ -61,38 +60,43 @@ namespace LeaSearch.Plugin.Programs
             var res = new QueryListResult();
 
             var searchRes = PluginApi.SearchDataItems(queryParam.Keyword);
-            //var searchRes = PluginApi.GetAllDataItems();
 
             foreach (var item in searchRes)
             {
-                //ExcutableInfo excutableInfo = SharedContext.SharedMethod.DeserializeFromJson<ExcutableInfo>(item.Extra);
+                ExtItem extItem = SharedContext.SharedMethod.DeserializeFromJson<ExtItem>(item.Extra);
                 var result = new ResultItem
                 {
                     Title = item.Name,
                     SubTitle = item.Tip,
-                    //IconPath = item.IconPath,
+                    IconPath = item.IconPath,
                     IconBytes = item.IconBytes,
                     SelectedAction = e =>
                     {
-                        //try
-                        //{
-                        //    Process.Start(excutableInfo.GetProcessStartInfo());
-                        //}
-                        //catch (Exception)
-                        //{
-                        //    //Silently Fail for now.. todo
-                        //}
+                        try
+                        {
+                            extItem.Run();
+                        }
+                        catch (Exception)
+                        {
+                            var message = $"Can't start: {item.Name}";
+                            SharedContext.SharedMethod.ShowMessage(message);
+                            return new StateAfterCommandInvoke() { ShowProgram = true };
+                        }
                         return new StateAfterCommandInvoke() { ShowProgram = false };
                     }
                 };
                 res.AddResultItem(result);
             }
 
-            //List<Result> panelItems = results.OrderByDescending(o => o.Score).Take(5).ToList();
-
             return res;
 
 
         }
+
+        public override bool SuitableForSuggectionQuery(QueryParam queryParam)
+        {
+            return true;
+        }
+
     }
 }

@@ -444,7 +444,7 @@ namespace LeaSearch.Core.QueryEngine
                     //suggection mode
 
                     //do not give suggection
-                    if (!plugin.PluginMetadata.ParticipateSuggection) return;
+                    if (!plugin.PluginMetadata.EnableSuggection) return;
 
                     try
                     {
