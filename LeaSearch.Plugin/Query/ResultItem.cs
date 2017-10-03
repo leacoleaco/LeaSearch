@@ -41,6 +41,11 @@ namespace LeaSearch.Plugin
         public byte[] IconBytes { get; set; }
 
         /// <summary>
+        /// 列表图标
+        /// </summary>
+        public ImageSource IconSource { get; set; }
+
+        /// <summary>
         /// 附加信息，可以用于预览中获取等
         /// </summary>
         public object ExtraInfo { get; set; }
@@ -63,6 +68,10 @@ namespace LeaSearch.Plugin
         {
             get
             {
+                if (IconSource != null)
+                {
+                    return IconSource;
+                }
                 if (IconBytes != null)
                 {
                     return IconBytes;

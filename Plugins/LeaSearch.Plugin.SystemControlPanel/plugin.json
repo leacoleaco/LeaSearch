@@ -3,6 +3,7 @@
   "Name": "System Control Panel Search",
   "DisplayName": "ControlPanel",
   "DefalutPrefixKeyword": "cp",
+  "EnableSuggection": true,
   "Author": "Rico Lee",
   "Version": "1.0.0",
   "Language": "csharp",

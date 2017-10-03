@@ -36,6 +36,11 @@ namespace LeaSearch.Plugin.SystemControlPanel
             return indexInfo;
         }
 
+        public override bool SuitableForSuggectionQuery(QueryParam queryParam)
+        {
+            return true;
+        }
+
         public override QueryListResult Query(QueryParam queryParam)
         {
             var res = new QueryListResult();

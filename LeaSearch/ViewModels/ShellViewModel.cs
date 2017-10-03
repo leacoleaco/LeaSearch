@@ -153,35 +153,34 @@ namespace LeaSearch.ViewModels
             }
         }
 
-        public ICommand OpenResultCommand { get; }
-
-        public ICommand SelectNextItemCommand { get; }
-
         public ICommand SelectPrefItemCommand { get; set; }
 
         public ICommand TabCommand
         {
             get
             {
-                return new RelayCommand((() =>
-           {
-               var resultsCount = SearchResultViewModel?.Results?.Count;
-               if (resultsCount == 1)
-               {
-                   Messenger.Default.Send<FocusMessage>(new FocusMessage() { FocusTarget = FocusTarget.ResultList });
-                   SearchResultViewModel?.SelectFirst();
-               }
-               else if (resultsCount > 1)
-               {
-                   ShowNotice(@"notice_SelectMode".GetTranslation());
-                   Messenger.Default.Send<FocusMessage>(new FocusMessage() { FocusTarget = FocusTarget.ResultList });
-                   SearchResultViewModel?.SelectFirst();
+                var selectFirstCommand = new RelayCommand(() =>
+                {
+                    var resultsCount = SearchResultViewModel?.Results?.Count;
+                    if (resultsCount == 1)
+                    {
+                        Messenger.Default.Send<FocusMessage>(new FocusMessage() { FocusTarget = FocusTarget.ResultList });
+                        SearchResultViewModel?.SelectFirst();
+                    }
+                    else if (resultsCount > 1)
+                    {
+                        ShowNotice(@"notice_SelectMode".GetTranslation());
+                        Messenger.Default.Send<FocusMessage>(new FocusMessage() { FocusTarget = FocusTarget.ResultList });
+                        SearchResultViewModel?.SelectFirst();
 
-               }
+                    }
 
-           }));
+                });
+                return selectFirstCommand;
             }
         }
+
+
 
         #endregion
 

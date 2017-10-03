@@ -79,16 +79,16 @@ namespace LeaSearch.Plugin.Calculator
             return new QueryListResult()
             {
                 Results = { new ResultItem()
-            {
-                IconPath = "calculator.png",
-                Title = result,
-                SubTitle = SharedContext.SharedMethod.GetTranslation(@"leasearch_plugin_calculator_copy"),
-                SelectedAction =(SharedContext) =>
                 {
-                    SharedContext.SharedMethod.CopyToClipboard(result);
-                    return new StateAfterCommandInvoke(){ShowProgram = false};
-                }
-            }},
+                    IconSource = PluginApi.GetPluginEmbedImage("calculator.png"),
+                    Title = result,
+                    SubTitle = SharedContext.SharedMethod.GetTranslation(@"leasearch_plugin_calculator_copy"),
+                    SelectedAction =(SharedContext) =>
+                    {
+                        SharedContext.SharedMethod.CopyToClipboard(result);
+                        return new StateAfterCommandInvoke(){ShowProgram = false};
+                    }
+                }},
                 MoreInfo = new TextInfo() { Text = "test" }
             };
         }

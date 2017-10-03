@@ -11,6 +11,14 @@ namespace LeaSearch.Plugin.Programs
     {
         private Settings _settings = new Settings();
 
+
+        public override void InitPlugin(SharedContext sharedContext, IPluginApi pluginApi)
+        {
+            base.InitPlugin(sharedContext, pluginApi);
+
+            pluginApi.SetIconFromEmbedResource("Images.program.png");
+        }
+
         public override IndexInfo InitIndex(IndexInfo indexInfo)
         {
             //读取传统的win32程序
