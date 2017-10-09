@@ -146,7 +146,7 @@ namespace LeaSearch.Core.I18N
         /// <returns></returns>
         public string GetTranslation(string key)
         {
-            var translation = Application.Current.TryFindResource(key);
+            var translation = Application.Current?.TryFindResource(key);
             if (translation is string)
             {
                 return translation.ToString();
