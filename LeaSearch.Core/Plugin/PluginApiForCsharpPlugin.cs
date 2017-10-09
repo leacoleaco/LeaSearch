@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Reflection;
 using System.Windows.Media;
 using LeaSearch.Plugin;
 using LeaSearch.Plugin.Index;
@@ -10,14 +9,12 @@ namespace LeaSearch.Core.Plugin
     internal class PluginApiForCsharpPlugin : IPluginApi
     {
         private readonly Plugin _plugin;
-        private readonly Assembly _pluginAssembly;
         private readonly LuceneManager _luceneManager;
 
-        public PluginApiForCsharpPlugin(Plugin plugin, LuceneManager luceneManager, Assembly pluginAssembly)
+        public PluginApiForCsharpPlugin(Plugin plugin, LuceneManager luceneManager)
         {
             _plugin = plugin;
             _luceneManager = luceneManager;
-            _pluginAssembly = pluginAssembly;
 
             if (plugin != null)
             {
@@ -27,12 +24,13 @@ namespace LeaSearch.Core.Plugin
 
         public string PluginRootPath { get; }
 
+
         public Stream GetPluginEmbedResouceStream(string name)
         {
-            if (_pluginAssembly == null) return null;
-            var pluginName = _pluginAssembly.GetName()?.Name;
+            if (_plugin.PluginAssembly == null) return null;
+            var pluginName = _plugin.PluginAssembly.GetName()?.Name;
 
-            return _pluginAssembly.GetManifestResourceStream($"{pluginName}.{name}");
+            return _plugin.PluginAssembly.GetManifestResourceStream($"{pluginName}.{name}");
         }
 
         public ImageSource GetPluginEmbedImage(string name)
@@ -63,7 +61,7 @@ namespace LeaSearch.Core.Plugin
 
         public DataItem[] SearchDataItems(string keyword, int top = 10)
         {
-            return _luceneManager.Search(keyword,_plugin.PluginId, top);
+            return _luceneManager.Search(keyword, _plugin.PluginId, top);
         }
 
         public DataItem[] GetAllDataItems()
@@ -74,6 +72,11 @@ namespace LeaSearch.Core.Plugin
         public void RemoveIndex()
         {
             _luceneManager.DeleteIndexByPluginId(_plugin.PluginId);
+        }
+
+        public string GetTranslation(string key)
+        {
+            return _plugin.GetTranslation(key);
         }
     }
 }

@@ -19,6 +19,8 @@ namespace LeaSearch.Plugin
         /// </summary>
         string PluginRootPath { get; }
 
+        #region Embed Source
+
         /// <summary>
         /// 取得嵌入插件的资源流
         /// 调用本方法获取资源文件的时候，记得把文件生成操作设置为“嵌入的资源”
@@ -47,6 +49,10 @@ namespace LeaSearch.Plugin
         /// </param>
         /// <returns></returns>
         void SetIconFromEmbedResource(string imageName);
+
+        #endregion
+
+        #region Index
 
         /// <summary>
         /// 添加数据到全局索引文件中
@@ -79,7 +85,16 @@ namespace LeaSearch.Plugin
         ///移除插件的索引 
         /// </summary>
         void RemoveIndex();
+        #endregion
 
+        #region I18N
 
+        /// <summary>
+        /// 得到嵌入在插件中的语言资源
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        string GetTranslation(string key);
+        #endregion
     }
 }

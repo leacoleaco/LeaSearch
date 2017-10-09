@@ -42,19 +42,8 @@ namespace LeaSearch.Core.Plugin
             List<IndexInfo> prepareIndexInfos = new List<IndexInfo>();
             foreach (var plugin in _plugins)
             {
-                try
-                {
-                    var initIndex = plugin.PluginInstance.InitIndex(new IndexInfo(plugin.PluginId));
-                    prepareIndexInfos.Add(initIndex);
-
-                }
-                catch (Exception e)
-                {
-                    Logger.Exception($"plugin <{plugin.PluginId}> call InitIndex method throw error: {e.Message}", e);
-#if DEBUG
-                    MessageBox.Show($"plugin <{plugin.PluginId}> call InitIndex method throw error: {e.Message}");
-#endif
-                }
+                var initIndex = plugin.InvokeInitIndex(new IndexInfo(plugin.PluginId));
+                prepareIndexInfos.Add(initIndex);
             }
             _luceneManager.CreateIndex(prepareIndexInfos.ToArray());
         }

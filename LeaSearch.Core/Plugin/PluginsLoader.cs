@@ -109,13 +109,13 @@ namespace LeaSearch.Core.Plugin
         {
 
             LeaSearch.Plugin.Plugin pluginInstance = null;
+            Assembly assembly;
 #if DEBUG
-            var assembly = Assembly.Load(AssemblyName.GetAssemblyName(pluginBaseInfo.PluginEntryPath));
+            assembly = Assembly.Load(AssemblyName.GetAssemblyName(pluginBaseInfo.PluginEntryPath));
             var types = assembly.GetTypes();
             var type = types.First(o => o.IsClass && !o.IsAbstract && o.GetInterfaces().Contains(typeof(LeaSearch.Plugin.IPlugin)));
             pluginInstance = (LeaSearch.Plugin.Plugin)Activator.CreateInstance(type);
 #else
-            Assembly assembly;
             try
             {
                 assembly = Assembly.Load(AssemblyName.GetAssemblyName(pluginBaseInfo.PluginEntryPath));
@@ -150,10 +150,10 @@ namespace LeaSearch.Core.Plugin
                 return null;
             }
 #endif
-            var csharpPlugin = new Plugin(pluginBaseInfo, pluginInstance, type.FullName, PluginType.Csharp);
+            var csharpPlugin = new Plugin(pluginBaseInfo, pluginInstance, type.FullName, PluginType.Csharp, assembly);
 
             //与plugin共享api
-            IPluginApi pluginApi = new PluginApiForCsharpPlugin(csharpPlugin, _luceneManager, assembly);
+            IPluginApi pluginApi = new PluginApiForCsharpPlugin(csharpPlugin, _luceneManager);
 
             return InitCSharpPlugin(csharpPlugin, pluginApi);
         }
@@ -166,20 +166,7 @@ namespace LeaSearch.Core.Plugin
         /// <returns></returns>
         private Plugin InitCSharpPlugin(Plugin plugin, IPluginApi pluginApi)
         {
-            try
-            {
-                plugin.PluginInstance?.InitPlugin(this._sharedContext, pluginApi);
-                return plugin;
-            }
-            catch (Exception e)
-            {
-                Logger.Exception($"plugin <{plugin.PluginId}> call InitPlugin method throw error: {e.Message}", e);
-#if DEBUG
-                MessageBox.Show($"plugin <{plugin.PluginId}> call InitPlugin method throw error: {e.Message}");
-#endif
-
-                return null;
-            }
+            return plugin.InvokeInitPlugin(this._sharedContext, pluginApi);
         }
     }
 }

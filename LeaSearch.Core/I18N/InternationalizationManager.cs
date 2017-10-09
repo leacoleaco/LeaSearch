@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using LeaSearch.Common.Env;
 using LeaSearch.Core.Plugin;
@@ -29,7 +31,6 @@ namespace LeaSearch.Core.I18N
             // so add wox language directory after load plugin language files
             AddWoxLanguageDirectory();
 
-            AddPluginLanguageDirectories();
         }
 
 
@@ -41,29 +42,21 @@ namespace LeaSearch.Core.I18N
         }
 
 
-        private void AddPluginLanguageDirectories()
+        private void LoadPluginLanguage(Language language)
         {
             if (_pluginManager.GetPlugins() == null) return;
             foreach (var plugin in _pluginManager.GetPlugins())
             {
-                if (!string.IsNullOrWhiteSpace(plugin.PluginRootPath))
-                {
-                    var pluginThemeDirectory = Path.Combine(plugin.PluginRootPath, Folder);
-                    if (Directory.Exists(pluginThemeDirectory))
-                    {
-                        _languageDirectories.Add(pluginThemeDirectory);
-                    }
-                    else
-                    {
-                        Logger.Error($"|Internationalization.AddPluginLanguageDirectories|Can't find plugin path <{pluginThemeDirectory}> for <{plugin.PluginMetadata?.Name}>");
-                    }
-                }
+
+                plugin.LoadLanguage(language);
+
             }
         }
 
         private void LoadDefaultLanguage()
         {
             LoadLanguage(AvailableLanguages.English);
+            LoadPluginLanguage(AvailableLanguages.English);
             _oldResources.Clear();
         }
 
@@ -95,6 +88,7 @@ namespace LeaSearch.Core.I18N
             if (language != AvailableLanguages.English)
             {
                 LoadLanguage(language);
+                LoadPluginLanguage(language);
             }
             //UpdatePluginMetadataTranslations();
 
@@ -130,13 +124,17 @@ namespace LeaSearch.Core.I18N
                     _oldResources.Add(r);
                 }
             }
+
+            CultureInfo info = new CultureInfo(language.LanguageCode);
+            Thread.CurrentThread.CurrentCulture = info;
+            Thread.CurrentThread.CurrentUICulture = info;
+
         }
 
         public List<Language> LoadAvailableLanguages()
         {
             return AvailableLanguages.GetAvailableLanguages();
         }
-
 
 
         /// <summary>

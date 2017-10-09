@@ -56,7 +56,7 @@ namespace LeaSearch.Plugin.Calculator
             return new PluginCalledArg()
             {
                 ResultMode = ResultMode.Detail,
-                InfoMessage = SharedContext.SharedMethod.GetTranslation("leasearch_plugin_calculator_pluginCallActive"),
+                InfoMessage = PluginApi.GetTranslation("leasearch_plugin_calculator_pluginCallActive"),
             };
         }
 

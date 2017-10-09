@@ -214,18 +214,8 @@ namespace LeaSearch.Core.QueryEngine
                     return p.PluginId == currentItem.PluginId;
                 });
 
-                try
-                {
-                    var queryDetailResult = plugin?.PluginInstance.QueryItemDetail(currentItem);
-                    OnGetItemDetailResult(queryDetailResult);
-                }
-                catch (Exception e)
-                {
-                    Logger.Exception($"plugin <{plugin.PluginId}> call QueryDetail method throw error: {e.Message}", e);
-#if DEBUG
-                    MessageBox.Show($"plugin <{plugin.PluginId}> call QueryDetail method throw error: {e.Message}");
-#endif 
-                }
+                var queryDetailResult = plugin?.InvokeQueryItemDetail(currentItem);
+                OnGetItemDetailResult(queryDetailResult);
 
             }, _updateSource.Token);
         }
@@ -290,44 +280,23 @@ namespace LeaSearch.Core.QueryEngine
             CurrentQueryMode = QueryMode.PluginCall;
 
             //先显示帮助信息
-            try
+            var helpInfo = queryPlugin.InvokeGetHelpInfo(queryParam);
+            if (helpInfo != null)
             {
-                var helpInfo = queryPlugin.PluginInstance.GetHelpInfo(queryParam);
-                if (helpInfo != null)
-                {
-                    OnShowHelpInfo(helpInfo);
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Exception($"plugin <{queryPlugin}> call GetHelpInfo error: {e.Message}", e);
-#if DEBUG
-                MessageBox.Show($"plugin <{queryPlugin}> call GetHelpInfo error: {e.Message}");
-#endif
+                OnShowHelpInfo(helpInfo);
             }
 
             if (string.IsNullOrWhiteSpace(queryParam.Keyword))
             {
                 //如果只是刚刚激活plugin call 查询模式
-                try
-                {
-                    var pluginCalledArg = queryPlugin.PluginInstance.PluginCallActive(queryParam);
+                var pluginCalledArg = queryPlugin.InvokePluginCallActive(queryParam, OnQueryError);
 
-                    if (pluginCalledArg != null)
-                    {
-                        _currentResultMode = pluginCalledArg.ResultMode;
-                    }
-
-                    OnPluginCallActive(queryPlugin, pluginCalledArg);
-                }
-                catch (Exception e)
+                if (pluginCalledArg != null)
                 {
-                    Logger.Exception($"plugin <{queryPlugin.PluginId}> call PluginCallActive  method throw error: {e.Message}", e);
-#if DEBUG
-                    MessageBox.Show($"plugin <{queryPlugin.PluginId}> call PluginCallActive method throw error: {e.Message}");
-#endif
-                    OnQueryError();
+                    _currentResultMode = pluginCalledArg.ResultMode;
                 }
+
+                OnPluginCallActive(queryPlugin, pluginCalledArg);
             }
             else
             {
@@ -339,64 +308,51 @@ namespace LeaSearch.Core.QueryEngine
 
                 if (_currentResultMode == ResultMode.List)
                 {
-                    try
-                    {
-                        var queryListResult = currentSearchPlugin.PluginInstance.QueryList(queryParam);
+                    var queryListResult = currentSearchPlugin.InvokeQueryList(queryParam, () =>
+                     {
+                         OnGetListResult(null);
+                         OnQueryError();
+                     });
 
-                        //预处理一些需要展示的数据
-                        //prepare some data for result display
-                        if (queryListResult != null)
+                    //预处理一些需要展示的数据
+                    //prepare some data for result display
+                    if (queryListResult != null)
+                    {
+                        queryListResult.Results?.ForEach(x =>
                         {
-                            queryListResult.Results?.ForEach(x =>
-                            {
-                                x.PluginId = currentSearchPlugin.PluginId;
-                                x.QueryParam = queryParam;
-                            });
+                            x.PluginId = currentSearchPlugin.PluginId;
+                            x.QueryParam = queryParam;
+                        });
 
 
-                            queryListResult.QueryMode = QueryMode.PluginCall;
-                        }
-
-                        //return the result
-                        OnGetListResult(queryListResult);
+                        queryListResult.QueryMode = QueryMode.PluginCall;
                     }
-                    catch (Exception e)
-                    {
-                        Logger.Exception($"plugin <{queryPlugin.PluginId}> call QueryList method throw error: {e.Message}", e);
-#if DEBUG
-                        MessageBox.Show($"plugin <{queryPlugin.PluginId}> call QueryList method throw error: {e.Message}");
-#endif
-                        OnGetListResult(null);
-                        OnQueryError();
-                    }
+
+                    //return the result
+                    OnGetListResult(queryListResult);
+
                 }
                 else if (_currentResultMode == ResultMode.Detail)
                 {
-                    try
-                    {
-                        var detailResult = currentSearchPlugin.PluginInstance.QueryDetail(queryParam);
 
-                        //预处理一些需要展示的数据
-                        //prepare some data for result display
-                        if (detailResult != null)
-                        {
-                            detailResult.PluginId = currentSearchPlugin.PluginId;
-                            detailResult.QueryParam = queryParam;
-                            detailResult.QueryMode = QueryMode.PluginCall;
-                        }
-
-                        //return the result
-                        OnGetDetailResult(detailResult);
-                    }
-                    catch (Exception e)
+                    var detailResult = currentSearchPlugin.InvokeQueryDetail(queryParam, () =>
                     {
-                        Logger.Exception($"plugin <{queryPlugin.PluginId}> call QueryDetail method throw error: {e.Message}", e);
-#if DEBUG
-                        MessageBox.Show($"plugin <{queryPlugin.PluginId}> call QueryDetail method throw error: {e.Message}");
-#endif
                         OnGetDetailResult(null);
                         OnQueryError();
+                    });
+
+                    //预处理一些需要展示的数据
+                    //prepare some data for result display
+                    if (detailResult != null)
+                    {
+                        detailResult.PluginId = currentSearchPlugin.PluginId;
+                        detailResult.QueryParam = queryParam;
+                        detailResult.QueryMode = QueryMode.PluginCall;
                     }
+
+                    //return the result
+                    OnGetDetailResult(detailResult);
+
                 }
 
             }
@@ -414,39 +370,30 @@ namespace LeaSearch.Core.QueryEngine
             var queryPlugin = queryPlugins[0];
 
 
-            try
+            OnSuggectionQuery(queryPlugin);
+
+            var queryListResult = queryPlugin.InvokeQueryList(queryParam, () =>
             {
-                OnSuggectionQuery(queryPlugin);
-
-                var queryListResult = queryPlugin.PluginInstance.QueryList(queryParam);
-
-                //prepare some data for result display
-                if (queryListResult != null)
-                {
-                    queryListResult?.Results?.ForEach(x =>
-                    {
-                        x.PluginId = queryPlugin.PluginId;
-                        x.QueryParam = queryParam;
-                        if (!string.IsNullOrWhiteSpace(x.IconPath))
-                        {
-                            x.IconPath = Path.Combine(queryPlugin.PluginRootPath, x.IconPath);
-                        }
-                    });
-                    queryListResult.QueryMode = QueryMode.Suggestion;
-                }
-                //return the result
-                OnGetListResult(queryListResult);
-
-            }
-            catch (Exception e)
-            {
-                Logger.Exception($"plugin <{queryPlugin.PluginId}> call QueryList method throw error: {e.Message}", e);
-#if DEBUG
-                MessageBox.Show($"plugin <{queryPlugin.PluginId}> call QueryList method throw error: {e.Message}");
-#endif
                 OnGetListResult(null);
                 OnQueryError();
+            });
+
+            //prepare some data for result display
+            if (queryListResult != null)
+            {
+                queryListResult?.Results?.ForEach(x =>
+                {
+                    x.PluginId = queryPlugin.PluginId;
+                    x.QueryParam = queryParam;
+                    if (!string.IsNullOrWhiteSpace(x.IconPath))
+                    {
+                        x.IconPath = Path.Combine(queryPlugin.PluginRootPath, x.IconPath);
+                    }
+                });
+                queryListResult.QueryMode = QueryMode.Suggestion;
             }
+            //return the result
+            OnGetListResult(queryListResult);
 
         }
 
@@ -489,24 +436,17 @@ namespace LeaSearch.Core.QueryEngine
                     //do not give suggection
                     if (!plugin.PluginMetadata.EnableSuggection) return;
 
-                    try
-                    {
-                        //if plugin will give suggection ,then it must have some rule
-                        if (plugin.PluginInstance.SuitableForSuggectionQuery(queryParam))
-                        {
-                            //other plugin is add to second choice if suitable
-                            result.Add(plugin);
-                        }
 
-                    }
-                    catch (Exception e)
+                    //if plugin will give suggection ,then it must have some rule
+                    if (plugin.InvokeSuitableForSuggectionQuery(queryParam, () =>
                     {
-                        Logger.Exception($"plugin <{plugin.PluginId}> call SuitableForThisQuery method throw error: {e.Message}", e);
-#if DEBUG
-                        MessageBox.Show($"plugin <{plugin.PluginId}> call SuitableForThisQuery method throw error: {e.Message}");
-#endif
                         OnQueryError();
+                    }))
+                    {
+                        //other plugin is add to second choice if suitable
+                        result.Add(plugin);
                     }
+
                 }
 
             });
