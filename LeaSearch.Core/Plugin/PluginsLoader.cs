@@ -108,45 +108,45 @@ namespace LeaSearch.Core.Plugin
         private Plugin LoadCSharpPlugin(PluginBaseInfo pluginBaseInfo)
         {
 
+            LeaSearch.Plugin.Plugin pluginInstance = null;
 #if DEBUG
             var assembly = Assembly.Load(AssemblyName.GetAssemblyName(pluginBaseInfo.PluginEntryPath));
             var types = assembly.GetTypes();
             var type = types.First(o => o.IsClass && !o.IsAbstract && o.GetInterfaces().Contains(typeof(LeaSearch.Plugin.IPlugin)));
-            var pluginInstance = (LeaSearch.Plugin.Plugin)Activator.CreateInstance(type);
+            pluginInstance = (LeaSearch.Plugin.Plugin)Activator.CreateInstance(type);
 #else
             Assembly assembly;
             try
             {
-                assembly = Assembly.Load(AssemblyName.GetAssemblyName(pluginBaseInfos.PluginEntryPath));
+                assembly = Assembly.Load(AssemblyName.GetAssemblyName(pluginBaseInfo.PluginEntryPath));
             }
             catch (Exception e)
             {
                 Logger.Exception(
-                    $"|PluginsLoader.CSharpPlugins|Couldn't load assembly for {pluginBaseInfos.PluginMetadata.Name}", e);
+                    $"|PluginsLoader.CSharpPlugins|Couldn't load assembly for {pluginBaseInfo.PluginMetadata.Name}", e);
                 return null;
             }
             var types = assembly.GetTypes();
             Type type;
             try
             {
-                type = types.First(o => o.IsClass && !o.IsAbstract && o.GetInterfaces().Contains(typeof(Plugin)));
+                type = types.First(o => o.IsClass && !o.IsAbstract && o.GetInterfaces().Contains(typeof(LeaSearch.Plugin.IPlugin)));
             }
             catch (InvalidOperationException e)
             {
                 Logger.Exception(
-                    $"|PluginsLoader.CSharpPlugins|Can't find class implement Plugin for <{pluginBaseInfos.PluginMetadata.Name}>",
+                    $"|PluginsLoader.CSharpPlugins|Can't find class implement Plugin for <{pluginBaseInfo.PluginMetadata.Name}>",
                     e);
                 return null;
             }
-            Plugin pluginInstance;
             try
             {
-                pluginInstance = (Plugin)Activator.CreateInstance(type);
+                pluginInstance = (LeaSearch.Plugin.Plugin)Activator.CreateInstance(type);
             }
             catch (Exception e)
             {
                 Logger.Exception(
-                    $"|PluginsLoader.CSharpPlugins|Can't create instance for <{pluginBaseInfos.PluginMetadata.Name}>", e);
+                    $"|PluginsLoader.CSharpPlugins|Can't create instance for <{pluginBaseInfo.PluginMetadata.Name}>", e);
                 return null;
             }
 #endif

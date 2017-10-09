@@ -28,8 +28,11 @@ namespace LeaSearch
     /// </summary>
     public partial class App : Application, IDisposable, ISingleInstanceApp
     {
+#if DEBUG 
+        private const string Unique = "LeaSearch_Unique_Application_String_DEBUG";
+#else
         private const string Unique = "LeaSearch_Unique_Application_String";
-
+#endif
 
         /// <summary>
         /// global notifyIcon
@@ -67,14 +70,14 @@ namespace LeaSearch
 
         }
 
-        #region ISingleInstanceApp Members
+#region ISingleInstanceApp Members
         public bool SignalExternalCommandLineArgs(IList<string> args)
         {
             // handle command line arguments of second instance
             // ...
             return true;
         }
-        #endregion
+#endregion
 
         /// <summary>
         /// When program start
@@ -185,7 +188,7 @@ namespace LeaSearch
         }
 
 
-        #region NotifyIcon 任务栏图标
+#region NotifyIcon 任务栏图标
 
         /// <summary>
         /// initialize notifyIcon
@@ -214,10 +217,10 @@ namespace LeaSearch
 
         }
 
-        #endregion
+#endregion
 
 
-        #region ErrorHandler
+#region ErrorHandler
 
         /// <summary>
         /// register unhandled exception that is UI Thread cause
@@ -246,7 +249,7 @@ namespace LeaSearch
             //};
         }
 
-        #endregion
+#endregion
 
     }
 }
