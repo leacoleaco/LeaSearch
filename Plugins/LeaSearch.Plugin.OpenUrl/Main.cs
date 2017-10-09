@@ -62,7 +62,7 @@ namespace LeaSearch.Plugin.OpenUrl
             };
         }
 
-        public override QueryListResult Query(QueryParam queryParam)
+        public override QueryListResult QueryList(QueryParam queryParam)
         {
             var res = new QueryListResult();
             var keyword = queryParam.Keyword;

@@ -1,4 +1,5 @@
-﻿using LeaSearch.Plugin.DetailInfos;
+﻿using System;
+using System.Windows.Documents;
 
 namespace LeaSearch.Plugin.Query
 {
@@ -10,12 +11,30 @@ namespace LeaSearch.Plugin.Query
         /// <summary>
         /// 传入的查询信息
         /// </summary>
-        public QueryParam OriginQueryParam { get; set; }
+        public QueryParam QueryParam { get; set; }
 
         /// <summary>
-        /// info 区域需要展示的信息类型
+        /// 得到此结果的插件
         /// </summary>
-        public IInfo MoreInfo;
+        public string PluginId { get; set; }
+
+
+        /// <summary>
+        ///查询模式 
+        /// </summary>
+        public QueryMode QueryMode { get; set; }
+
+        /// <summary>
+        /// 主界面的错误提示
+        /// </summary>
+        public string ErrorMessage { get; set; }
+
+        /// <summary>
+        /// 当前的帮助信息
+        /// </summary>
+        public FlowDocument HelpInfo { get; set; }
+
+
 
     }
 }

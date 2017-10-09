@@ -7,7 +7,15 @@
         /// </summary>
         public string InfoMessage { get; set; }
 
-
+        /// <summary>
+        /// 插件使用的查询方式
+        /// </summary>
+        public ResultMode ResultMode { get; set; }
     }
 
+    public enum ResultMode
+    {
+        List,
+        Detail
+    }
 }

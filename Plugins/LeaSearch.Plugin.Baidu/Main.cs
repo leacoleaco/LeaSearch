@@ -26,7 +26,7 @@ namespace LeaSearch.Plugin.Baidu
             };
         }
 
-        public override QueryListResult Query(QueryParam queryParam)
+        public override QueryListResult QueryList(QueryParam queryParam)
         {
             var res = new QueryListResult();
 

@@ -39,7 +39,7 @@ namespace LeaSearch.ViewModels
             queryEngine.PluginCallActive += QueryEngine_PluginCallActive;
             queryEngine.PluginCallQuery += QueryEngine_PluginCallQuery;
             queryEngine.SuggectionQuery += QueryEngine_SuggectionQuery;
-            queryEngine.GetResult += QueryEngine_GetResult;
+            queryEngine.GetListResult += QueryEngineGetListResult;
             queryEngine.QueryEnd += EngineQueryEnd;
             queryEngine.QueryError += QueryEngine_QueryError;
 
@@ -136,19 +136,7 @@ namespace LeaSearch.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    var resultsCount = SearchResultViewModel?.Results?.Count;
-                    if (resultsCount == 1)
-                    {
-                        SearchResultViewModel?.OpenResult();
-                    }
-                    else if (resultsCount > 1)
-                    {
-                        ShowNotice(@"notice_SelectMode".GetTranslation());
-                        Messenger.Default.Send<FocusMessage>(new FocusMessage() { FocusTarget = FocusTarget.ResultList });
-                        SearchResultViewModel?.SelectFirst();
-
-                    }
-
+                    SearchResultViewModel?.EnterResult();
                 });
             }
         }
@@ -246,8 +234,8 @@ namespace LeaSearch.ViewModels
                 //if no result ,then close search
                 NotifyQueryStateChanged(QueryState.QueryEnd);
                 SuggestionResultViewModel.Clear();
-                SearchResultViewModel.Clear();
-                SearchResultViewModel.ClearMoreInfo();
+                SearchResultViewModel.ClearListResult();
+                SearchResultViewModel.ClearDetailResult();
                 CurrentSearchPlugin = null;
             }
 
@@ -285,7 +273,7 @@ namespace LeaSearch.ViewModels
             //如果查询终止，无法继续查询，则清理指示
             ShowNotice(null);
             CurrentSearchPlugin = null;
-            SearchResultViewModel.ClearMoreInfo();
+            SearchResultViewModel.ClearDetailResult();
             NotifyQueryStateChanged(QueryState.QueryEnd);
 
         }
@@ -294,17 +282,17 @@ namespace LeaSearch.ViewModels
         {
             //插件查询出错，
             NotifyQueryStateChanged(QueryState.QueryError);
-            SearchResultViewModel.ClearMoreInfo();
+            SearchResultViewModel.ClearDetailResult();
         }
 
 
-        private void QueryEngine_GetResult(QueryListResult result)
+        private void QueryEngineGetListResult(QueryListResult result)
         {
             if (result?.Results == null || !result.Results.Any())
             {
                 //如果没有返回结果
                 ShowNotice(@"notice_NoResult".GetTranslation());
-                SearchResultViewModel.ClearMoreInfo();
+                SearchResultViewModel.ClearDetailResult();
             }
             else
             {

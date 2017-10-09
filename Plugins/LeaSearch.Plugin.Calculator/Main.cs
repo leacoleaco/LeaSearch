@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Documents;
 using System.Windows.Markup;
@@ -56,12 +57,13 @@ namespace LeaSearch.Plugin.Calculator
         {
             return new PluginCalledArg()
             {
+                ResultMode = ResultMode.Detail,
                 InfoMessage = SharedContext.SharedMethod.GetTranslation("leasearch_plugin_calculator_pluginCallActive"),
             };
         }
 
 
-        public override QueryListResult Query(QueryParam queryParam)
+        public override QueryListResult QueryList(QueryParam queryParam)
         {
             var expression = new Expression(queryParam.Keyword);
 
@@ -93,6 +95,35 @@ namespace LeaSearch.Plugin.Calculator
             };
         }
 
+        public override QueryDetailResult QueryDetail(QueryParam queryParam)
+        {
+            var expression = new Expression(queryParam.Keyword);
+
+            if (!expression.checkSyntax())
+            {
+                //如果表达式有误                
+                var translation = SharedContext.SharedMethod.GetTranslation(@"leasearch_plugin_calculator_express_err");
+                return new QueryDetailResult()
+                {
+                    ErrorMessage = translation
+                };
+            }
+
+            var result = expression.calculate().ToString();
+            return new QueryDetailResult()
+            {
+                Result = new TextInfo()
+                {
+                    Text = $"{result}",
+                },
+                EnterAction = (ctx, item) =>
+                {
+                    SharedContext.SharedMethod.CopyToClipboard(result);
+                    return new StateAfterCommandInvoke() { ShowProgram = false };
+                },
+
+            };
+        }
 
 
         public override HelpInfo GetHelpInfo(QueryParam queryParam)

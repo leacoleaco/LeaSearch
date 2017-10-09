@@ -48,6 +48,11 @@ namespace LeaSearch.Core.QueryEngine
 
         private QueryMode _currentQueryMode = QueryMode.None;
 
+        /// <summary>
+        /// 当前的返回结果模式
+        /// </summary>
+        private ResultMode _currentResultMode = ResultMode.List;
+
 
         /// <summary>
         /// 当前的查询模式
@@ -55,17 +60,26 @@ namespace LeaSearch.Core.QueryEngine
         public QueryMode CurrentQueryMode
         {
             get { return _currentQueryMode; }
-            set
+            private set
             {
                 if (_currentQueryMode != value)
+                {
                     //每切换一个模式，就要清除之前的帮助信息
                     OnShowHelpInfo(null);
+                    _currentResultMode = ResultMode.List;
+                }
 
                 _currentQueryMode = value;
 
             }
 
         }
+
+        /// <summary>
+        /// 当前的结果模式
+        /// </summary>
+        public ResultMode CurrentResultMode => _currentResultMode;
+
 
         /// <summary>
         /// 模糊查询配置
@@ -202,8 +216,8 @@ namespace LeaSearch.Core.QueryEngine
 
                 try
                 {
-                    var queryDetailResult = plugin?.PluginInstance.QueryDetail(currentItem);
-                    OnGetDetailResult(queryDetailResult);
+                    var queryDetailResult = plugin?.PluginInstance.QueryItemDetail(currentItem);
+                    OnGetItemDetailResult(queryDetailResult);
                 }
                 catch (Exception e)
                 {
@@ -261,7 +275,7 @@ namespace LeaSearch.Core.QueryEngine
 
 
             //return the result
-            OnGetResult(queryListResult);
+            OnGetListResult(queryListResult);
 
             _commandManager.InvokeCommand(queryParam);
         }
@@ -298,6 +312,9 @@ namespace LeaSearch.Core.QueryEngine
                 try
                 {
                     var pluginCalledArg = queryPlugin.PluginInstance.PluginCallActive(queryParam);
+
+                    _currentResultMode = pluginCalledArg.ResultMode;
+
                     OnPluginCallActive(queryPlugin, pluginCalledArg);
                 }
                 catch (Exception e)
@@ -317,39 +334,66 @@ namespace LeaSearch.Core.QueryEngine
 
                 OnPluginCallQuery(currentSearchPlugin);
 
-                try
+                if (_currentResultMode == ResultMode.List)
                 {
-                    var queryListResult = currentSearchPlugin.PluginInstance.Query(queryParam);
-
-                    //预处理一些需要展示的数据
-                    //prepare some data for result display
-                    if (queryListResult != null)
+                    try
                     {
-                        queryListResult.Results?.ForEach(x =>
+                        var queryListResult = currentSearchPlugin.PluginInstance.QueryList(queryParam);
+
+                        //预处理一些需要展示的数据
+                        //prepare some data for result display
+                        if (queryListResult != null)
                         {
-                            x.PluginId = currentSearchPlugin.PluginId;
-                            x.QueryParam = queryParam;
-                            if (!string.IsNullOrWhiteSpace(x.IconPath))
+                            queryListResult.Results?.ForEach(x =>
                             {
-                                x.IconPath = Path.Combine(currentSearchPlugin.PluginRootPath, x.IconPath);
-                            }
-                        });
+                                x.PluginId = currentSearchPlugin.PluginId;
+                                x.QueryParam = queryParam;
+                            });
 
 
-                        queryListResult.QueryMode = QueryMode.PluginCall;
+                            queryListResult.QueryMode = QueryMode.PluginCall;
+                        }
+
+                        //return the result
+                        OnGetListResult(queryListResult);
                     }
-
-                    //return the result
-                    OnGetResult(queryListResult);
-                }
-                catch (Exception e)
-                {
-                    Logger.Exception($"plugin <{queryPlugin.PluginId}> call Query method throw error: {e.Message}", e);
+                    catch (Exception e)
+                    {
+                        Logger.Exception($"plugin <{queryPlugin.PluginId}> call QueryList method throw error: {e.Message}", e);
 #if DEBUG
-                    MessageBox.Show($"plugin <{queryPlugin.PluginId}> call Query method throw error: {e.Message}");
+                        MessageBox.Show($"plugin <{queryPlugin.PluginId}> call QueryList method throw error: {e.Message}");
 #endif
-                    OnGetResult(null);
-                    OnQueryError();
+                        OnGetListResult(null);
+                        OnQueryError();
+                    }
+                }
+                else if (_currentResultMode == ResultMode.Detail)
+                {
+                    try
+                    {
+                        var detailResult = currentSearchPlugin.PluginInstance.QueryDetail(queryParam);
+
+                        //预处理一些需要展示的数据
+                        //prepare some data for result display
+                        if (detailResult != null)
+                        {
+                            detailResult.PluginId = currentSearchPlugin.PluginId;
+                            detailResult.QueryParam = queryParam;
+                            detailResult.QueryMode = QueryMode.PluginCall;
+                        }
+
+                        //return the result
+                        OnGetDetailResult(detailResult);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Exception($"plugin <{queryPlugin.PluginId}> call QueryDetail method throw error: {e.Message}", e);
+#if DEBUG
+                        MessageBox.Show($"plugin <{queryPlugin.PluginId}> call QueryDetail method throw error: {e.Message}");
+#endif
+                        OnGetDetailResult(null);
+                        OnQueryError();
+                    }
                 }
 
             }
@@ -371,7 +415,7 @@ namespace LeaSearch.Core.QueryEngine
             {
                 OnSuggectionQuery(queryPlugin);
 
-                var queryListResult = queryPlugin.PluginInstance.Query(queryParam);
+                var queryListResult = queryPlugin.PluginInstance.QueryList(queryParam);
 
                 //prepare some data for result display
                 if (queryListResult != null)
@@ -388,22 +432,18 @@ namespace LeaSearch.Core.QueryEngine
                     queryListResult.QueryMode = QueryMode.Suggestion;
                 }
                 //return the result
-                OnGetResult(queryListResult);
+                OnGetListResult(queryListResult);
 
             }
             catch (Exception e)
             {
-                Logger.Exception($"plugin <{queryPlugin.PluginId}> call Query method throw error: {e.Message}", e);
+                Logger.Exception($"plugin <{queryPlugin.PluginId}> call QueryList method throw error: {e.Message}", e);
 #if DEBUG
-                MessageBox.Show($"plugin <{queryPlugin.PluginId}> call Query method throw error: {e.Message}");
+                MessageBox.Show($"plugin <{queryPlugin.PluginId}> call QueryList method throw error: {e.Message}");
 #endif
-                OnGetResult(null);
+                OnGetListResult(null);
                 OnQueryError();
             }
-
-
-
-
 
         }
 
@@ -476,9 +516,11 @@ namespace LeaSearch.Core.QueryEngine
         /// <summary>
         /// 当得到了返回列表数据的时候，发生事件
         /// </summary>
-        public event Action<QueryListResult> GetResult;
+        public event Action<QueryListResult> GetListResult;
 
         public event Action<QueryDetailResult> GetDetailResult;
+
+        public event Action<QueryItemDetailResult> GetItemDetailResult;
 
 
         /// <summary>
@@ -512,20 +554,28 @@ namespace LeaSearch.Core.QueryEngine
         public event Action<HelpInfo> ShowHelpInfo;
         #endregion
 
-        protected virtual void OnGetResult(QueryListResult result)
+        protected virtual void OnGetListResult(QueryListResult result)
         {
             //如果返回了结果，则添加列表
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             {
-                GetResult?.Invoke(result);
+                GetListResult?.Invoke(result);
             }));
         }
 
-        protected virtual void OnGetDetailResult(QueryDetailResult result)
+        protected virtual void OnGetDetailResult(QueryDetailResult detail)
         {
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             {
-                GetDetailResult?.Invoke(result);
+                GetDetailResult?.Invoke(detail);
+            }));
+        }
+
+        protected virtual void OnGetItemDetailResult(QueryItemDetailResult result)
+        {
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            {
+                GetItemDetailResult?.Invoke(result);
             }));
         }
 
@@ -577,5 +627,6 @@ namespace LeaSearch.Core.QueryEngine
                 ShowHelpInfo?.Invoke(info);
             }));
         }
+
     }
 }

@@ -48,12 +48,13 @@
     <Compile Include="IPlugin.cs" />
     <Compile Include="PluginInitInfo.cs" />
     <Compile Include="Index\DataItem.cs" />
+    <Compile Include="Query\QueryDetailResult.cs" />
     <Compile Include="Query\QueryMode.cs" />
     <Compile Include="Query\StateAfterCommandInvoke.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Query\PluginCalledArg.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Query\QueryDetailResult.cs" />
+    <Compile Include="Query\QueryItemDetailResult.cs" />
     <Compile Include="Query\QueryListResult.cs" />
     <Compile Include="Query\QueryParam.cs" />
     <Compile Include="Query\QueryResult.cs" />

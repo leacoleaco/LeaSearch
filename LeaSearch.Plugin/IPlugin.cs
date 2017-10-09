@@ -57,7 +57,17 @@ namespace LeaSearch.Plugin
         /// </summary>
         /// <param name="queryParam"></param>
         /// <returns>查询的结果</returns>
-        QueryListResult Query(QueryParam queryParam);
+        QueryListResult QueryList(QueryParam queryParam);
+
+
+        ///  <summary>
+        /// 在执行详情查询的时候会调用本方法
+        /// 如果在插件激活后，返回调用参数中为详情查询方式，才会执行本方法
+        ///  插件激活后，使用详情查询模式
+        ///  </summary>
+        /// <param name="queryParam"></param>
+        /// <returns></returns>
+        QueryDetailResult QueryDetail(QueryParam queryParam);
 
 
         /// <summary>
@@ -66,7 +76,7 @@ namespace LeaSearch.Plugin
         /// </summary>
         /// <param name="currentItem">需要预览的节点，可以用里面的 queryparam 属性获取之前的查询讯息</param>
         /// <returns>查询详情的结果</returns>
-        QueryDetailResult QueryDetail(ResultItem currentItem);
+        QueryItemDetailResult QueryItemDetail(ResultItem currentItem);
 
 
 

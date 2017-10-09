@@ -44,7 +44,7 @@ namespace LeaSearch.Plugin.HelloWorld
             };
         }
 
-        public override QueryListResult Query(QueryParam queryParam)
+        public override QueryListResult QueryList(QueryParam queryParam)
         {
             var result = new QueryListResult()
             {
@@ -83,7 +83,7 @@ namespace LeaSearch.Plugin.HelloWorld
 
                 //全局的执行命令
                 //这里是为了让每个子项都执行相同的内容
-                SelectedAction = (shareContext, resultItem) =>
+                SelectAction = (shareContext, resultItem) =>
                  {
                      shareContext.SharedMethod.ShowMessage(resultItem.Title);
 
@@ -102,12 +102,12 @@ namespace LeaSearch.Plugin.HelloWorld
             return result;
         }
 
-        public override QueryDetailResult QueryDetail(ResultItem currentItem)
+        public override QueryItemDetailResult QueryItemDetail(ResultItem currentItem)
         {
             //模拟查询详情的耗时情况
             Thread.Sleep(3000);
             //返回查询的详情显示
-            return new QueryDetailResult() { MoreInfo = new TextInfo() { Text = $"this is a test info when preview {currentItem.Title}" } };
+            return new QueryItemDetailResult() { DetailResult = new TextInfo() { Text = $"this is a test info when preview {currentItem.Title}" } };
         }
 
 

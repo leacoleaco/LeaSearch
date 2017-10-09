@@ -63,7 +63,7 @@ namespace LeaSearch.Plugin.Programs
 
         }
 
-        public override QueryListResult Query(QueryParam queryParam)
+        public override QueryListResult QueryList(QueryParam queryParam)
         {
             var res = new QueryListResult();
 

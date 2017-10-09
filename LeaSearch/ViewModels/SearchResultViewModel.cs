@@ -8,6 +8,7 @@ using GalaSoft.MvvmLight.Threading;
 using LeaSearch.Common.Env;
 using LeaSearch.Common.Messages;
 using LeaSearch.Common.ViewModel;
+using LeaSearch.Core.I18N;
 using LeaSearch.Core.Ioc;
 using LeaSearch.Core.MessageModels;
 using LeaSearch.Core.Notice;
@@ -23,7 +24,6 @@ namespace LeaSearch.ViewModels
         private ResultItem _currentItem;
         private int _currentIndex;
         private readonly SharedContext _sharedContext;
-        private QueryListResult _queryListResult;
         private object _moreInfoContent;
         private QueryEngine _queryEngine;
         /// <summary>
@@ -38,14 +38,12 @@ namespace LeaSearch.ViewModels
 
 
             _queryEngine.PluginCallActive += queryEngine_PluginCallActive;
-            _queryEngine.GetResult += _queryEngine_GetResult;
-            _queryEngine.GetDetailResult += queryEngine_GetDetailResult;
-            _queryEngine.QueryEnd += EngineQueryEnd;
+            _queryEngine.GetListResult += queryEngine_GetListResult;
+            _queryEngine.GetDetailResult += _queryEngine_GetDetailResult;
+            _queryEngine.GetItemDetailResult += QueryEngineGetItemDetailResult;
+
         }
 
-        private void EngineQueryEnd()
-        {
-        }
 
         private void queryEngine_PluginCallActive(Core.Plugin.Plugin plugin, PluginCalledArg arg)
         {
@@ -58,53 +56,67 @@ namespace LeaSearch.ViewModels
             //    ClearMoreInfo();
             //}
 
-            Clear();
+            ClearListResult();
+            ClearDetailResult();
         }
 
-        private void _queryEngine_GetResult(QueryListResult result)
+        private void queryEngine_GetListResult(QueryListResult result)
         {
+
+            ClearDetailResult();
+            ClearListResult();
+            _listResult = result;
             if (result == null)
             {
-                //如果没有返回结果,则清除列表
-                Clear();
                 return;
             }
 
             //如果有更多信息，则替换或者弹出，但是不清理，因为在激活的插件模式的时候可能有信息已经返回
             if (result.MoreInfo != null)
             {
-                ShowMoreInfo(result.MoreInfo);
+                SetDetailInfo(result.MoreInfo);
             }
 
-
-            //如果有错误信息，则弹出
-            if (!string.IsNullOrWhiteSpace(result?.ErrorMessage))
+            foreach (var resultItem in result.Results)
             {
-                UiNoticeHelper.ShowErrorNotice(result.ErrorMessage);
+                Results.Add(resultItem);
             }
-            else
+
+            SetErrorNotice(result?.ErrorMessage);
+        }
+
+
+
+        private void _queryEngine_GetDetailResult(QueryDetailResult result)
+        {
+            ClearListResult();
+            ClearDetailResult();
+            _detailResult = result;
+            if (result == null)
             {
-                UiNoticeHelper.ClearErrorNotice();
+                return;
             }
-
-
-            SetResults(result);
-
-
+            SetDetailInfo(result.Result);
+            SetErrorNotice(result?.ErrorMessage);
 
         }
 
-        private void queryEngine_GetDetailResult(QueryDetailResult result)
+        private void QueryEngineGetItemDetailResult(QueryItemDetailResult result)
         {
-            var resultMoreInfo = result.MoreInfo;
+            var resultMoreInfo = result.DetailResult;
             if (resultMoreInfo != null)
             {
-                ShowMoreInfo(resultMoreInfo);
+                SetDetailInfo(resultMoreInfo);
             }
 
 
             Messenger.Default.Send(new DetailLoaddingDisplayMessage() { IsShow = false });
         }
+
+
+
+        #region ListResultMode
+        private QueryListResult _listResult;
 
         public int CurrentIndex
         {
@@ -144,6 +156,79 @@ namespace LeaSearch.ViewModels
             }
         }
 
+        /// <summary>
+        /// 选中第一个
+        /// </summary>
+        public void SelectFirst()
+        {
+            CurrentIndex = 0;
+        }
+
+        /// <summary>
+        /// 选择下一个
+        /// </summary>
+        /// <param name="stepSize"></param>
+        public void SelectNext(int stepSize = 1)
+        {
+            CurrentIndex = NewIndex(CurrentIndex + stepSize);
+        }
+
+        /// <summary>
+        /// 选择上一个
+        /// </summary>
+        /// <param name="stepSize"></param>
+        public void SelectPrev(int stepSize = 1)
+        {
+            CurrentIndex = NewIndex(CurrentIndex - stepSize);
+        }
+
+        private void OpenListResult()
+        {
+
+            if (!Results.Any()) return;
+
+            if (Results.Count == 1) CurrentItem = Results[0];
+
+            if (CurrentItem == null) return;
+
+            //当点击了获取结果的按钮后
+            //按照不同的结果执行不同的操作方案
+            var r = CurrentItem.SelectedAction?.Invoke(_sharedContext);
+            if (r != null)
+            {
+                OnAfterOpenResultCommand(r);
+            }
+
+            //执行全局的 selectedAction，仅适用于 plugin call 模式
+            if (CurrentItem != null)
+            {
+                var r1 = _listResult?.SelectAction?.Invoke(_sharedContext, CurrentItem);
+                if (r1 != null)
+                {
+                    OnAfterOpenResultCommand(r1);
+                }
+            }
+
+        }
+
+        #endregion
+
+        #region DetailResultMode
+
+        private QueryDetailResult _detailResult;
+        private void OpenDetailResult()
+        {
+            if (_detailResult?.Result == null) return;
+
+            var r1 = _detailResult.EnterAction?.Invoke(_sharedContext, _detailResult.Result);
+            if (r1 != null)
+            {
+                OnAfterOpenResultCommand(r1);
+            }
+        }
+
+        #endregion
+
         #region Command
 
         public ICommand SelectNextItemCommand
@@ -182,7 +267,7 @@ namespace LeaSearch.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    OpenResult();
+                    EnterResult();
                 });
             }
         }
@@ -209,7 +294,7 @@ namespace LeaSearch.ViewModels
                 {
                     if (_isPreviewing)
                     {
-                        ClearMoreInfo();
+                        ClearDetailResult();
                     }
                     else
                     {
@@ -221,103 +306,38 @@ namespace LeaSearch.ViewModels
 
         #endregion
 
-
-
-        /// <summary>
-        /// 设置查询结果
-        /// </summary>
-        /// <param name="queryListResult"></param>
-        public void SetResults(QueryListResult queryListResult)
+        public void EnterResult()
         {
-            _queryListResult = queryListResult;
-
-            if (queryListResult == null) return;
-
-            //如果有默认信息，则显示信息,否则清理信息
-            if (queryListResult.MoreInfo != null)
+            if (_queryEngine.CurrentResultMode == ResultMode.List)
             {
-                ShowMoreInfo(queryListResult.MoreInfo);
+                if (Results == null) return;
+                var resultsCount = Results?.Count;
+                if (resultsCount == 1)
+                {
+                    OpenListResult();
+                }
+                else if (resultsCount > 1)
+                {
+                    UiNoticeHelper.ShowInfoNotice(@"notice_SelectMode".GetTranslation());
+                    Messenger.Default.Send<FocusMessage>(new FocusMessage() { FocusTarget = FocusTarget.ResultList });
+                    SelectFirst();
+                }
             }
-            else
+            else if (_queryEngine.CurrentResultMode == ResultMode.Detail)
             {
-                ClearMoreInfo();
+                OpenDetailResult();
             }
-
-            Results.Clear();
-            foreach (var resultItem in queryListResult.Results)
-            {
-                Results.Add(resultItem);
-            }
-
         }
 
 
         /// <summary>
         /// 清理列表
         /// </summary>
-        public void Clear()
+        public void ClearListResult()
         {
             Results.Clear();
         }
 
-
-
-        /// <summary>
-        /// 选中第一个
-        /// </summary>
-        public void SelectFirst()
-        {
-            CurrentIndex = 0;
-        }
-
-        /// <summary>
-        /// 选择下一个
-        /// </summary>
-        /// <param name="stepSize"></param>
-        public void SelectNext(int stepSize = 1)
-        {
-            CurrentIndex = NewIndex(CurrentIndex + stepSize);
-        }
-
-        /// <summary>
-        /// 选择上一个
-        /// </summary>
-        /// <param name="stepSize"></param>
-        public void SelectPrev(int stepSize = 1)
-        {
-            CurrentIndex = NewIndex(CurrentIndex - stepSize);
-        }
-
-
-        /// <summary>
-        ///打开查询结果
-        /// </summary>
-        public void OpenResult()
-        {
-            if (!Results.Any()) return;
-
-            if (Results.Count == 1) CurrentItem = Results[0];
-
-            if (CurrentItem == null) return;
-
-            //当点击了获取结果的按钮后
-            //按照不同的结果执行不同的操作方案
-            var r = CurrentItem.SelectedAction?.Invoke(_sharedContext);
-            if (r != null)
-            {
-                OnAfterOpenResultCommand(r);
-            }
-
-            //执行全局的 selectedAction，仅适用于 plugin call 模式
-            if (CurrentItem != null)
-            {
-                var r1 = _queryListResult?.SelectedAction?.Invoke(_sharedContext, CurrentItem);
-                if (r1 != null)
-                {
-                    OnAfterOpenResultCommand(r1);
-                }
-            }
-        }
 
         /// <summary>
         ///执行了打开结果后的处理
@@ -350,7 +370,7 @@ namespace LeaSearch.ViewModels
 
         }
 
-        public void ClearMoreInfo()
+        public void ClearDetailResult()
         {
             DispatcherHelper.CheckBeginInvokeOnUI(new Action(() =>
             {
@@ -364,11 +384,11 @@ namespace LeaSearch.ViewModels
         /// 自动根据不同的 内容设置不同信息
         /// </summary>
         /// <param name="contentInfo"></param>
-        private void ShowMoreInfo(IInfo contentInfo)
+        private void SetDetailInfo(IInfo contentInfo)
         {
             if (contentInfo == null)
             {
-                ClearMoreInfo();
+                ClearDetailResult();
                 return;
             }
 
@@ -381,6 +401,22 @@ namespace LeaSearch.ViewModels
         }
 
 
+        /// <summary>
+        /// 设置错误信息，如果为null，则清除错误信息
+        /// </summary>
+        /// <param name="errorMsg"></param>
+        private void SetErrorNotice(string errorMsg)
+        {
+            //如果有错误信息，则弹出
+            if (!string.IsNullOrWhiteSpace(errorMsg))
+            {
+                UiNoticeHelper.ShowErrorNotice(errorMsg);
+            }
+            else
+            {
+                UiNoticeHelper.ClearErrorNotice();
+            }
+        }
 
     }
 

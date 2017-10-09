@@ -41,7 +41,7 @@ namespace LeaSearch.Plugin.SystemControlPanel
             return true;
         }
 
-        public override QueryListResult Query(QueryParam queryParam)
+        public override QueryListResult QueryList(QueryParam queryParam)
         {
             var res = new QueryListResult();
 
