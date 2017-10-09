@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.12
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeaSearch", "LeaSearch\LeaSearch.csproj", "{C3AFA80A-3537-408E-9EDD-BD6C04A8093D}"
 EndProject
@@ -36,6 +36,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeaSearch.SearchEngine", "LeaSearch.SearchEngine\LeaSearch.SearchEngine.csproj", "{C3753A15-983D-4936-88D9-47D03BF820DD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeaSearch.Plugin.Programs", "Plugins\LeaSearch.Plugin.Programs\LeaSearch.Plugin.Programs.csproj", "{31541DBB-E613-4686-B2B3-B77E548DAE4A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeaSearch.Plugin.Youdao", "Plugins\LeaSearch.Plugin.Youdao\LeaSearch.Plugin.Youdao.csproj", "{35996BC1-1856-4632-8A88-19374DE16CFF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -103,6 +105,10 @@ Global
 		{31541DBB-E613-4686-B2B3-B77E548DAE4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31541DBB-E613-4686-B2B3-B77E548DAE4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31541DBB-E613-4686-B2B3-B77E548DAE4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35996BC1-1856-4632-8A88-19374DE16CFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35996BC1-1856-4632-8A88-19374DE16CFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35996BC1-1856-4632-8A88-19374DE16CFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35996BC1-1856-4632-8A88-19374DE16CFF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -116,6 +122,7 @@ Global
 		{9377112B-CEC8-41EC-AC9C-91BE1E0B55C2} = {E0391F05-D919-4782-9EE0-AE81B3337136}
 		{42B4E729-A82E-4CB4-AA7E-C155BEA8879F} = {F07A2119-9E0A-4655-A86D-BDCFBB158018}
 		{31541DBB-E613-4686-B2B3-B77E548DAE4A} = {F07A2119-9E0A-4655-A86D-BDCFBB158018}
+		{35996BC1-1856-4632-8A88-19374DE16CFF} = {F07A2119-9E0A-4655-A86D-BDCFBB158018}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FE334089-068B-4A01-9DE6-F846B64B2F85}

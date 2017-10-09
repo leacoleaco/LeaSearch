@@ -53,7 +53,7 @@ namespace LeaSearch.Core.Plugin
                 try
                 {
                     Clipboard.SetDataObject(copyObj);
-                    ShowMessageWithFormat(@"message_copyToClipboard", copyObj.ToString());
+                    ShowMessageWithTranslation(@"message_copyToClipboard", copyObj.ToString());
                 }
                 catch (Exception e)
                 {

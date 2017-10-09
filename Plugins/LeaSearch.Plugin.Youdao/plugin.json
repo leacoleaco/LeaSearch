@@ -1,0 +1,13 @@
+﻿{
+  "PluginId": "LeaSearch.Plugin.Youdao",
+  "Name": "YouDao",
+  "DisplayName": "有道词典",
+  "DefalutPrefixKeyword": "yd|youdao",
+  "Author": "Rico Lee",
+  "Version": "1.0.0",
+  "Language": "csharp",
+  "Description": "Search the youdao",
+  "Website": "https://github.com/leacoleaco/LeaSearch",
+  "EntryFileName": "LeaSearch.Plugin.Youdao.dll",
+  "IcoPath": "Images/ControlPanel.png"
+}

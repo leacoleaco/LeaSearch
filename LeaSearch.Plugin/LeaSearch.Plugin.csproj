@@ -64,6 +64,7 @@
     <Compile Include="Shared\SharedContext.cs" />
     <Compile Include="Shared\ISharedMethod.cs" />
     <Compile Include="DetailInfos\TextInfo.cs" />
+    <Compile Include="Utils\HttpWebRequestUtil.cs" />
     <Compile Include="Utils\ImageUtils.cs" />
   </ItemGroup>
   <ItemGroup />
