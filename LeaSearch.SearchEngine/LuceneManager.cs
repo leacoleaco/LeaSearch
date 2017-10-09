@@ -88,6 +88,43 @@ namespace LeaSearch.SearchEngine
             return res.ToArray();
         }
 
+
+        /// <summary>
+        /// 搜索
+        /// </summary>
+        /// <param name="keyword"></param>
+        /// <param name="top"></param>
+        /// <returns></returns>
+        public DataItem[] Search(string keyword, string pluginId, int top)
+        {
+
+            if (_indexSearcher == null) throw new Exception("Lucene index is not ready!");
+
+            //拼装查询语句
+            var query = new BooleanQuery();
+
+            var pluginQuery = new TermQuery(new Term("PluginId", pluginId));
+            query.Add(pluginQuery, Occur.MUST);
+
+            var nameQuery = new QueryParser(Version.LUCENE_30, "Name", _searchAnalyzer).Parse(keyword);
+            query.Add(nameQuery, Occur.MUST);
+
+
+            //返回命中数量
+            TopDocs tds = _indexSearcher.Search(query, top);
+
+            var res = new List<DataItem>();
+            foreach (ScoreDoc sd in tds.ScoreDocs)
+            {
+                //Console.WriteLine(sd.Score);
+                Document doc = _indexSearcher.Doc(sd.Doc);
+                //Console.WriteLine(doc.Get("body"));
+                res.Add(Document2DataItem(doc, keyword, "Name"));
+
+            }
+            return res.ToArray();
+        }
+
         public DataItem[] SearchByPluginId(string pluginId, int top = 100)
         {
 

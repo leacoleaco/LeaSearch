@@ -61,15 +61,9 @@ namespace LeaSearch.Core.Plugin
             _luceneManager.UpdateToIndex(dataItems, _plugin.PluginId);
         }
 
-        public DataItem[] SearchDataItemInIndex(string keyword, int page = 1, int pageSize = 10)
-        {
-            throw new System.NotImplementedException();
-        }
-
-
         public DataItem[] SearchDataItems(string keyword, int top = 10)
         {
-            return _luceneManager.Search(keyword, top);
+            return _luceneManager.Search(keyword,_plugin.PluginId, top);
         }
 
         public DataItem[] GetAllDataItems()
