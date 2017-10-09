@@ -155,19 +155,10 @@ namespace LeaSearch.Core.Plugin
             //与plugin共享api
             IPluginApi pluginApi = new PluginApiForCsharpPlugin(csharpPlugin, _luceneManager);
 
-            return InitCSharpPlugin(csharpPlugin, pluginApi);
+            // 初始化插件
+            return csharpPlugin.InvokeInitPlugin(this._sharedContext, pluginApi);
         }
 
-        /// <summary>
-        /// 初始化插件
-        /// </summary>
-        /// <param name="plugin"></param>
-        /// <param name="pluginApi"></param>
-        /// <returns></returns>
-        private Plugin InitCSharpPlugin(Plugin plugin, IPluginApi pluginApi)
-        {
-            return plugin.InvokeInitPlugin(this._sharedContext, pluginApi);
-        }
     }
 }
 

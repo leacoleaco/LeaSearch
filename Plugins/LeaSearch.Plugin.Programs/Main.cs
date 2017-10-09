@@ -66,6 +66,7 @@ namespace LeaSearch.Plugin.Programs
         {
             var res = new QueryListResult();
 
+
             var searchRes = PluginApi.SearchDataItems(queryParam.Keyword);
 
             foreach (var item in searchRes)

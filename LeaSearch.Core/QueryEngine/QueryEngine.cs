@@ -46,6 +46,8 @@ namespace LeaSearch.Core.QueryEngine
 
         private readonly LeaSearchCommandManager _commandManager;
 
+        private readonly SharedContext _sharedContext;
+
         private QueryMode _currentQueryMode = QueryMode.None;
 
         /// <summary>
@@ -71,6 +73,10 @@ namespace LeaSearch.Core.QueryEngine
 
                 _currentQueryMode = value;
 
+                if (_sharedContext != null)
+                {
+                    _sharedContext.CurrentQueryMode = value;
+                }
             }
 
         }
@@ -80,6 +86,10 @@ namespace LeaSearch.Core.QueryEngine
         /// </summary>
         public ResultMode CurrentResultMode => _currentResultMode;
 
+        public void Init()
+        {
+
+        }
 
         /// <summary>
         /// 模糊查询配置
@@ -95,17 +105,13 @@ namespace LeaSearch.Core.QueryEngine
         };
 
 
-        public QueryEngine(PluginManager pluginManager, LeaSearchCommandManager commandManager)
+        public QueryEngine(PluginManager pluginManager, LeaSearchCommandManager commandManager, SharedContext sharedContext)
         {
             this._pluginManager = pluginManager;
             _commandManager = commandManager;
+            _sharedContext = sharedContext;
         }
 
-
-        public void Init()
-        {
-
-        }
 
 
         /// <summary>
@@ -570,6 +576,7 @@ namespace LeaSearch.Core.QueryEngine
                 ShowHelpInfo?.Invoke(info);
             }));
         }
+
 
     }
 }

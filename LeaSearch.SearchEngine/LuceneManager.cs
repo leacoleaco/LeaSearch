@@ -106,7 +106,7 @@ namespace LeaSearch.SearchEngine
             var pluginQuery = new TermQuery(new Term("PluginId", pluginId));
             query.Add(pluginQuery, Occur.MUST);
 
-            var nameQuery = new QueryParser(Version.LUCENE_30, "Name", _searchAnalyzer).Parse(keyword);
+            var nameQuery = new QueryParser(Version.LUCENE_30, "Name", _searchAnalyzer).Parse(QueryParser.Escape(keyword));
             query.Add(nameQuery, Occur.MUST);
 
 

@@ -12,7 +12,7 @@ namespace LeaSearch.Plugin
     {
         protected SharedContext SharedContext;
         protected IPluginApi PluginApi;
-
+        protected QueryMode CurrentQueryMode => SharedContext.CurrentQueryMode;
 
         /// <summary>
         /// initilze the plugin

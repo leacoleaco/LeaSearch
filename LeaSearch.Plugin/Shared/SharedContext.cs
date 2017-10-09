@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using LeaSearch.Plugin.Query;
 
 namespace LeaSearch.Plugin
 {
@@ -15,6 +16,11 @@ namespace LeaSearch.Plugin
         {
             SharedMethod = sharedMethod;
         }
+
+        /// <summary>
+        /// current query mode
+        /// </summary>
+        public QueryMode CurrentQueryMode { get; set; }
 
         /// <summary>
         /// the shared method we can call
