@@ -313,7 +313,10 @@ namespace LeaSearch.Core.QueryEngine
                 {
                     var pluginCalledArg = queryPlugin.PluginInstance.PluginCallActive(queryParam);
 
-                    _currentResultMode = pluginCalledArg.ResultMode;
+                    if (pluginCalledArg != null)
+                    {
+                        _currentResultMode = pluginCalledArg.ResultMode;
+                    }
 
                     OnPluginCallActive(queryPlugin, pluginCalledArg);
                 }

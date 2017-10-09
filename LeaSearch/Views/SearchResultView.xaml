@@ -145,6 +145,7 @@
                 <DataTemplate x:Key="SimpleHtmlInfoInfoContentDataTemplate">
                     <TextBlock
                         d:DataContext="{d:DesignInstance detailInfos:SimpleHtmlInfo}"
+                        Style="{DynamicResource ItemTitleStyle}"
                         Text="{Binding Html, Mode=OneWay}"
                         TextWrapping="WrapWithOverflow" />
                     <!--<htmlRichTextBox:HtmlRichTextBox IsReadOnly="True" Text="{Binding Html}" />-->
