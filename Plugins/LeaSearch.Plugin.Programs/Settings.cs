@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Wox.Plugin.Program.Programs;
 
 namespace Wox.Plugin.Program
 {

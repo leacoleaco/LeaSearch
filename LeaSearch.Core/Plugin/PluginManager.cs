@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows;
 using LeaSearch.Common.Env;
 using LeaSearch.Infrastructure.Logger;
 using LeaSearch.Plugin;

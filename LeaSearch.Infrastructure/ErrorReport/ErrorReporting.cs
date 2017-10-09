@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Threading;
 using LeaSearch.Common.Env;
-using NLog;
 
 namespace LeaSearch.Infrastructure.ErrorReport
 {

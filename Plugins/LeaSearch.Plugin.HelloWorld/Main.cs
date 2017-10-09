@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using System.Threading;
+﻿using System.Threading;
 using System.Windows.Documents;
 using System.Windows.Markup;
 using LeaSearch.Plugin.DetailInfos;

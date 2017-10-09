@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using LeaSearch.Plugin.Index;
 using LeaSearch.Plugin.Query;
 using Wox.Plugin.Program;

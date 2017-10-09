@@ -1,6 +1,4 @@
-﻿using System;
-using System.Reflection;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Windows.Documents;
 using System.Windows.Markup;
 using LeaSearch.Plugin.DetailInfos;
