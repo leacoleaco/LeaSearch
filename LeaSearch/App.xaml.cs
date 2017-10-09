@@ -14,6 +14,7 @@ using LeaSearch.Core.Plugin;
 using LeaSearch.Core.QueryEngine;
 using LeaSearch.Core.Theme;
 using LeaSearch.Infrastructure.ErrorReport;
+using LeaSearch.Infrastructure.Helper;
 using LeaSearch.Infrastructure.Storage;
 using LeaSearch.Plugin;
 using LeaSearch.SearchEngine;
@@ -69,14 +70,14 @@ namespace LeaSearch
 
         }
 
-#region ISingleInstanceApp Members
+        #region ISingleInstanceApp Members
         public bool SignalExternalCommandLineArgs(IList<string> args)
         {
             // handle command line arguments of second instance
             // ...
             return true;
         }
-#endregion
+        #endregion
 
         /// <summary>
         /// When program start
@@ -162,6 +163,21 @@ namespace LeaSearch
             Ioc.Reslove<QueryEngine>().Init();
 
 
+#if !DEBUG
+            //auto startup setting
+            if (settings.StartWoxOnSystemStartup)
+            {
+                if (!AutoStartupHelper.IsStartupSet())
+                {
+                    AutoStartupHelper.SetStartup();
+                }
+            }
+            else
+            {
+                AutoStartupHelper.RemoveStartup();
+            }
+#endif
+
             //get the windows to init a shellview and show windows
             var shellView = new ShellView(settings);
         }
@@ -187,7 +203,7 @@ namespace LeaSearch
         }
 
 
-#region NotifyIcon 任务栏图标
+        #region NotifyIcon 任务栏图标
 
         /// <summary>
         /// initialize notifyIcon
@@ -216,10 +232,10 @@ namespace LeaSearch
 
         }
 
-#endregion
+        #endregion
 
 
-#region ErrorHandler
+        #region ErrorHandler
 
         /// <summary>
         /// register unhandled exception that is UI Thread cause
@@ -248,7 +264,7 @@ namespace LeaSearch
             //};
         }
 
-#endregion
+        #endregion
 
     }
 }

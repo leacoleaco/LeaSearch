@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.IO;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -27,11 +28,18 @@ namespace LeaSearch.Converts
                 return _imageManager.GetImageSource(s);
             }
 
-            var bitmapImage = value as BitmapImage;
-            if (bitmapImage != null)
+            var stream = value as Stream;
+            if (stream != null)
             {
-                return bitmapImage;
+                var bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.StreamSource = stream;
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.EndInit();
+                bitmap.Freeze();
+                return bitmap;
             }
+
 
             var bytes = value as byte[];
             if (bytes != null)

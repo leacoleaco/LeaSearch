@@ -202,7 +202,7 @@ namespace LeaSearch.ViewModels
             //执行全局的 selectedAction，仅适用于 plugin call 模式
             if (CurrentItem != null)
             {
-                var r1 = _listResult?.SelectAction?.Invoke(_sharedContext, CurrentItem);
+                var r1 = _listResult?.SelectAction?.Invoke(CurrentItem);
                 if (r1 != null)
                 {
                     OnAfterOpenResultCommand(r1);
@@ -310,18 +310,7 @@ namespace LeaSearch.ViewModels
         {
             if (_queryEngine.CurrentResultMode == ResultMode.List)
             {
-                if (Results == null) return;
-                var resultsCount = Results?.Count;
-                if (resultsCount == 1)
-                {
-                    OpenListResult();
-                }
-                else if (resultsCount > 1)
-                {
-                    UiNoticeHelper.ShowInfoNotice(@"notice_SelectMode".GetTranslation());
-                    Messenger.Default.Send<FocusMessage>(new FocusMessage() { FocusTarget = FocusTarget.ResultList });
-                    SelectFirst();
-                }
+                OpenListResult();
             }
             else if (_queryEngine.CurrentResultMode == ResultMode.Detail)
             {

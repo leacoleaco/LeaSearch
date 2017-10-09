@@ -2,8 +2,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:system="clr-namespace:System;assembly=mscorlib">
-    <system:String x:Key="leasearch_plugin_calculator_pluginCallActive">請輸入數學表達式計算</system:String>
-    <system:String x:Key="leasearch_plugin_calculator_copy">點擊回車複製到剪貼板</system:String>
-
-    <system:String x:Key="leasearch_plugin_calculator_express_err">表達式有誤</system:String>
+    <system:String x:Key="PluginCallActive">請輸入數學表達式計算</system:String>
+    <system:String x:Key="Copy">點擊回車複製到剪貼板</system:String>
+    <system:String x:Key="ExpressErr">表達式有誤</system:String>
 </ResourceDictionary>

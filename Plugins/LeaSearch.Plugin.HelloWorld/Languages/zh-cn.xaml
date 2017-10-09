@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
-    <system:String x:Key="leasearch_plugin_helloWorld_pluginCallActive">请输入英文</system:String>
+    <system:String x:Key="pluginCallActive">请输入英文</system:String>
 
 
 </ResourceDictionary>

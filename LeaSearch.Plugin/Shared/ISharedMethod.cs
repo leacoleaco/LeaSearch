@@ -6,7 +6,7 @@ namespace LeaSearch.Plugin
     public interface ISharedMethod
     {
         /// <summary>
-        /// 返回国际化的提示信息
+        /// 返回主程序国际化的提示信息
         /// </summary>
         /// <param name="i18NKey"></param>
         /// <param name="paramObjects"></param>

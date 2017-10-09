@@ -2,8 +2,8 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:system="clr-namespace:System;assembly=mscorlib">
-    <system:String x:Key="leasearch_plugin_calculator_pluginCallActive">please input math expression to start calculate</system:String>
-    <system:String x:Key="leasearch_plugin_calculator_copy">input enter to copy to clipboard</system:String>
+    <system:String x:Key="PluginCallActive">please input math expression to start calculate</system:String>
+    <system:String x:Key="Copy">input enter to copy to clipboard</system:String>
 
-    <system:String x:Key="leasearch_plugin_calculator_express_err">expression was error</system:String>
+    <system:String x:Key="ExpressErr">expression was error</system:String>
 </ResourceDictionary>

@@ -37,7 +37,7 @@ namespace LeaSearch.Plugin.HelloWorld
             return new PluginCalledArg()
             {
                 //插件模式激活后，在插件下发的提示信息
-                InfoMessage = SharedContext.SharedMethod.GetTranslation(@"leasearch_plugin_helloWorld_pluginCallActive"),
+                InfoMessage = PluginApi.GetTranslation(@"PluginCallActive"),
                 //在程序进入插件模式后展示的信息
                 //可以可以返回的信息： FlowDocumentInfo （流文档 形式）
             };
@@ -82,9 +82,9 @@ namespace LeaSearch.Plugin.HelloWorld
 
                 //全局的执行命令
                 //这里是为了让每个子项都执行相同的内容
-                SelectAction = (shareContext, resultItem) =>
+                SelectAction = (resultItem) =>
                  {
-                     shareContext.SharedMethod.ShowMessage(resultItem.Title);
+                     SharedContext.SharedMethod.ShowMessage(resultItem.Title);
 
                      //执行命令后保持程序不隐藏
                      return new StateAfterCommandInvoke() { ShowProgram = true };

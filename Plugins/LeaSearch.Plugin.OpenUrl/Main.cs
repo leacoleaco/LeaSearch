@@ -58,7 +58,7 @@ namespace LeaSearch.Plugin.OpenUrl
         {
             return new PluginCalledArg()
             {
-                InfoMessage = "请输入一个网址以用默认浏览器打开"
+                InfoMessage = PluginApi.GetTranslation("PluginCallActive")
             };
         }
 
@@ -66,31 +66,54 @@ namespace LeaSearch.Plugin.OpenUrl
         {
             var res = new QueryListResult();
             var keyword = queryParam.Keyword;
-            res.AddResultItem(
+            var lower = keyword.ToLower();
+            if (lower.StartsWith("http") || lower.StartsWith("https"))
+            {
+                res.AddResultItem(
+                   new ResultItem
+                   {
+                       Title = keyword,
+                       SubTitle = PluginApi.GetTranslation("OpenUrl", keyword),
+                       IconStream = PluginApi.GetPluginEmbedResouceStream("url.png"),
+                   }
+               );
+            }
+            else
+            {
+                var httpUrl = $"http://{keyword}";
+                res.AddResultItem(
+                   new ResultItem
+                   {
+                       Title = httpUrl,
+                       SubTitle = PluginApi.GetTranslation("OpenUrl", httpUrl),
+                       IconStream = PluginApi.GetPluginEmbedResouceStream("url.png"),
+                   }
+               );
+                var httpsUrl = $"https://{keyword}";
+                res.AddResultItem(
                 new ResultItem
                 {
-                    Title = keyword,
-                    SubTitle = SharedContext.SharedMethod.GetTranslation("leasearch_plugin_openurl_open_url", keyword),
-                    IconPath = "url.png",
-                    SelectedAction = x =>
-                    {
-                        if (!keyword.ToLower().StartsWith("http"))
-                        {
-                            keyword = "http://" + keyword;
-                        }
-                        try
-                        {
-                            Process.Start(keyword);
-                            return new StateAfterCommandInvoke();
-                        }
-                        catch (Exception)
-                        {
-                            x.SharedMethod.ShowMessageWithTranslation("leasearch_plugin_openurl_canot_open_url", keyword);
-                            return new StateAfterCommandInvoke();
-                        }
-                    }
+                    Title = httpsUrl,
+                    SubTitle = PluginApi.GetTranslation("OpenUrl", httpsUrl),
+                    IconStream = PluginApi.GetPluginEmbedResouceStream("url.png"),
                 }
             );
+
+            }
+
+            res.SelectAction = (item) =>
+            {
+                try
+                {
+                    Process.Start(item.Title);
+                    return new StateAfterCommandInvoke();
+                }
+                catch (Exception)
+                {
+                    PluginApi.ShowMessageWithTranslation("CannotOpenUrl", item.Title);
+                    return new StateAfterCommandInvoke();
+                }
+            };
             return res;
         }
 

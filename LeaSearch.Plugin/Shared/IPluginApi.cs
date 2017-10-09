@@ -93,8 +93,16 @@ namespace LeaSearch.Plugin
         /// 得到嵌入在插件中的语言资源
         /// </summary>
         /// <param name="key"></param>
+        /// <param name="paramObjects"></param>
         /// <returns></returns>
-        string GetTranslation(string key);
+        string GetTranslation(string key, params object[] paramObjects);
         #endregion
+
+        #region UI
+
+        void ShowMessageWithTranslation(string key, params object[] paramObjects);
+
+        #endregion
+
     }
 }

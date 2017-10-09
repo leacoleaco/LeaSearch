@@ -20,7 +20,7 @@ namespace LeaSearch.Plugin.Query
         /// <summary>
         /// 默认的点击选中结果或者点击回车的事件
         /// </summary>
-        public Func<SharedContext, ResultItem, StateAfterCommandInvoke> SelectAction { get; set; }
+        public Func<ResultItem, StateAfterCommandInvoke> SelectAction { get; set; }
 
         public void AddResultItem(ResultItem item)
         {

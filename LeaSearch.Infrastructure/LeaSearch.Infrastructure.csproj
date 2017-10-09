@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="ErrorReport\ErrorReporting.cs" />
     <Compile Include="ErrorReport\ExceptionFormatter.cs" />
+    <Compile Include="Helper\AutoStartupHelper.cs" />
     <Compile Include="Helper\WindowsInteropHelper.cs" />
     <Compile Include="Helper\WindowsPositionHelper.cs" />
     <Compile Include="Logger\Logger.cs" />

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Markup;
 using LeaSearch.Core.I18N;
 using LeaSearch.Infrastructure.Logger;
 using LeaSearch.Plugin;
@@ -83,25 +84,11 @@ namespace LeaSearch.Core.Plugin
         /// <param name="language"></param>
         public void LoadLanguage(Language language)
         {
-            //if (!string.IsNullOrWhiteSpace(PluginRootPath))
-            //{
-            //    var pluginLanguageFolder = Path.Combine(PluginRootPath, LanguageFolder);
-            //    if (Directory.Exists(pluginLanguageFolder))
-            //    {
-
-
-            //    }
-            //    else
-            //    {
-            //        Logger.Error($"|Internationalization.AddPluginLanguageDirectories|Can't find plugin path <{pluginLanguageFolder}> for <{plugin.PluginMetadata?.Name}>");
-            //    }
-            //}
-
-            LanguageResourceDictionary = new ResourceDictionary()
-            {
-                Source = new Uri($"{PluginId};Component/Languages/{language.LanguageCode}.xaml")
-            };
-
+            var stream = GetPluginEmbedResouceStream($"Languages.{language.LanguageCode}.xaml");
+            if (stream == null) return;
+            var resourceDictionary = XamlReader.Load(stream) as ResourceDictionary;
+            if (resourceDictionary == null) return;
+            LanguageResourceDictionary = resourceDictionary;
         }
 
         /// <summary>
@@ -119,6 +106,19 @@ namespace LeaSearch.Core.Plugin
 
             Logger.Error($"|Internationalization.GetTranslation|No Translation for key {key}");
             return $"No Translation for key {key}";
+        }
+
+        /// <summary>
+        /// 读取嵌入的资源
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public Stream GetPluginEmbedResouceStream(string name)
+        {
+            if (PluginAssembly == null) return null;
+            var pluginName = PluginAssembly.GetName()?.Name;
+
+            return PluginAssembly.GetManifestResourceStream($"{pluginName}.{name}");
         }
 
         #region pluginInstanceMethodCall

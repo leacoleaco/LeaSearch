@@ -56,7 +56,7 @@ namespace LeaSearch.Plugin.Calculator
             return new PluginCalledArg()
             {
                 ResultMode = ResultMode.Detail,
-                InfoMessage = PluginApi.GetTranslation("leasearch_plugin_calculator_pluginCallActive"),
+                InfoMessage = PluginApi.GetTranslation("PluginCallActive"),
             };
         }
 
@@ -68,7 +68,7 @@ namespace LeaSearch.Plugin.Calculator
             if (!expression.checkSyntax())
             {
                 //如果表达式有误                
-                var translation = SharedContext.SharedMethod.GetTranslation(@"leasearch_plugin_calculator_express_err");
+                var translation = PluginApi.GetTranslation(@"ExpressErr");
                 return new QueryListResult()
                 {
                     ErrorMessage = translation
@@ -82,14 +82,13 @@ namespace LeaSearch.Plugin.Calculator
                 {
                     IconSource = PluginApi.GetPluginEmbedImage("calculator.png"),
                     Title = result,
-                    SubTitle = SharedContext.SharedMethod.GetTranslation(@"leasearch_plugin_calculator_copy"),
+                    SubTitle = PluginApi.GetTranslation(@"Copy"),
                     SelectedAction =(SharedContext) =>
                     {
                         SharedContext.SharedMethod.CopyToClipboard(result);
                         return new StateAfterCommandInvoke(){ShowProgram = false};
                     }
                 }},
-                MoreInfo = new TextInfo() { Text = "test" }
             };
         }
 
@@ -100,7 +99,7 @@ namespace LeaSearch.Plugin.Calculator
             if (!expression.checkSyntax())
             {
                 //如果表达式有误                
-                var translation = SharedContext.SharedMethod.GetTranslation(@"leasearch_plugin_calculator_express_err");
+                var translation = PluginApi.GetTranslation(@"ExpressErr");
                 return new QueryDetailResult()
                 {
                     ErrorMessage = translation

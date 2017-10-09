@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Media;
 
 namespace LeaSearch.Plugin
@@ -40,6 +41,11 @@ namespace LeaSearch.Plugin
         public byte[] IconBytes { get; set; }
 
         /// <summary>
+        /// 列表图标 stream
+        /// </summary>
+        public Stream IconStream { get; set; }
+
+        /// <summary>
         /// 列表图标
         /// </summary>
         public ImageSource IconSource { get; set; }
@@ -70,6 +76,10 @@ namespace LeaSearch.Plugin
                 if (IconSource != null)
                 {
                     return IconSource;
+                }
+                if (IconStream != null)
+                {
+                    return IconStream;
                 }
                 if (IconBytes != null)
                 {

@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Windows.Media;
+using LeaSearch.Core.Notice;
 using LeaSearch.Plugin;
 using LeaSearch.Plugin.Index;
 using LeaSearch.SearchEngine;
@@ -27,10 +28,7 @@ namespace LeaSearch.Core.Plugin
 
         public Stream GetPluginEmbedResouceStream(string name)
         {
-            if (_plugin.PluginAssembly == null) return null;
-            var pluginName = _plugin.PluginAssembly.GetName()?.Name;
-
-            return _plugin.PluginAssembly.GetManifestResourceStream($"{pluginName}.{name}");
+            return _plugin.GetPluginEmbedResouceStream(name);
         }
 
         public ImageSource GetPluginEmbedImage(string name)
@@ -43,6 +41,7 @@ namespace LeaSearch.Core.Plugin
             ImageSourceConverter converter = new ImageSourceConverter();
             return (ImageSource)converter.ConvertFrom(stream);
         }
+
 
         public void SetIconFromEmbedResource(string imageName)
         {
@@ -74,9 +73,17 @@ namespace LeaSearch.Core.Plugin
             _luceneManager.DeleteIndexByPluginId(_plugin.PluginId);
         }
 
-        public string GetTranslation(string key)
+        public string GetTranslation(string key, params object[] paramObjects)
         {
-            return _plugin.GetTranslation(key);
+            var translation = _plugin.GetTranslation(key);
+            return string.Format(translation, paramObjects);
         }
+
+        public void ShowMessageWithTranslation(string key, params object[] paramObjects)
+        {
+            var trans = GetTranslation(key, paramObjects);
+            UiNoticeHelper.ShowMessage(trans);
+        }
+
     }
 }
