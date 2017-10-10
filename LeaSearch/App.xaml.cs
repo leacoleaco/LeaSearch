@@ -15,6 +15,7 @@ using LeaSearch.Core.QueryEngine;
 using LeaSearch.Core.TaskManager;
 using LeaSearch.Core.Theme;
 using LeaSearch.Infrastructure.ErrorReport;
+using LeaSearch.Infrastructure.Helper;
 using LeaSearch.Infrastructure.Storage;
 using LeaSearch.Plugin;
 using LeaSearch.SearchEngine;
