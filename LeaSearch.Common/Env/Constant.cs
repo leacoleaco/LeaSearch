@@ -23,7 +23,11 @@ namespace LeaSearch.Common.Env
         /// <summary>
         /// 我得文档目录
         /// </summary>
+#if DEBUG
+        public static readonly string MyDocumentPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), LeaSearch, "DEBUG");
+#else
         public static readonly string MyDocumentPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), LeaSearch);
+#endif
 
         /// <summary>
         /// the directory that load data
