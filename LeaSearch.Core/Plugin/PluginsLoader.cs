@@ -5,7 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
+using LeaSearch.Common.Env;
 using LeaSearch.Infrastructure.Logger;
+using LeaSearch.Plugin.Setting;
 using LeaSearch.SearchEngine;
 using Newtonsoft.Json;
 
@@ -60,10 +62,7 @@ namespace LeaSearch.Core.Plugin
                         //here we read the plugin.json
                         var pluginMetadata = JsonConvert.DeserializeObject<PluginMetadata>(File.ReadAllText(p));
 
-                        //TODO:how to read the plugin's custom setting
-                        var pluginsetting = new PluginSettings();
-
-                        var pluginBase = new PluginBaseInfo(d.FullName, pluginMetadata, pluginsetting);
+                        var pluginBase = new PluginBaseInfo(d.FullName, pluginMetadata );
                         result.Add(pluginBase);
                     }
                 }

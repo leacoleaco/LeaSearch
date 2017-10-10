@@ -3,11 +3,15 @@ using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Markup;
+using LeaSearch.Common.Env;
 using LeaSearch.Core.I18N;
 using LeaSearch.Infrastructure.Logger;
+using LeaSearch.Infrastructure.Storage;
 using LeaSearch.Plugin;
 using LeaSearch.Plugin.Index;
 using LeaSearch.Plugin.Query;
+using LeaSearch.Plugin.Setting;
+using Newtonsoft.Json;
 
 namespace LeaSearch.Core.Plugin
 {
@@ -21,12 +25,17 @@ namespace LeaSearch.Core.Plugin
 
         private const string LanguageFolder = "Languages";
 
-        public Plugin(PluginBaseInfo pluginBaseInfo, LeaSearch.Plugin.Plugin pluginInstance, string pluginId, PluginType pluginType, Assembly pluginAssembly) : base(pluginBaseInfo.PluginRootPath, pluginBaseInfo.PluginMetadata, pluginBaseInfo.PluginSettings)
+
+        public Plugin(PluginBaseInfo pluginBaseInfo, LeaSearch.Plugin.Plugin pluginInstance, string pluginId, PluginType pluginType, Assembly pluginAssembly) : base(pluginBaseInfo.PluginRootPath, pluginBaseInfo.PluginMetadata)
         {
             PluginInstance = pluginInstance;
             PluginId = pluginId;
             PluginType = pluginType;
             _pluginAssembly = pluginAssembly;
+
+
+            //初始化插件的setting目录
+
         }
 
         /// <summary>
@@ -55,7 +64,11 @@ namespace LeaSearch.Core.Plugin
         /// </summary>
         public String PluginId { get; }
 
+        /// <summary>
+        /// 插件类型
+        /// </summary>
         public PluginType PluginType { get; }
+
 
         /// <summary>
         /// if plugin is not correct load, or set to disabled, then it will disabled
@@ -272,15 +285,21 @@ namespace LeaSearch.Core.Plugin
         Suggection, PluginCall
     }
 
+
+
     public class PluginBaseInfo
     {
 
-        public PluginBaseInfo(string pluginRootPath, PluginMetadata pluginMetadata, PluginSettings pluginSettings)
+        private PluginSettingJsonStorage _pluginSettingJsonStorage;
+
+        public PluginBaseInfo(string pluginRootPath, PluginMetadata pluginMetadata)
         {
             PluginRootPath = pluginRootPath;
             PluginMetadata = pluginMetadata;
-            PluginSettings = pluginSettings;
 
+
+            //读取settings
+            _pluginSettingJsonStorage = new PluginSettingJsonStorage(pluginMetadata.PluginId);
         }
 
         /// <summary>
@@ -330,6 +349,36 @@ namespace LeaSearch.Core.Plugin
         /// plugin 's entry file
         /// </summary>
         public string PluginEntryPath => Path.Combine(PluginRootPath, PluginMetadata.EntryFileName);
+
+        public void SavePluginSettings()
+        {
+            _pluginSettingJsonStorage.Save();
+        }
+
+        public void LoadPluginSettings()
+        {
+            _pluginSettingJsonStorage.Load();
+        }
+
+    }
+
+    /// <summary>
+    /// store plugin settings in a json file
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class PluginSettingJsonStorage : JsonStrorage<PluginSettings>
+    {
+        public PluginSettingJsonStorage(string pluginId)
+        {
+            // C# releated, add python releated below
+            var directoryPath = Path.Combine(Constant.MyDocumentPath, "Settings", pluginId);
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+
+            FilePath = Path.Combine(directoryPath, $"Settings{FileSuffix}");
+        }
 
     }
 }

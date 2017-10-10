@@ -83,7 +83,6 @@
     <Compile Include="Plugin\PluginApiForCsharpPlugin.cs" />
     <Compile Include="Plugin\PluginManager.cs" />
     <Compile Include="Plugin\PluginMetadata.cs" />
-    <Compile Include="Plugin\PluginSettings.cs" />
     <Compile Include="Plugin\PluginsLoader.cs" />
     <Compile Include="Plugin\PluginType.cs" />
     <Compile Include="Plugin\SharedMethod.cs" />

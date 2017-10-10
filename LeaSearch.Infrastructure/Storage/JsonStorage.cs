@@ -21,7 +21,7 @@ namespace LeaSearch.Infrastructure.Storage
         public string FilePath { get; set; }
 
 
-        internal JsonStrorage()
+        public JsonStrorage()
         {
             // use property initialization instead of DefaultValueAttribute
             // easier and flexible for default value of object

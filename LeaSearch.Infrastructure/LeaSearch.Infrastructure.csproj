@@ -61,7 +61,6 @@
     <Compile Include="Storage\ISavable.cs" />
     <Compile Include="Storage\JsonStorage.cs" />
     <Compile Include="Storage\LeaSearchJsonStorage.cs" />
-    <Compile Include="Storage\PluginSettingJsonStorage.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LeaSearch.Common\LeaSearch.Common.csproj">

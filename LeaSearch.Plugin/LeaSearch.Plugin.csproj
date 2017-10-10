@@ -60,6 +60,7 @@
     <Compile Include="Query\QueryResult.cs" />
     <Compile Include="Query\QueryType.cs" />
     <Compile Include="Query\ResultItem.cs" />
+    <Compile Include="Setting\PluginSetting.cs" />
     <Compile Include="Shared\IPluginApi.cs" />
     <Compile Include="Shared\SharedContext.cs" />
     <Compile Include="Shared\ISharedMethod.cs" />
