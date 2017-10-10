@@ -16,7 +16,7 @@ namespace LeaSearch.Infrastructure.Storage
             // C# releated, add python releated below
             var dataType = typeof(T);
             var assemblyName = typeof(T).Assembly.GetName().Name;
-            var directoryPath = Path.Combine(Constant.ProgramDirectory, DirectoryName, Constant.LeaSearch);
+            var directoryPath = Path.Combine(Constant.MyDocumentPath, DirectoryName);
             if (!Directory.Exists(directoryPath))
             {
                 Directory.CreateDirectory(directoryPath);

@@ -21,6 +21,11 @@ namespace LeaSearch.Common.Env
         public static readonly string ExecutablePath = Path.Combine(ProgramDirectory, LeaSearch + ".exe");
 
         /// <summary>
+        /// 我得文档目录
+        /// </summary>
+        public static readonly string MyDocumentPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), LeaSearch);
+
+        /// <summary>
         /// the directory that load data
         /// </summary>
         //public static readonly string DataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), LeaSearch);

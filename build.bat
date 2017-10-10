@@ -1,24 +1,31 @@
 echo off
 
-echo åˆ é™¤output æ–‡ä»¶å¤¹
-rd /s /q "output"
+echo É¾³ı³ÌĞò
+rem rd /s /q "output/Debug"
 
 
-echo å¼€å§‹ç¼–è¯‘é¡¹ç›®
+echo ¿ªÊ¼±àÒë³ÌĞò
 
-path %SYSTEMROOT%\Microsoft.NET\Framework\v4.0.30319\
+rem path %SYSTEMROOT%\Microsoft.NET\Framework\v4.0.30319\
 
-echo start >output\Build.log
-msbuild.exe LeaSearch.sln /t:Rebuild /p:Configuration=Release /p:VisualStudioVersion=14.0 /p:DisableOutOfProcTaskHost=true 
+rem echo start >output\Build.log
+rem %SYSTEMROOT%\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe LeaSearch.sln /t:Rebuild /p:Configuration=Debug /p:TargetFrameworkVersion=v4.5 /p:DisableOutOfProcTaskHost=true 
+
+
+rem %SYSTEMROOT%\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe LeaSearch.sln /t:Build /p:Configuration=Release  /p:Platform="Any CPU";TargetFrameworkVersion=v4.5.2
+
+
+"D:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.exe" /rebuild "Release|AnyCPU" LeaSearch.sln 
+
+rem msbuild.exe LeaSearch.sln /t:Rebuild /p:Configuration=Release /p:VisualStudioVersion=14.0 /p:DisableOutOfProcTaskHost=true 
 rem /l:FileLogger,Microsoft.Build.Engine;logfile=output\Build.log
  
 ::msbuild  .\src\ElectricManagement.Web\ElectricManagement.Web.csproj /t:ResolveReferences;Compile /t:_WPPCopyWebApplication /p:Configuration=Release /p:VisualStudioVersion=12.0 /p:WebProjectOutputDir=..\..\Release
 ::/l:FileLogger,Microsoft.Build.Engine;logfile=Build2.log
  
-echo ç¼–è¯‘å½“å‰é¡¹ç›®å®Œæ¯•
+echo ±àÒë½áÊø
 
-echo å¼€å§‹ç¼–è¯‘æ’ä»¶
-
+echo ´ò¿ªÄ¿Â¼
 REM msbuild.exe Plugins\LeaSearch.Plugin.Baidu\LeaSearch.Plugin.Baidu.csproj /t:Build /p:Configuration=Release /p:DisableOutOfProcTaskHost=true
 REM msbuild.exe Plugins\LeaSearch.Plugin.Calculator\LeaSearch.Plugin.Calculator.csproj /t:Build /p:Configuration=Release /p:DisableOutOfProcTaskHost=true
 REM msbuild.exe Plugins\LeaSearch.Plugin.HelloWorld\LeaSearch.Plugin.HelloWorld.csproj /t:Build /p:Configuration=Release /p:DisableOutOfProcTaskHost=true
