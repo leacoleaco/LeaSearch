@@ -12,9 +12,9 @@ using LeaSearch.Core.Image;
 using LeaSearch.Core.Ioc;
 using LeaSearch.Core.Plugin;
 using LeaSearch.Core.QueryEngine;
+using LeaSearch.Core.TaskManager;
 using LeaSearch.Core.Theme;
 using LeaSearch.Infrastructure.ErrorReport;
-using LeaSearch.Infrastructure.Helper;
 using LeaSearch.Infrastructure.Storage;
 using LeaSearch.Plugin;
 using LeaSearch.SearchEngine;
@@ -119,6 +119,8 @@ namespace LeaSearch
             _builder.RegisterType<QueryEngine>().SingleInstance();
             _builder.RegisterType<LuceneManager>().SingleInstance();
 
+            _builder.RegisterType<TaskManager>().SingleInstance();
+
 
             _builder.RegisterType<ShellViewModel>().SingleInstance();
             _builder.RegisterType<SuggestionResultViewModel>().SingleInstance();
@@ -162,6 +164,7 @@ namespace LeaSearch
 
             Ioc.Reslove<QueryEngine>().Init();
 
+            Ioc.Reslove<TaskManager>().StartTaskListen();
 
 #if !DEBUG
             //auto startup setting

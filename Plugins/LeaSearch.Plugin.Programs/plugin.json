@@ -4,6 +4,7 @@
   "DisplayName": "Program",
   "DefalutPrefixKeyword": "p",
   "EnableSuggection": true,
+  "EnableIndex": true,
   "Author": "Rico Lee",
   "Version": "1.0.0",
   "Language": "csharp",

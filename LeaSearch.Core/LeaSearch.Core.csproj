@@ -88,6 +88,7 @@
     <Compile Include="Plugin\SharedMethod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryEngine\QueryEngine.cs" />
+    <Compile Include="TaskManager\TaskManager.cs" />
     <Compile Include="Theme\FontHelper.cs" />
     <Compile Include="Theme\ThemeManager.cs" />
     <Compile Include="Views\HtmlEditorView.xaml.cs">

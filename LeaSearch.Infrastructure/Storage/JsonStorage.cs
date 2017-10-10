@@ -10,8 +10,8 @@ namespace LeaSearch.Infrastructure.Storage
     /// </summary>
     public class JsonStrorage<T>
     {
-        private readonly JsonSerializerSettings _serializerSettings;
-        private T _data;
+        protected readonly JsonSerializerSettings _serializerSettings;
+        protected T _data;
         public const string FileSuffix = ".json";
 
 
@@ -71,7 +71,7 @@ namespace LeaSearch.Infrastructure.Storage
             }
         }
 
-        private void LoadDefault()
+        protected virtual void LoadDefault()
         {
             if (File.Exists(FilePath))
             {
@@ -82,7 +82,7 @@ namespace LeaSearch.Infrastructure.Storage
             Save();
         }
 
-        private void BackupOriginFile()
+        protected void BackupOriginFile()
         {
             var timestamp = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fffffff", CultureInfo.CurrentUICulture);
             var directory = Path.GetDirectoryName(FilePath);

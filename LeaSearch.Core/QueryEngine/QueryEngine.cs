@@ -10,7 +10,6 @@ using FuzzyString;
 using LeaSearch.Common.Env;
 using LeaSearch.Core.Command;
 using LeaSearch.Core.Plugin;
-using LeaSearch.Infrastructure.Logger;
 using LeaSearch.Plugin;
 using LeaSearch.Plugin.Query;
 using QueryMode = LeaSearch.Plugin.Query.QueryMode;

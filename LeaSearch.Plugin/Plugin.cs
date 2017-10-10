@@ -1,4 +1,5 @@
-﻿using LeaSearch.Plugin.Index;
+﻿using System;
+using LeaSearch.Plugin.Index;
 using LeaSearch.Plugin.Query;
 
 namespace LeaSearch.Plugin
@@ -35,6 +36,19 @@ namespace LeaSearch.Plugin
         public virtual IndexInfo InitIndex(IndexInfo indexInfo)
         {
             return null;
+        }
+
+        /// <summary>
+        /// 本次是否可以重新更新索引
+        /// </summary>
+        /// <param name="lastIndexTime"></param>
+        /// <returns></returns>
+        public virtual bool CanReindexThisTime(DateTime lastIndexTime)
+        {
+            //默认超过3天更新一次
+            var timeSpan = DateTime.Now - lastIndexTime;
+            if (timeSpan.TotalDays > 3) return true;
+            return false;
         }
 
         /// <summary>
@@ -112,6 +126,7 @@ namespace LeaSearch.Plugin
         {
             return null;
         }
+
 
     }
 }

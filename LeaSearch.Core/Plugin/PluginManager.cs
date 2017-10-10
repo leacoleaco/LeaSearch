@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows;
+﻿using System.Collections.Generic;
 using LeaSearch.Common.Env;
-using LeaSearch.Infrastructure.Logger;
 using LeaSearch.Plugin;
 using LeaSearch.Plugin.Index;
 using LeaSearch.SearchEngine;
@@ -22,11 +19,17 @@ namespace LeaSearch.Core.Plugin
 
         private LuceneManager _luceneManager;
 
+        private TaskManager.TaskManager _taskManager;
 
-        public PluginManager(SharedContext sharedContext, LuceneManager luceneManager)
+        public PluginManager(SharedContext sharedContext, LuceneManager luceneManager, TaskManager.TaskManager taskManager)
         {
             _luceneManager = luceneManager;
+            _taskManager = taskManager;
             _pluginsLoader = new PluginsLoader(sharedContext, luceneManager);
+
+
+            //定时更新插件索引
+            _taskManager.UpdateIndexTaskActive += BuildIndexForeachPlugin;
         }
 
         /// <summary>
@@ -43,7 +46,10 @@ namespace LeaSearch.Core.Plugin
             foreach (var plugin in _plugins)
             {
                 var initIndex = plugin.InvokeInitIndex(new IndexInfo(plugin.PluginId));
-                prepareIndexInfos.Add(initIndex);
+                if (initIndex != null)
+                {
+                    prepareIndexInfos.Add(initIndex);
+                }
             }
             _luceneManager.CreateIndex(prepareIndexInfos.ToArray());
         }

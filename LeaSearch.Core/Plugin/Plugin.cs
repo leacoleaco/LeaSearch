@@ -32,10 +32,6 @@ namespace LeaSearch.Core.Plugin
             PluginId = pluginId;
             PluginType = pluginType;
             _pluginAssembly = pluginAssembly;
-
-
-            //初始化插件的setting目录
-
         }
 
         /// <summary>
@@ -138,6 +134,7 @@ namespace LeaSearch.Core.Plugin
 
         public Plugin InvokeInitPlugin(SharedContext sharedContext, IPluginApi pluginApi)
         {
+
             try
             {
                 PluginInstance?.InitPlugin(sharedContext, pluginApi);
@@ -169,12 +166,45 @@ namespace LeaSearch.Core.Plugin
             return null;
         }
 
-        public IndexInfo InvokeInitIndex(IndexInfo indexInfo)
+        private bool InvokeCanReindexThisTime(DateTime lastIndexTime)
         {
             try
             {
-                return PluginInstance.InitIndex(new IndexInfo(PluginId));
+                return PluginInstance.CanReindexThisTime(lastIndexTime);
+            }
+            catch (Exception e)
+            {
+                Logger.Exception($"plugin <{PluginId}> call CanReindexThisTime error: {e.Message}", e);
+#if DEBUG
+                MessageBox.Show($"plugin <{PluginId}> call CanReindexThisTime error: {e.Message}");
+#endif
+            }
+            return false;
+        }
 
+        public IndexInfo InvokeInitIndex(IndexInfo indexInfo)
+        {
+            //无需更新缓存，则跳过
+            if (PluginSettings.NeedUpdateIndex == -1) return null;
+            if (PluginSettings.NeedUpdateIndex == 0 && !InvokeCanReindexThisTime(PluginSettings.LastIndexTime))
+            {
+                return null;
+            }
+
+            try
+            {
+                var ret = PluginInstance.InitIndex(new IndexInfo(PluginId));
+
+                if (PluginSettings.NeedUpdateIndex == 1)
+                {
+                    PluginSettings.NeedUpdateIndex = 0;
+                }
+
+                PluginSettings.LastIndexTime = DateTime.Now;
+
+                SavePluginSettings();
+
+                return ret;
             }
             catch (Exception e)
             {
@@ -299,7 +329,8 @@ namespace LeaSearch.Core.Plugin
 
 
             //读取settings
-            _pluginSettingJsonStorage = new PluginSettingJsonStorage(pluginMetadata.PluginId);
+            _pluginSettingJsonStorage = new PluginSettingJsonStorage(pluginMetadata);
+            LoadPluginSettings();
         }
 
         /// <summary>
@@ -318,7 +349,7 @@ namespace LeaSearch.Core.Plugin
         /// <summary>
         /// plugin's custom setting
         /// </summary>
-        public PluginSettings PluginSettings { get; set; }
+        public PluginSettings PluginSettings { get; private set; }
 
 
         public string[] PrefixKeywords
@@ -357,7 +388,7 @@ namespace LeaSearch.Core.Plugin
 
         public void LoadPluginSettings()
         {
-            _pluginSettingJsonStorage.Load();
+            PluginSettings = _pluginSettingJsonStorage.Load();
         }
 
     }
@@ -365,13 +396,16 @@ namespace LeaSearch.Core.Plugin
     /// <summary>
     /// store plugin settings in a json file
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     public class PluginSettingJsonStorage : JsonStrorage<PluginSettings>
     {
-        public PluginSettingJsonStorage(string pluginId)
+
+        private PluginMetadata _pluginMetadata;
+
+        public PluginSettingJsonStorage(PluginMetadata pluginMetadata)
         {
+            _pluginMetadata = pluginMetadata;
             // C# releated, add python releated below
-            var directoryPath = Path.Combine(Constant.MyDocumentPath, "Settings", pluginId);
+            var directoryPath = Path.Combine(Constant.MyDocumentPath, "Settings", pluginMetadata.PluginId);
             if (!Directory.Exists(directoryPath))
             {
                 Directory.CreateDirectory(directoryPath);
@@ -380,5 +414,21 @@ namespace LeaSearch.Core.Plugin
             FilePath = Path.Combine(directoryPath, $"Settings{FileSuffix}");
         }
 
+        protected override void LoadDefault()
+        {
+            if (File.Exists(FilePath))
+            {
+                BackupOriginFile();
+            }
+
+            _data = new PluginSettings
+            {
+                PrefixKeyword = _pluginMetadata.DefalutPrefixKeyword,
+                NeedUpdateIndex = _pluginMetadata.EnableIndex ? (_pluginMetadata.DoIndexWhenEveryStart ? 2 : 1) : -1,
+                LastIndexTime = default(DateTime)
+            };
+
+            Save();
+        }
     }
 }
